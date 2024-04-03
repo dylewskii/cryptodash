@@ -1,11 +1,11 @@
 import "./App.css";
-import Navbar from "./components/Navbar";
+import Sidebar from "./components/Sidebar.tsx";
 
 function App() {
   return (
-    <>
-      <Navbar></Navbar>
-    </>
+    <main className="flex flex-row min-h-screen">
+      <Sidebar />
+    </main>
   );
 }
 
