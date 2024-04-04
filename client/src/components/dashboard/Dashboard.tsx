@@ -1,3 +1,4 @@
+import PortfolioCard from "../portfolio-card/PortfolioCard";
 import TopCoins from "./TopCoins";
 import TotalBalance from "./TotalBalance";
 
@@ -8,7 +9,9 @@ export default function Dashboard() {
         <TotalBalance />
         <TopCoins />
       </section>
-      <section className="content-two grid-column-2 flex flex-col"></section>
+      <section className="content-two grid-column-2 flex flex-col">
+        <PortfolioCard />
+      </section>
     </>
   );
 }
