@@ -3,9 +3,12 @@ import TotalBalance from "./TotalBalance";
 
 export default function Dashboard() {
   return (
-    <section>
-      <TotalBalance />
-      <TopCoins />
-    </section>
+    <>
+      <section className="content-one grid-column-1">
+        <TotalBalance />
+        <TopCoins />
+      </section>
+      <section className="content-two grid-column-2 flex flex-col"></section>
+    </>
   );
 }
