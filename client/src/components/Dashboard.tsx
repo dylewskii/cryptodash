@@ -1,7 +1,15 @@
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
 export default function Dashboard() {
   return (
     <section>
-      <div className="flex flex-col">
+      <div className="flex flex-col mx-2 my-4">
         Total Balance
         <div className="flex gap-3">
           <p className="text-5xl">
@@ -25,6 +33,55 @@ export default function Dashboard() {
             10%
           </p>
         </div>
+      </div>
+      <div className="custom-grid-1 mx-1 my-2 p-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>Bitcoin</CardTitle>
+            <CardDescription>BTC</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl">
+              <span>$</span>80,000
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Ethereum</CardTitle>
+            <CardDescription>ETH</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl">
+              <span>$</span>5000
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Solana</CardTitle>
+            <CardDescription>SOL</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl">
+              <span>$</span>300
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Dogecoin</CardTitle>
+            <CardDescription>DOGE</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl">
+              <span>$</span>1
+            </p>
+          </CardContent>
+        </Card>
       </div>
     </section>
   );
