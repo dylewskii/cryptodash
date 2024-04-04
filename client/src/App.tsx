@@ -1,7 +1,7 @@
 import "./App.css";
-import Dashboard from "./components/Dashboard.tsx";
-import MainContent from "./components/MainContent.tsx";
-import Sidebar from "./components/Sidebar.tsx";
+import Dashboard from "./components/dashboard/Dashboard.tsx";
+import MainContent from "./components/main-content/MainContent.tsx";
+import Sidebar from "./components/sidebar/Sidebar.tsx";
 
 function App() {
   return (
