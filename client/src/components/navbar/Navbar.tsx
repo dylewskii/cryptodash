@@ -17,7 +17,7 @@ export default function Navbar() {
       </div>
       <nav className="flex gap-4 items-center">
         <div className="search">
-          <Input type="search" placeholder="Search" />
+          <Input id="search" type="search" placeholder="Search" />
         </div>
         <div className="controls">
           <svg
