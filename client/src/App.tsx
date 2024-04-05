@@ -5,7 +5,7 @@ import Sidebar from "./components/sidebar/Sidebar.tsx";
 
 function App() {
   return (
-    <div className="flex flex-row min-h-screen">
+    <div className="flex flex-col md:flex-row">
       <Sidebar />
       <MainContent>
         <Dashboard />
