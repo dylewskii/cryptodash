@@ -85,6 +85,7 @@ export default function ConverterCard() {
           <CardDescription></CardDescription>
         </CardHeader>
         <CardContent>
+          <Input className="my-4" />
           <Popover open={cryptoOpen} onOpenChange={setCryptoOpen}>
             <div className="flex flex-col items-center">
               <PopoverTrigger asChild>
@@ -149,6 +150,7 @@ export default function ConverterCard() {
               strokeLinejoin="round"
             />
           </svg>
+          <Input className="my-4" />
           <Popover open={fiatOpen} onOpenChange={setFiatOpen}>
             <div className="flex flex-col items-center">
               <PopoverTrigger asChild>
