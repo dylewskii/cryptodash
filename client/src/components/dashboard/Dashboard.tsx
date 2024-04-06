@@ -1,5 +1,5 @@
-import ConverterCard from "../converter-card/ConverterCard";
-import PortfolioCard from "../portfolio-card/PortfolioCard";
+import ConverterCard from "./ConverterCard";
+import PortfolioCard from "./PortfolioCard";
 import FavoriteCoins from "./FavoriteCoins";
 import TotalBalance from "./TotalBalance";
 
