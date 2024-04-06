@@ -1,17 +1,17 @@
 import ConverterCard from "../converter-card/ConverterCard";
 import PortfolioCard from "../portfolio-card/PortfolioCard";
-import TopCoins from "./TopCoins";
+import FavoriteCoins from "./FavoriteCoins";
 import TotalBalance from "./TotalBalance";
 
 export default function Dashboard() {
   return (
     <>
-      <section className="content-one grid-column-1">
+      <section className="col-span-3">
         <TotalBalance />
-        <TopCoins />
-      </section>
-      <section className="content-two grid-column-2 flex flex-col">
         <PortfolioCard />
+        <FavoriteCoins />
+      </section>
+      <section className="grid-col-4 col-span-2">
         <ConverterCard />
       </section>
     </>

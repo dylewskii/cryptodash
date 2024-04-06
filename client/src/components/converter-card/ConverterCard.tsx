@@ -78,14 +78,13 @@ export default function ConverterCard() {
   const [fiatValue, setFiatValue] = useState("");
 
   return (
-    <div className="flex flex-col items-center p-6">
+    <div className="flex flex-col items-center min-w-min md:mt-24 md:px-4">
       <Card className="w-full">
-        <CardHeader>
-          <CardTitle>Converter</CardTitle>
+        <CardHeader className="p-4">
+          <CardTitle className="text-lg">Converter</CardTitle>
           <CardDescription></CardDescription>
         </CardHeader>
-        <CardContent>
-          <Input className="my-4" />
+        <CardContent className="p-4 pt-0">
           <Popover open={cryptoOpen} onOpenChange={setCryptoOpen}>
             <div className="flex flex-col items-center">
               <PopoverTrigger asChild>
@@ -136,6 +135,7 @@ export default function ConverterCard() {
               </Command>
             </PopoverContent>
           </Popover>
+          <Input className="my-4" />
           <svg
             className="w-4 h-4 mx-auto my-4"
             viewBox="0 0 24 24"

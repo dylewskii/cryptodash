@@ -1,6 +1,6 @@
 export default function TotalBalance() {
   return (
-    <div className="flex flex-col mx-2 my-4">
+    <div className="flex flex-col mb-6">
       Total Balance
       <div className="flex gap-3">
         <p className="text-5xl">

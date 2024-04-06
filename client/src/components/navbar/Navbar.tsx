@@ -7,18 +7,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
 
 export default function Navbar() {
   return (
-    <header className="flex justify-between items-center m-4">
-      <div className="logo">
-        <p>CryptoDash</p>
+    <header className="flex justify-between items-center my-4 mx-8">
+      <div>
+        <p className="text-2xl">CryptoDash</p>
       </div>
       <nav className="flex gap-4 items-center">
-        <div className="search">
-          <Input id="search" type="search" placeholder="Search" />
-        </div>
         <div className="controls">
           <svg
             className="w-6 h-6 cursor-pointer"

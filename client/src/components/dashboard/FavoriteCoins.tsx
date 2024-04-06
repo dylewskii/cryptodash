@@ -6,9 +6,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-export default function TopCoins() {
+export default function FavoriteCoins() {
   return (
-    <div className="custom-grid-1 mx-1 my-2 p-4">
+    <div className="custom-grid-1 my-4">
       <Card>
         <CardHeader>
           <CardTitle>Bitcoin</CardTitle>
