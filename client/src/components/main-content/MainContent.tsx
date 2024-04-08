@@ -1,5 +1,4 @@
 import React from "react";
-import "./mainContent.css";
 
 type MainContentProps = {
   children: React.ReactNode;
