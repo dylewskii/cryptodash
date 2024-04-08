@@ -47,12 +47,36 @@ export default function FavoriteCoins() {
 
       <Card>
         <CardHeader>
+          <CardTitle>Avalanche</CardTitle>
+          <CardDescription>AVAX</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="text-3xl">
+            <span>$</span>100
+          </p>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
           <CardTitle>Dogecoin</CardTitle>
           <CardDescription>DOGE</CardDescription>
         </CardHeader>
         <CardContent>
           <p className="text-3xl">
             <span>$</span>1
+          </p>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>DogWifHat</CardTitle>
+          <CardDescription>WIF</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="text-3xl">
+            <span>$</span>10
           </p>
         </CardContent>
       </Card>
