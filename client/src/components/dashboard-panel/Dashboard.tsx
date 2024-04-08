@@ -12,14 +12,17 @@ export default function Dashboard() {
         <TotalBalance />
         <PortfolioCard />
       </section>
+
       <section className="col-span-5 row-start-2">
         <FavoriteCoins />
       </section>
-      <ConverterCard
-        className={"col-start-4 col-span-2 row-start-1 md:mt-24 md:pl-4"}
-      />
-      <section className="col-span-5 row-start-3 mt-4 flex gap-4">
-        <FGCard className={""} />
+
+      <section className="col-start-4 col-span-2 row-start-1 md:mt-24 md:pl-4">
+        <ConverterCard />
+      </section>
+
+      <section className="col-span-5 row-start-3 mt-4 flex gap-4 justify-between md:justify-start">
+        <FGCard />
         <TotalMcapCard />
       </section>
     </>
