@@ -71,14 +71,18 @@ const fiatList = [
   },
 ];
 
-export default function ConverterCard() {
+interface ConverterCardProps {
+  className?: string; // The question mark denotes that the prop is optional
+}
+
+export default function ConverterCard({ className = "" }: ConverterCardProps) {
   const [cryptoOpen, setCryptoOpen] = useState(false);
   const [cryptoValue, setCryptoValue] = useState("");
   const [fiatOpen, setFiatOpen] = useState(false);
   const [fiatValue, setFiatValue] = useState("");
 
   return (
-    <div className="flex flex-col items-center min-w-min md:mt-24 md:px-4">
+    <div className={`flex flex-col items-center min-w-min ${className}`}>
       <Card className="w-full">
         <CardHeader className="p-4">
           <CardTitle className="text-lg">Converter</CardTitle>

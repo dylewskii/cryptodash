@@ -1,9 +1,13 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
+interface FGCardProps {
+  className?: string; // The question mark denotes that the prop is optional
+}
+
 // Fear / Greed Index Score
-export default function FGCard() {
+export default function FGCard({ className = "" }: FGCardProps) {
   return (
-    <div className="md:m-2 md:px-2">
+    <div className={`${className}`}>
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
