@@ -1,17 +1,8 @@
 import "./App.css";
-import Dashboard from "./components/dashboard-panel/Dashboard.tsx";
-import MainContent from "./components/main-content/MainContent.tsx";
-import Sidebar from "./components/sidebar/Sidebar.tsx";
+import { Outlet } from "react-router-dom";
 
 function App() {
-  return (
-    <div className="flex flex-col md:flex-row">
-      <Sidebar />
-      <MainContent>
-        <Dashboard />
-      </MainContent>
-    </div>
-  );
+  return <Outlet />;
 }
 
 export default App;
