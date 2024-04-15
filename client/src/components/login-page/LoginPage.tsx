@@ -45,7 +45,10 @@ export default function LoginPage() {
 
           <div className="mb-4">
             <p>
-              Don't have an account? <a href="/register">Sign Up</a>
+              Don't have an account?{" "}
+              <a href="/register" className="underline">
+                Sign Up
+              </a>
             </p>
           </div>
 
