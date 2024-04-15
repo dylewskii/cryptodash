@@ -12,7 +12,26 @@ export default function PortfolioCard() {
   return (
     <ScrollArea className="rounded-md border">
       <div className="p-4">
-        <h4 className="mb-4 text-lg font-medium leading-none">Portfolio</h4>
+        <div className="flex justify-between mb-6">
+          <h4 className="text-lg font-medium leading-none">Portfolio</h4>
+          <a>
+            <svg
+              className="w-6 h-6"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 5V19M5 12H19"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </a>
+        </div>
+
         {portfolioCoins.map((coin, i) => (
           <>
             <div key={i} className="grid grid-cols-[50px_3fr] gap-2">
