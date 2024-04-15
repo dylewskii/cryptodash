@@ -7,8 +7,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useState } from "react";
 
 export default function Navbar() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   return (
     <header className="flex justify-between items-center my-4 mx-8">
       <div>
@@ -44,7 +47,7 @@ export default function Navbar() {
               <DropdownMenuSeparator />
               <DropdownMenuItem>Profile</DropdownMenuItem>
               <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuItem>Subscription</DropdownMenuItem>
+              {isLoggedIn && <DropdownMenuItem>Logout</DropdownMenuItem>}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
