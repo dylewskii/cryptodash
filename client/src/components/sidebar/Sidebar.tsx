@@ -6,7 +6,7 @@ export default function Sidebar() {
     <nav className="md:px-6">
       <ul className="flex justify-center md:flex-col">
         <li className="md:pt-4 mx-1 my-2">
-          <Link to={"/home"}>
+          <Link to="/app/home">
             <Button variant="link">
               <svg
                 className="w-5 h-5 mr-1"
@@ -27,7 +27,7 @@ export default function Sidebar() {
           </Link>
         </li>
         <li className="mx-1 my-2">
-          <Link to={"/assets"}>
+          <Link to="/app/assets">
             <Button variant="link">
               <svg
                 className="w-5 h-5 mr-1"
@@ -49,7 +49,7 @@ export default function Sidebar() {
           </Link>
         </li>
         <li className="mx-1 my-2">
-          <Link to={"/explore"}>
+          <Link to="/app/explore">
             <Button variant="link">
               <svg
                 className="w-5 h-5 mr-1"
@@ -70,7 +70,7 @@ export default function Sidebar() {
           </Link>
         </li>
         <li className="mx-1 my-2">
-          <Link to={"/swap"}>
+          <Link to="/app/swap">
             <Button variant="link">
               <svg
                 className="w-5 h-5 mr-1 "
@@ -91,7 +91,7 @@ export default function Sidebar() {
           </Link>
         </li>
         <li className="mx-1 my-2">
-          <Link to={"/send"}>
+          <Link to="/app/send">
             <Button variant="link">
               <div className="md:flex md:flex-col"></div>
               <svg
