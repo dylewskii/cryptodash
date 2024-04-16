@@ -2,7 +2,6 @@
   "name": "server",
   "version": "1.0.0",
   "description": "",
-  "proxy": "http://localhost:5000",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
