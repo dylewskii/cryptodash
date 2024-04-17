@@ -27,4 +27,19 @@ router.post("/register", async (req, res) => {
   }
 });
 
+router.post("/login", async (req, res) => {
+  const { username, password } = req.body;
+  try {
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.json({ msg: "User not found." });
+    }
+
+    const validPassword = await bcryptjs.compare(password, user.password);
+    if (!validPassword) {
+      return res.json({ msg: "Incorrect Credentials" });
+    }
+  } catch (error) {}
+});
+
 module.exports = router;
