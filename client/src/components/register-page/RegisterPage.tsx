@@ -4,26 +4,50 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 
 export default function RegisterPage() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
-  const navigate = useNavigate();
+  const [registrationFailed, setRegistrationFailed] = useState(false);
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
     if (!email || !username || !password || password !== passwordConfirm) {
-      alert(
-        "Please make sure all fields have been entered and the passwords match."
-      );
+      alert("Please complete all fields and ensure passwords match.");
       return;
     }
     try {
       // registration logic
-      navigate("/app/home");
+      fetch("http://localhost:8000/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username,
+          email,
+          password,
+        }),
+      })
+        .then((res) => {
+          if (!res.ok) {
+            setRegistrationFailed(true);
+            throw new Error("Network response was not ok");
+          }
+          console.log(res);
+          return res.json();
+        })
+        .then((data) => {
+          console.log(data);
+          navigate("/app/home");
+        })
+        .catch((error) => console.error("Error:", error));
+
+      // navigate("/app/home");
     } catch (error) {
       console.error("Failed to register:", error);
-      alert("Registration failed. Please try again.");
+      setRegistrationFailed(true);
     }
   };
 
@@ -78,6 +102,14 @@ export default function RegisterPage() {
               </a>
             </p>
           </div>
+
+          {registrationFailed && (
+            <div className="mb-4">
+              <p className="text-red-500">
+                Failed to register. Please try again.
+              </p>
+            </div>
+          )}
 
           <Button type="submit" className="w-80">
             Register
