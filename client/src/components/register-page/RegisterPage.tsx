@@ -1,5 +1,5 @@
 import { SyntheticEvent, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 
@@ -97,9 +97,9 @@ export default function RegisterPage() {
           <div className="mb-4">
             <p>
               Already have an account?
-              <a href="/" className="underline pl-2">
+              <Link to="/" className="underline pl-2">
                 Login
-              </a>
+              </Link>
             </p>
           </div>
 
