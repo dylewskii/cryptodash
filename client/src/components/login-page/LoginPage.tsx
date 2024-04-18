@@ -70,8 +70,14 @@ export default function LoginPage() {
 
           <div className="mb-4">
             <p>
-              Don't have an account?{" "}
-              <Link to="/register" className="underline">
+              Forgot your password?
+              <Link to="/reset" className="underline pl-1">
+                Reset
+              </Link>
+            </p>
+            <p>
+              Don't have an account?
+              <Link to="/register" className="underline pl-1">
                 Sign Up
               </Link>
             </p>
