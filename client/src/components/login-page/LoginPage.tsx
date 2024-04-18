@@ -1,21 +1,46 @@
 import { SyntheticEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 
 export default function LoginPage() {
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
+  const [failedLogin, setFailedLogin] = useState(false);
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
-    // verify the user details
-    if (username && password) {
-      navigate("/app/home");
-    } else {
-      alert("Username or password incorrect.");
+    if (!username || !password) {
+      setFailedLogin(true);
     }
+
+    fetch("http://localhost:8000/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        username,
+        password,
+      }),
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        } else {
+          throw new Error("Failed to login");
+        }
+      })
+      .then(() => {
+        navigate("/app/home");
+      })
+      .catch((error) => {
+        setFailedLogin(true);
+        throw new Error(error);
+      });
   };
 
   return (
@@ -46,11 +71,17 @@ export default function LoginPage() {
           <div className="mb-4">
             <p>
               Don't have an account?{" "}
-              <a href="/register" className="underline">
+              <Link to="/register" className="underline">
                 Sign Up
-              </a>
+              </Link>
             </p>
           </div>
+
+          {failedLogin && (
+            <div className="mb-4">
+              <p className="text-red-600">Failed to login. Please try again.</p>
+            </div>
+          )}
 
           <Button type="submit" className="w-80">
             Login
