@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import Selector from "../ui/Selector";
+import DataContext from "@/context/DataContext";
 
 const fiatList = [
   "Pound Sterling (GBP)",
@@ -12,12 +13,11 @@ const fiatList = [
 ];
 
 export default function ConverterCard({ className = "" }) {
+  const { cryptoList, loading } = useContext(DataContext);
   const [cryptoValue, setCryptoValue] = useState("");
   const [fiatValue, setFiatValue] = useState("");
   const [cryptoInput, setCryptoInput] = useState("");
   const [currencyInput, setCurrencyInput] = useState("");
-
-  const [cryptoList, setCryptoList] = useState([]);
 
   const cryptoCalculation = (e) => {
     setCryptoInput(e.target.value);
@@ -27,29 +27,7 @@ export default function ConverterCard({ className = "" }) {
     setCurrencyInput(e.target.value);
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const cache = localStorage.getItem("cryptoData");
-      if (cache) {
-        const { data, timestamp } = JSON.parse(cache);
-        const hoursElapsed = (Date.now() - timestamp) / 1000 / 3600;
-        if (hoursElapsed < 24) {
-          setCryptoList(data);
-          return;
-        }
-      }
-      const response = await fetch(
-        `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=500&page=1`
-      );
-      const data = await response.json();
-      const coinNames = data.map((coin) => coin.name);
-      localStorage.setItem(
-        "cryptoData",
-        JSON.stringify({ data: coinNames, timestamp: Date.now() })
-      );
-      setCryptoList(coinNames);
-    };
-  }, []);
+  if (loading) return <div>Loading...</div>;
 
   return (
     <div className={`flex flex-col items-center min-w-min ${className}`}>
@@ -72,7 +50,7 @@ export default function ConverterCard({ className = "" }) {
             onChange={(e) => cryptoCalculation(e)}
             placeholder="Crypto Amount"
           />
-          {/* Conversion Arrow Icon */}
+          {/* --- Conversion SVG --- */}
           <div className="my-4 flex justify-center">
             <svg
               className="w-6 h-6"
@@ -86,6 +64,7 @@ export default function ConverterCard({ className = "" }) {
               <path d="M17 4v16m0 0l-4-4m4 4l4-4M7 20V4m0 0L3 8m4-4l4 4" />
             </svg>
           </div>
+          {/* --- Conversion SVG --- */}
           <Input
             className="my-4 text-center text-orange-600"
             type="number"
