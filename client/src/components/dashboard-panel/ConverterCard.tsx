@@ -1,209 +1,104 @@
-("use client");
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Check, ChevronsUpDown } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-
-const cryptoList = [
-  {
-    value: "Bitcoin",
-    label: "Bitcoin",
-  },
-  {
-    value: "Ethereum",
-    label: "Ethereum",
-  },
-  {
-    value: "Solana",
-    label: "Solana",
-  },
-  {
-    value: "Dogecoin",
-    label: "Dogecoin",
-  },
-  {
-    value: "Avalanche",
-    label: "Avalanche",
-  },
-];
+import Selector from "../ui/Selector";
 
 const fiatList = [
-  {
-    value: "Pound Sterling (GBP)",
-    label: "Pound Sterling (GBP)",
-  },
-  {
-    value: "Dollars",
-    label: "Dollars (USD)",
-  },
-  {
-    value: "Euro (EUR)",
-    label: "Euro (EUR)",
-  },
-  {
-    value: "Swiss Franc (CHF)",
-    label: "Swiss Franc (CHF)",
-  },
-  {
-    value: "Yuan (CN)",
-    label: "Yuan (CN)",
-  },
+  "Pound Sterling (GBP)",
+  "Dollars (USD)",
+  "Euro (EUR)",
+  "Swiss Franc (CHF)",
+  "Yuan (CN)",
 ];
 
-interface ConverterCardProps {
-  className?: string; // The question mark denotes that the prop is optional
-}
-
-export default function ConverterCard({ className = "" }: ConverterCardProps) {
-  const [cryptoOpen, setCryptoOpen] = useState(false);
+export default function ConverterCard({ className = "" }) {
   const [cryptoValue, setCryptoValue] = useState("");
-  const [fiatOpen, setFiatOpen] = useState(false);
   const [fiatValue, setFiatValue] = useState("");
+  const [cryptoInput, setCryptoInput] = useState("");
+  const [currencyInput, setCurrencyInput] = useState("");
+
+  const [cryptoList, setCryptoList] = useState([]);
+
+  const cryptoCalculation = (e) => {
+    setCryptoInput(e.target.value);
+  };
+
+  const currencyCalculation = (e) => {
+    setCurrencyInput(e.target.value);
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const cache = localStorage.getItem("cryptoData");
+      if (cache) {
+        const { data, timestamp } = JSON.parse(cache);
+        const hoursElapsed = (Date.now() - timestamp) / 1000 / 3600;
+        if (hoursElapsed < 24) {
+          setCryptoList(data);
+          return;
+        }
+      }
+      const response = await fetch(
+        `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=500&page=1`
+      );
+      const data = await response.json();
+      const coinNames = data.map((coin) => coin.name);
+      localStorage.setItem(
+        "cryptoData",
+        JSON.stringify({ data: coinNames, timestamp: Date.now() })
+      );
+      setCryptoList(coinNames);
+    };
+  }, []);
 
   return (
     <div className={`flex flex-col items-center min-w-min ${className}`}>
       <Card className="w-full">
         <CardHeader className="p-4">
           <CardTitle className="text-lg">Converter</CardTitle>
-          <CardDescription></CardDescription>
         </CardHeader>
-        <CardContent className="p-4 pt-0">
-          <Popover open={cryptoOpen} onOpenChange={setCryptoOpen}>
-            <div className="flex flex-col items-center">
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  role="combobox"
-                  aria-expanded={cryptoOpen}
-                  className="w-[200px] justify-between"
-                >
-                  {cryptoValue
-                    ? cryptoList.find((coin) => coin.value === cryptoValue)
-                        ?.label
-                    : "Select a coin..."}
-                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                </Button>
-              </PopoverTrigger>
-            </div>
-            <PopoverContent className="w-[200px] p-0">
-              <Command>
-                <CommandInput placeholder="Search coins..." />
-                <CommandEmpty>No coin found.</CommandEmpty>
-                <CommandGroup>
-                  <CommandList>
-                    {cryptoList.map((coin) => (
-                      <CommandItem
-                        key={coin.value}
-                        value={coin.value}
-                        onSelect={(currentValue) => {
-                          setCryptoValue(
-                            currentValue === cryptoValue ? "" : currentValue
-                          );
-                          setCryptoOpen(false);
-                        }}
-                      >
-                        <Check
-                          className={cn(
-                            "mr-2 h-4 w-4",
-                            cryptoValue === coin.value
-                              ? "opacity-100"
-                              : "opacity-0"
-                          )}
-                        />
-                        {coin.label}
-                      </CommandItem>
-                    ))}
-                  </CommandList>
-                </CommandGroup>
-              </Command>
-            </PopoverContent>
-          </Popover>
-          <Input className="my-4" />
-          <svg
-            className="w-4 h-4 mx-auto my-4"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M17 4V20M17 20L13 16M17 20L21 16M7 20V4M7 4L3 8M7 4L11 8"
+        <CardContent className="p-4 pt-0 flex flex-col justify-center">
+          <Selector
+            label="Select a coin"
+            items={cryptoList}
+            value={cryptoValue}
+            onChange={setCryptoValue}
+          />
+
+          <Input
+            className="my-4 text-center text-orange-600"
+            type="number"
+            value={cryptoInput}
+            onChange={(e) => cryptoCalculation(e)}
+            placeholder="Crypto Amount"
+          />
+          {/* Conversion Arrow Icon */}
+          <div className="my-4 flex justify-center">
+            <svg
+              className="w-6 h-6"
+              viewBox="0 0 24 24"
+              fill="none"
               stroke="currentColor"
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
-            />
-          </svg>
-          <Input className="my-4" />
-          <Popover open={fiatOpen} onOpenChange={setFiatOpen}>
-            <div className="flex flex-col items-center">
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  role="combobox"
-                  aria-expanded={fiatOpen}
-                  className="w-[200px] justify-between"
-                >
-                  {fiatValue
-                    ? fiatList.find((fiat) => fiat.value === fiatValue)?.label
-                    : "Select a currency..."}
-                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                </Button>
-              </PopoverTrigger>
-            </div>
-            <PopoverContent className="w-[200px] p-0">
-              <Command>
-                <CommandInput placeholder="Search currencies..." />
-                <CommandEmpty>No currency found.</CommandEmpty>
-                <CommandGroup>
-                  <CommandList>
-                    {fiatList.map((fiat) => (
-                      <CommandItem
-                        key={fiat.value}
-                        value={fiat.value}
-                        onSelect={(currentValue) => {
-                          setFiatValue(
-                            currentValue === fiatValue ? "" : currentValue
-                          );
-                          setFiatOpen(false);
-                        }}
-                      >
-                        <Check
-                          className={cn(
-                            "mr-2 h-4 w-4",
-                            fiatValue === fiat.value
-                              ? "opacity-100"
-                              : "opacity-0"
-                          )}
-                        />
-                        {fiat.label}
-                      </CommandItem>
-                    ))}
-                  </CommandList>
-                </CommandGroup>
-              </Command>
-            </PopoverContent>
-          </Popover>
+            >
+              <path d="M17 4v16m0 0l-4-4m4 4l4-4M7 20V4m0 0L3 8m4-4l4 4" />
+            </svg>
+          </div>
+          <Input
+            className="my-4 text-center text-orange-600"
+            type="number"
+            value={currencyInput}
+            onChange={(e) => currencyCalculation(e)}
+            placeholder="Fiat Amount"
+          />
+          <Selector
+            label="Select a currency"
+            items={fiatList}
+            value={fiatValue}
+            onChange={setFiatValue}
+          />
         </CardContent>
       </Card>
     </div>
