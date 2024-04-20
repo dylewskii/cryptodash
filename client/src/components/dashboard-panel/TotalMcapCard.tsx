@@ -5,13 +5,30 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useEffect, useState } from "react";
+import formatCurrency from "@/lib/formatCurrency";
 
 interface TotalMcapCardProps {
-  className?: string; // The question mark denotes that the prop is optional
+  className?: string; // optional
 }
 
 // Total Cryptocurrency Market Cap
 export default function TotalMcapCard({ className = "" }: TotalMcapCardProps) {
+  const [totalMcap, setTotalMcap] = useState("");
+
+  useEffect(() => {
+    const url = `https://api.coingecko.com/api/v3/global`;
+
+    const fetchData = async () => {
+      const res = await fetch(url);
+      const data = await res.json();
+      const total = data.data.total_market_cap.usd;
+
+      setTotalMcap(formatCurrency(total));
+    };
+
+    fetchData();
+  }, []);
   return (
     <div className={`${className}`}>
       <Card>
@@ -51,7 +68,9 @@ export default function TotalMcapCard({ className = "" }: TotalMcapCardProps) {
             </TooltipProvider>
           </CardTitle>
         </CardHeader>
-        <CardContent>TOTAL MCAP</CardContent>
+        <CardContent>
+          {totalMcap === "" ? <p>Loading...</p> : <p>{totalMcap}</p>}
+        </CardContent>
       </Card>
     </div>
   );
