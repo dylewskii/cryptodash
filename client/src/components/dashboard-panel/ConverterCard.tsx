@@ -65,7 +65,7 @@ export default function ConverterCard({ className = "" }) {
         <CardContent className="p-4 pt-0 flex flex-col justify-center">
           {/* CRYPTO SELECTOR */}
           <Selector
-            label="a coin"
+            label="Select a coin"
             items={cryptoList}
             value={cryptoValue}
             onChange={(newCryptoValue) => setCryptoValue(newCryptoValue)}
@@ -104,7 +104,7 @@ export default function ConverterCard({ className = "" }) {
           />
           {/* FIAT SELECTOR */}
           <Selector
-            label="a currency"
+            label="Select a currency"
             items={fiatList}
             value={fiatValue}
             onChange={(newFiatValue) => setFiatValue(newFiatValue)}

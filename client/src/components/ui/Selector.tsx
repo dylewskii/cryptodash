@@ -46,7 +46,7 @@ export default function Selector({
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
         <Command>
-          <CommandInput placeholder={`Search ${label.toLowerCase()}...`} />
+          <CommandInput placeholder={`${label.toLowerCase()}...`} />
           <CommandGroup>
             <CommandList>
               {items.map((item) => (
