@@ -56,7 +56,10 @@ export default function AssetList() {
     <div className="p-2">
       <ScrollArea className="h-72 w-48 rounded-md w-full">
         {cryptoList.map((coin, i) => (
-          <ul className="flex my-2 justify-between items-center no-scrollbar  ">
+          <ul
+            key={i}
+            className="flex my-2 justify-between items-center no-scrollbar  "
+          >
             <li className="flex gap-4 justify-center items-center py-4">
               <img src="./" />
               <div className="flex flex-col">
