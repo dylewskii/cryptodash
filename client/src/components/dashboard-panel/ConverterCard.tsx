@@ -4,15 +4,6 @@ import { Input } from "@/components/ui/input";
 import Selector from "../ui/Selector";
 import DataContext from "@/context/DataContext";
 
-interface PriceCacheEntry {
-  value: number;
-  timestamp: number;
-}
-
-interface PriceCache {
-  [key: string]: PriceCacheEntry;
-}
-
 const fiatList = [
   "Pound Sterling (GBP)",
   "Dollars (USD)",
@@ -22,8 +13,7 @@ const fiatList = [
 ];
 
 export default function ConverterCard({ className = "" }) {
-  const { cryptoList, loading } = useContext(DataContext);
-  const [priceCache, setPriceCache] = useState<PriceCache>({});
+  const { cryptoList, loading, getCryptoDollarValue } = useContext(DataContext);
 
   const [cryptoValue, setCryptoValue] = useState("");
   const [cryptoAmount, setCryptoAmount] = useState("");
@@ -31,41 +21,9 @@ export default function ConverterCard({ className = "" }) {
   const [fiatAmount, setFiatAmount] = useState("");
   const [fiatValue, setFiatValue] = useState("");
 
-  // fetch specified crypto $ value, use cached value if present and fresh
-  const getCryptoDollarValue = async (coinName: string): Promise<number> => {
-    const currentTime = new Date().getTime();
-    const cacheEntry = priceCache[coinName];
-
-    // check if data exists and is < 1hr old
-    if (cacheEntry && currentTime - cacheEntry.timestamp < 3600000) {
-      console.log("Using cached data for", coinName);
-      return cacheEntry.value;
-    }
-
-    try {
-      const res = await fetch(
-        `https://api.coingecko.com/api/v3/coins/${coinName.toLowerCase()}`
-      );
-      const data = await res.json();
-      const dollarValue = data.market_data.current_price.usd;
-
-      setPriceCache({
-        ...priceCache,
-        [coinName]: {
-          value: dollarValue,
-          timestamp: currentTime,
-        },
-      });
-
-      console.log("Fetched new data for", coinName);
-      return dollarValue;
-    } catch (error) {
-      console.error("Failed to fetch crypto dollar value:", error);
-      return 0;
-    }
-  };
-
-  const cryptoToFiatCalculation = async (e) => {
+  const cryptoToFiatCalculation = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const inputValue = e.target.value;
 
     if (inputValue === "") {
@@ -82,7 +40,7 @@ export default function ConverterCard({ className = "" }) {
     setFiatAmount(`${total}`);
   };
 
-  const fiatToCryptoCalculation = (e) => {
+  const fiatToCryptoCalculation = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
 
     if (inputValue === "") {
@@ -107,7 +65,7 @@ export default function ConverterCard({ className = "" }) {
         <CardContent className="p-4 pt-0 flex flex-col justify-center">
           {/* CRYPTO SELECTOR */}
           <Selector
-            label="Select a coin"
+            label="a coin"
             items={cryptoList}
             value={cryptoValue}
             onChange={(newCryptoValue) => setCryptoValue(newCryptoValue)}
@@ -146,7 +104,7 @@ export default function ConverterCard({ className = "" }) {
           />
           {/* FIAT SELECTOR */}
           <Selector
-            label="Select a currency"
+            label="a currency"
             items={fiatList}
             value={fiatValue}
             onChange={(newFiatValue) => setFiatValue(newFiatValue)}
