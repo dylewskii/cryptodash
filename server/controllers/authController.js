@@ -36,23 +36,21 @@ const loginUser = async (req, res) => {
 
     const validPassword = await bcryptjs.compare(password, user.password);
     if (!validPassword) {
-      return res.json({ msg: "Incorrect Credentials" });
+      return res.status(401).json({ msg: "Incorrect Credentials" });
     }
 
     const token = jwt.sign(
-      { id: user._id, username: user.username },
+      { id: user._id.toString(), username: user.username },
       process.env.JWT_KEY,
-      { expiresIn: "1h" },
-      (err, token) => {
-        if (err) throw err;
-        return (
-          res.cookie("token", token).json(user),
-          { httpOnly: true, maxAge: "3600000" }
-        );
-      }
+      { expiresIn: "1h" }
     );
 
-    return res.json({ status: true, msg: "login successful" });
+    res.cookie("token", token, { httpOnly: true, maxAge: 3600000 });
+    res.json({
+      status: true,
+      msg: "login successful",
+      user: { id: user._id, username: user.username },
+    });
   } catch (error) {
     return res.status(500).json({ msg: "Internal server error" });
   }
