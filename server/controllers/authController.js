@@ -39,18 +39,43 @@ const loginUser = async (req, res) => {
       return res.json({ msg: "Incorrect Credentials" });
     }
 
-    const token = jwt.sign({ username: user.username }, process.env.JWT_KEY, {
-      expiresIn: "1h",
-    });
+    const token = jwt.sign(
+      { id: user._id, username: user.username },
+      process.env.JWT_KEY,
+      { expiresIn: "1h" },
+      (err, token) => {
+        if (err) throw err;
+        return (
+          res.cookie("token", token).json(user),
+          { httpOnly: true, maxAge: "3600000" }
+        );
+      }
+    );
 
-    res.cookie("token", token), { httpOnly: true, maxAge: "3600000" };
-    return res.json({ status: true, msg: "login succesfull" });
+    return res.json({ status: true, msg: "login successful" });
   } catch (error) {
     return res.status(500).json({ msg: "Internal server error" });
+  }
+};
+
+const getProfile = (req, res) => {
+  const { token } = req.cookies;
+  if (token) {
+    jwt.verify(token, process.env.JWT_KEY, {}, (err, user) => {
+      if (err) {
+        res.status(500).json({ msg: "Failed to verify token." });
+        return;
+      }
+
+      res.json(user);
+    });
+  } else {
+    res.status(401).json(null);
   }
 };
 
 module.exports = {
   registerUser,
   loginUser,
+  getProfile,
 };
