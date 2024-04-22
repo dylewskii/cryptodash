@@ -2,7 +2,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { DataProvider } from "./context/DataContext.tsx";
 // pages
 import LoginPage from "./pages/LoginPage.tsx";
 import RegisterPage from "./pages/RegisterPage.tsx";
@@ -49,8 +48,6 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <DataProvider>
-      <RouterProvider router={router} />
-    </DataProvider>
+    <RouterProvider router={router} />
   </React.StrictMode>
 );
