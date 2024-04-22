@@ -1,6 +1,6 @@
 import { SyntheticEvent, useState } from "react";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
+import { Input } from "../components/ui/input";
+import { Button } from "../components/ui/button";
 import { useNavigate } from "react-router-dom";
 
 export default function ResetPage() {

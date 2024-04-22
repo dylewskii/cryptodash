@@ -4,9 +4,9 @@ import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { DataProvider } from "./context/DataContext.tsx";
 // pages
-import LoginPage from "./components/login-page/LoginPage.tsx";
-import RegisterPage from "./components/register-page/RegisterPage.tsx";
-import ResetPage from "./components/reset-page/ResetPage.tsx";
+import LoginPage from "./pages/LoginPage.tsx";
+import RegisterPage from "./pages/RegisterPage.tsx";
+import ResetPage from "./pages/ResetPage.tsx";
 // components
 import MainLayout from "./components/layout/MainLayout.tsx";
 import Dashboard from "./components/dashboard-panel/Dashboard.tsx";
