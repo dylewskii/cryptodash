@@ -21,12 +21,13 @@ interface Coin {
 }
 
 export default function PortfolioCard() {
-  const portfolioCoins = ["bitcoin", "ethereum", "solana", "dogecoin"];
   const [portfolio, setPortfolio] = useState<Coin[]>([]);
   const [addedCoin, setAddedCoin] = useState<string>("");
   const [isDialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
+    const portfolioCoins = ["bitcoin", "ethereum", "solana", "dogecoin"];
+
     fetchPortfolioCoinData(portfolioCoins);
   }, []);
 
@@ -162,7 +163,7 @@ export default function PortfolioCard() {
                 </p>
               </div>
             </div>
-            <Separator className="my-2" />
+            <Separator className="my-2 col-span-2" />
           </div>
         ))}
       </div>
