@@ -108,7 +108,8 @@ export default function PortfolioCard() {
               <DialogHeader>
                 <DialogTitle>Add a Coin</DialogTitle>
                 <DialogDescription>
-                  Add coins to your portfolio. Click save when you're done.
+                  Enter the coin name and amount to add it to your portfolio.
+                  Click save when you're done.
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
@@ -130,7 +131,7 @@ export default function PortfolioCard() {
                   </label>
                   <Input
                     id="coinAmount"
-                    defaultValue="1"
+                    placeholder="1"
                     className="col-span-3"
                   />
                 </div>
