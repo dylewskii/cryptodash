@@ -65,6 +65,7 @@ export default function RegisterPage() {
           failed: true,
           msg: "Registration Failed. Please Try Again.",
         });
+        return;
       }
 
       navigate("/app/home");
