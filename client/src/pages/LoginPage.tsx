@@ -1,46 +1,71 @@
-import { SyntheticEvent, useState } from "react";
+import { SyntheticEvent, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
+import UserContext from "@/context/UserContext";
 
 export default function LoginPage() {
+  const { setUser } = useContext(UserContext);
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [failedLogin, setFailedLogin] = useState(false);
+  const [loginStatus, setLoginStatus] = useState({
+    failed: false,
+    msg: "",
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
     if (!username || !password) {
-      setFailedLogin(true);
+      setLoginStatus({
+        failed: true,
+        msg: "Username and password are both required.",
+      });
+      return;
     }
 
-    fetch("http://localhost:8000/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({
-        username,
-        password,
-      }),
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        } else {
-          throw new Error("Failed to login");
-        }
-      })
-      .then(() => {
-        navigate("/app/home");
-      })
-      .catch((error) => {
-        setFailedLogin(true);
-        throw new Error(error);
+    setIsSubmitting(true);
+    try {
+      const response = await fetch("http://localhost:8000/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          username,
+          password,
+        }),
       });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setLoginStatus({
+          failed: true,
+          msg: data.msg || "Login Failed. Please Try Again.",
+        });
+        return;
+      }
+
+      console.log(data);
+
+      setUser({
+        userId: data.user.id,
+        username: data.user.username,
+      });
+
+      navigate("/app/home");
+    } catch (error) {
+      setLoginStatus({
+        failed: true,
+        msg: "Failed to Login",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -83,14 +108,14 @@ export default function LoginPage() {
             </p>
           </div>
 
-          {failedLogin && (
+          {loginStatus.failed && (
             <div className="mb-4">
-              <p className="text-red-600">Failed to login. Please try again.</p>
+              <p className="text-red-600">{loginStatus.msg}</p>
             </div>
           )}
 
           <Button type="submit" className="w-80">
-            Login
+            {isSubmitting ? "Logging in..." : "Login"}
           </Button>
         </form>
       </div>
