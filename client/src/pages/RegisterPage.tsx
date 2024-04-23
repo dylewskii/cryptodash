@@ -5,50 +5,79 @@ import { Button } from "../components/ui/button";
 
 export default function RegisterPage() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordConfirm, setPasswordConfirm] = useState("");
-  const [registrationFailed, setRegistrationFailed] = useState(false);
+  const [details, setDetails] = useState({
+    email: "",
+    username: "",
+    password: "",
+    passwordConfirm: "",
+  });
+  const [registrationStatus, setRegistrationStatus] = useState({
+    failed: false,
+    msg: "",
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
-    if (!email || !username || !password || password !== passwordConfirm) {
-      alert("Please complete all fields and ensure passwords match.");
+    // check if all fields entered
+    if (
+      !details.email ||
+      !details.username ||
+      !details.password ||
+      !details.password ||
+      !details.passwordConfirm
+    ) {
+      setRegistrationStatus({
+        failed: true,
+        msg: "Please complete all fields.",
+      });
       return;
     }
+
+    // check passwords match
+    if (details.password !== details.passwordConfirm) {
+      setRegistrationStatus({
+        failed: true,
+        msg: "Please ensure passwords match.",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
     try {
       // registration logic
-      fetch("http://localhost:8000/register", {
+      const response = await fetch("http://localhost:8000/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          username,
-          email,
-          password,
+          username: details.username,
+          email: details.email,
+          password: details.password,
         }),
-      })
-        .then((res) => {
-          if (!res.ok) {
-            setRegistrationFailed(true);
-            throw new Error("Network response was not ok");
-          }
-          console.log(res);
-          return res.json();
-        })
-        .then((data) => {
-          console.log(data);
-          navigate("/app/home");
-        })
-        .catch((error) => console.error("Error:", error));
+      });
 
-      // navigate("/app/home");
+      await response.json();
+
+      if (!response.ok) {
+        setRegistrationStatus({
+          failed: true,
+          msg: "Registration Failed. Please Try Again.",
+        });
+      }
+
+      navigate("/app/home");
     } catch (error) {
       console.error("Failed to register:", error);
-      setRegistrationFailed(true);
+      setRegistrationStatus({ failed: true, msg: "Failed to register" });
+    } finally {
+      setIsSubmitting(false);
     }
+  };
+
+  const handleChange = (name: string, value: string) => {
+    setDetails((prev) => ({ ...prev, [name]: value }));
   };
 
   return (
@@ -61,8 +90,8 @@ export default function RegisterPage() {
             <Input
               id="email"
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={details.email}
+              onChange={(e) => handleChange("email", e.target.value)}
             />
           </div>
 
@@ -71,8 +100,8 @@ export default function RegisterPage() {
             <Input
               id="username"
               type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              value={details.username}
+              onChange={(e) => handleChange("username", e.target.value)}
             />
           </div>
 
@@ -82,15 +111,15 @@ export default function RegisterPage() {
               className="mb-4"
               id="password"
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={details.password}
+              onChange={(e) => handleChange("password", e.target.value)}
             />
             <label htmlFor="passwordConfirm">Confirm Password:</label>
             <Input
               id="passwordConfirm"
               type="password"
-              value={passwordConfirm}
-              onChange={(e) => setPasswordConfirm(e.target.value)}
+              value={details.passwordConfirm}
+              onChange={(e) => handleChange("passwordConfirm", e.target.value)}
             />
           </div>
 
@@ -103,16 +132,14 @@ export default function RegisterPage() {
             </p>
           </div>
 
-          {registrationFailed && (
+          {registrationStatus.failed && (
             <div className="mb-4">
-              <p className="text-red-500">
-                Failed to register. Please try again.
-              </p>
+              <p className="text-red-500">{registrationStatus.msg}</p>
             </div>
           )}
 
-          <Button type="submit" className="w-80">
-            Register
+          <Button type="submit" className="w-80" disabled={isSubmitting}>
+            {isSubmitting ? "Registering..." : "Register"}
           </Button>
         </form>
       </div>
