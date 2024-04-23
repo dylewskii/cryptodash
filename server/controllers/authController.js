@@ -6,11 +6,24 @@ const registerUser = async (req, res) => {
   const { username, email, password } = req.body;
 
   try {
-    const user = await User.findOne({ email });
-    if (user) {
-      return res.status(400).json({ msg: "User already exists." });
+    // check all fields entered
+    if (!email || !username || !password) {
+      return res.status(400).json({ error: "All field are required" });
+    }
+    // check password length
+    if (password.length < 6) {
+      return res
+        .status(400)
+        .json({ error: "Password needs to be at least 6 characters long" });
     }
 
+    // check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ error: "User already exists." });
+    }
+
+    // hash password and save new user instance to DB
     const hashedPassword = await bcryptjs.hash(password, 10);
     const newUser = new User({
       username,
@@ -20,9 +33,9 @@ const registerUser = async (req, res) => {
 
     await newUser.save();
     return res.json({ msg: "User Registered Succesfully" });
-  } catch (error) {
-    console.error("Server error:", error);
-    return res.status(500).json({ msg: "Internal server error" });
+  } catch (err) {
+    console.error("Server error:", err);
+    return res.status(500).json({ error: "Internal server error" });
   }
 };
 
