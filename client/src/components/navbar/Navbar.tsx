@@ -20,7 +20,9 @@ export default function Navbar() {
     <header className="flex justify-between items-center my-4 mx-8">
       <div>
         <p className="text-2xl">CryptoDash</p>
-        <p>Welcome {user.username ? user.username : "mate"}</p>
+        <p className="text-xs text-orange-600">
+          Welcome {`@${user.username}` || "back!"}
+        </p>
       </div>
       <nav className="flex gap-4 items-center">
         <div className="controls">
