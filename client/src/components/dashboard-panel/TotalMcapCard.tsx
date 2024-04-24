@@ -12,23 +12,31 @@ interface TotalMcapCardProps {
   className?: string; // optional
 }
 
-// Total Cryptocurrency Market Cap
 export default function TotalMcapCard({ className = "" }: TotalMcapCardProps) {
   const [totalMcap, setTotalMcap] = useState("");
 
+  // useEffect(() => {
+  //   const url = `https://api.coingecko.com/api/v3/global`;
+
+  //   const fetchData = async () => {
+  //     const res = await fetch(url);
+  //     const data = await res.json();
+  //     const total = data.data.total_market_cap.usd;
+
+  //     setTotalMcap(formatCurrency(url));
+  //   };
+
+  //   fetchData();
+  // }, []);
+
   useEffect(() => {
-    const url = `https://api.coingecko.com/api/v3/global`;
-
-    const fetchData = async () => {
-      const res = await fetch(url);
-      const data = await res.json();
-      const total = data.data.total_market_cap.usd;
-
-      setTotalMcap(formatCurrency(total));
+    const fetchData = () => {
+      const url2 = 100000000000000;
+      setTotalMcap(formatCurrency(url2));
     };
-
     fetchData();
   }, []);
+
   return (
     <div className={`${className}`}>
       <Card>

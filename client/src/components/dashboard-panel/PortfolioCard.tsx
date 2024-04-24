@@ -56,7 +56,7 @@ export default function PortfolioCard() {
           (result) => result !== null
         ) as Coin[]; // filter out any nulls & assert type Coin[]
         setPortfolio(filteredResults);
-        console.log(results);
+        // console.log(results);
       })
       .catch((error) => console.error("Error with Promise.all:", error));
   };

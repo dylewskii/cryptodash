@@ -12,7 +12,7 @@ import UserContext from "@/context/UserContext";
 
 export default function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(true);
-  const { user, setUser } = useContext(UserContext);
+  const { user } = useContext(UserContext);
 
   console.log(user);
 
@@ -20,7 +20,7 @@ export default function Navbar() {
     <header className="flex justify-between items-center my-4 mx-8">
       <div>
         <p className="text-2xl">CryptoDash</p>
-        <p>Welcome {user.username}</p>
+        <p>Welcome {user.username ? user.username : "mate"}</p>
       </div>
       <nav className="flex gap-4 items-center">
         <div className="controls">
