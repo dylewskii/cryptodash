@@ -93,7 +93,7 @@ export default function LoginPage() {
             <div className="flex items-center gap-2">
               <Input
                 id="password"
-                type={passwordHidden ? "text" : "password"}
+                type={passwordHidden ? "password" : "text"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />

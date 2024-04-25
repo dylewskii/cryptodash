@@ -116,7 +116,7 @@ export default function RegisterPage() {
             <Input
               className="mb-4"
               id="password"
-              type={passwordHidden ? "text" : "password"}
+              type={passwordHidden ? "password" : "text"}
               value={details.password}
               onChange={(e) => handleChange("password", e.target.value)}
             />
@@ -125,7 +125,7 @@ export default function RegisterPage() {
             <div className="flex items-center gap-2">
               <Input
                 id="passwordConfirm"
-                type={passwordHidden ? "text" : "password"}
+                type={passwordHidden ? "password" : "text"}
                 value={details.passwordConfirm}
                 onChange={(e) =>
                   handleChange("passwordConfirm", e.target.value)
