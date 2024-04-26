@@ -1,8 +1,11 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const session = require("express-session");
+const mongoose = require("mongoose");
 const authRouter = require("./routes/auth");
+const passport = require("passport");
+require("./strategies/passportLocal");
 require("dotenv").config();
 
 // app
@@ -17,13 +20,23 @@ mongoose
 
 // middleware
 app.use(express.json());
+app.use(cookieParser());
 app.use(
   cors({
     origin: ["http://localhost:5173"],
     credentials: true,
   })
 );
-app.use(cookieParser());
+app.use(
+  session({
+    secret: "secret",
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false }, // true - only appropriate if using HTTPS
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
 
 // routes
 app.use("/", authRouter);
