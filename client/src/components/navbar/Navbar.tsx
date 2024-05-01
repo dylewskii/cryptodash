@@ -9,17 +9,30 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useContext } from "react";
 import UserContext from "@/context/UserContext";
-import { Link } from "react-router-dom";
 
 export default function Navbar() {
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
+
+  const logoutUser = async () => {
+    const response = await fetch("http://localhost:8000/logout");
+    const data = await response.json();
+
+    // reset user state
+    setUser({
+      userId: "",
+      username: "",
+    });
+
+    console.log(data);
+    return;
+  };
 
   return (
     <header className="flex justify-between items-center my-4 mx-8">
       <div>
         <p className="text-2xl">CryptoDash</p>
         <p className="text-xs text-orange-600">
-          Welcome {`@${user.username}` || "back!"}
+          Welcome {user.username === "" ? "back!" : `@${user.username}`}
         </p>
       </div>
       <nav className="flex gap-4 items-center">
@@ -92,24 +105,25 @@ export default function Navbar() {
                 Settings
               </DropdownMenuItem>
 
-              <DropdownMenuItem className="flex cursor-pointer">
-                <Link to="http://localhost:8000/logout" className="flex">
-                  <svg
-                    className="w-4 h-4 mr-2"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M16 17L21 12M21 12L16 7M21 12H9M9 3H7.8C6.11984 3 5.27976 3 4.63803 3.32698C4.07354 3.6146 3.6146 4.07354 3.32698 4.63803C3 5.27976 3 6.11984 3 7.8V16.2C3 17.8802 3 18.7202 3.32698 19.362C3.6146 19.9265 4.07354 20.3854 4.63803 20.673C5.27976 21 6.11984 21 7.8 21H9"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  Logout
-                </Link>
+              <DropdownMenuItem
+                className="flex cursor-pointer"
+                onClick={logoutUser}
+              >
+                <svg
+                  className="w-4 h-4 mr-2"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M16 17L21 12M21 12L16 7M21 12H9M9 3H7.8C6.11984 3 5.27976 3 4.63803 3.32698C4.07354 3.6146 3.6146 4.07354 3.32698 4.63803C3 5.27976 3 6.11984 3 7.8V16.2C3 17.8802 3 18.7202 3.32698 19.362C3.6146 19.9265 4.07354 20.3854 4.63803 20.673C5.27976 21 6.11984 21 7.8 21H9"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                Logout
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
