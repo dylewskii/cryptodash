@@ -9,13 +9,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useContext } from "react";
 import UserContext from "@/context/UserContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
   const { user, setUser } = useContext(UserContext);
+  const navigate = useNavigate();
 
-  const logoutUser = async () => {
-    const response = await fetch("http://localhost:8000/logout");
-    const data = await response.json();
+  const logoutUser = () => {
+    // invalidate cookie
+    document.cookie = "token=; Max-Age=-99999999;";
 
     // reset user state
     setUser({
@@ -23,7 +25,8 @@ export default function Navbar() {
       username: "",
     });
 
-    console.log(data);
+    // redirect
+    navigate("/login");
     return;
   };
 
