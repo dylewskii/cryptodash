@@ -1,10 +1,12 @@
-import { SyntheticEvent, useState } from "react";
+import { SyntheticEvent, useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
+import UserContext from "@/context/UserContext";
 
 export default function RegisterPage() {
   const navigate = useNavigate();
+  const { setUser } = useContext(UserContext);
   const [details, setDetails] = useState({
     email: "",
     username: "",
@@ -39,6 +41,15 @@ export default function RegisterPage() {
       return;
     }
 
+    // check password is not less than 6 characters
+    if (details.password.length < 6) {
+      setRegistrationStatus({
+        failed: true,
+        msg: "Please ensure password is 6 characters or more.",
+      });
+      return;
+    }
+
     // check passwords match
     if (details.password !== details.passwordConfirm) {
       setRegistrationStatus({
@@ -60,10 +71,9 @@ export default function RegisterPage() {
           username: details.username,
           email: details.email,
           password: details.password,
+          passwordConfirm: details.passwordConfirm,
         }),
       });
-
-      await response.json();
 
       if (!response.ok) {
         setRegistrationStatus({
@@ -72,6 +82,17 @@ export default function RegisterPage() {
         });
         return;
       }
+
+      const data = await response.json();
+
+      console.log("-----------------");
+      console.log(data);
+      console.log("-----------------");
+
+      setUser({
+        userId: data.user.id,
+        username: data.user.username,
+      });
 
       navigate("/app/home");
     } catch (error) {
