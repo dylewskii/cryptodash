@@ -57,6 +57,16 @@ export default function LoginPage() {
 
       console.log(data);
 
+      if (data.token) {
+        sessionStorage.setItem("token", data.token);
+        setUser({
+          userId: data.user.id,
+          username: data.user.username,
+        });
+      } else {
+        console.log("token not provided");
+      }
+
       setUser({
         userId: data.user.id,
         username: data.user.username,
