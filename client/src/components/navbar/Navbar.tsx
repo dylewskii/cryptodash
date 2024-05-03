@@ -15,9 +15,15 @@ export default function Navbar() {
   const { user, setUser } = useContext(UserContext);
   const navigate = useNavigate();
 
-  const logoutUser = () => {
-    // invalidate cookie
-    document.cookie = "token=; Max-Age=-99999999;";
+  const logoutUser = async () => {
+    // invalidate cookie server-side
+    const response = await fetch("http://localhost:8000/logout", {
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      console.error("Unable to logout");
+    }
 
     // reset user state
     setUser({
