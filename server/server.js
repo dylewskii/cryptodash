@@ -1,11 +1,10 @@
 const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
-const session = require("express-session");
 const mongoose = require("mongoose");
 const authRouter = require("./routes/auth");
 const passport = require("passport");
-require("./strategies/passportLocal");
+require("./strategies/passportJwt");
 require("dotenv").config();
 
 // app
@@ -24,19 +23,10 @@ app.use(cookieParser());
 app.use(
   cors({
     origin: ["http://localhost:5173"],
-    credentials: true,
-  })
-);
-app.use(
-  session({
-    secret: "secret",
-    resave: false,
-    saveUninitialized: false,
-    cookie: { secure: false }, // true - only appropriate if using HTTPS
+    credentials: true, // allows sending of cookies & authorization headers with CORS
   })
 );
 app.use(passport.initialize());
-app.use(passport.session());
 
 // routes
 app.use("/", authRouter);
