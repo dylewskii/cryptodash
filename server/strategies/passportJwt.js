@@ -1,11 +1,8 @@
 const passport = require("passport");
 const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
-const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 require("dotenv").config();
-
-const opts = {};
 
 const options = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
