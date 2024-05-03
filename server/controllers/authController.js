@@ -1,20 +1,28 @@
 const bcryptjs = require("bcryptjs");
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
+// POST /register
 const registerUser = async (req, res) => {
-  const { username, email, password } = req.body;
+  const { username, email, password, passwordConfirm } = req.body;
 
   try {
     // check all fields entered
     if (!email || !username || !password) {
       return res.status(400).json({ error: "All field are required" });
     }
-    // check password is longer than 6 characters
+
+    // check password is not less than 6 characters
     if (password.length < 6) {
       return res
         .status(400)
         .json({ error: "Password needs to be at least 6 characters long" });
+    }
+
+    // check if passwords match
+    if (password !== passwordConfirm) {
+      return res.status(400).json({ error: "Passwords do not match" });
     }
 
     // check if user already exists
@@ -32,13 +40,28 @@ const registerUser = async (req, res) => {
     });
 
     await newUser.save();
-    return res.json({ msg: "User Registered Succesfully" });
+
+    // gen JWT token for the new user
+    const token = jwt.sign(
+      { id: newUser._id.toString(), username: newUser.username },
+      process.env.JWT_KEY,
+      { expiresIn: "1h" }
+    );
+
+    res.cookie("token", token, { httpOnly: true, maxAge: 3600000 });
+
+    res.json({
+      msg: "User Registered Successfully",
+      token: "Bearer " + token,
+      user: { id: newUser._id, username: newUser.username },
+    });
   } catch (err) {
     console.error("Server error:", err);
     return res.status(500).json({ error: "Internal server error" });
   }
 };
 
+// POST /login
 const loginUser = async (req, res) => {
   const { username, password } = req.body;
   try {
@@ -64,8 +87,9 @@ const loginUser = async (req, res) => {
     // add token to cookie
     res.cookie("token", token, { httpOnly: true, maxAge: 3600000 });
     res.json({
-      status: true,
+      success: true,
       msg: "login successful",
+      token: "Bearer " + token,
       user: { id: user._id, username: user.username },
     });
   } catch (error) {
@@ -73,30 +97,21 @@ const loginUser = async (req, res) => {
   }
 };
 
+// GET /logout
 const logoutUser = (req, res) => {
-  const { token } = req.cookies;
-  // check if token exists (ie - logged in)
-  if (!token) return res.json({ msg: "User not logged in" });
-
-  // replace token
-  res.cookie("token", "", { expires: new Date(0) });
-  res.status(200).json({ msg: "User has been logged out" });
-  res.redirect("http://localhost:5173/login");
+  res.json({ msg: "JWT token must be deleted client-side to log out." });
 };
 
+// GET /profile
 const getProfile = (req, res) => {
-  const { token } = req.cookies;
-  if (token) {
-    jwt.verify(token, process.env.JWT_KEY, {}, (err, user) => {
-      if (err) {
-        res.status(500).json({ msg: "Failed to verify token." });
-        return;
-      }
-
-      res.json(user);
+  if (req.user) {
+    res.json({
+      id: req.user._id,
+      username: req.user.username,
+      email: req.user.email,
     });
   } else {
-    res.status(401).json(null);
+    res.status(401).json({ msg: "User not authenticated" });
   }
 };
 
