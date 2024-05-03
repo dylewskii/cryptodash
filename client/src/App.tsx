@@ -16,6 +16,7 @@ import { UserProvider } from "./context/UserContext";
 import { DataProvider } from "./context/DataContext";
 // css
 import "./globals.css";
+import ProtectedRoutes from "./lib/ProtectedRoutes.tsx";
 
 const router = createBrowserRouter([
   {
@@ -36,7 +37,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/app",
-    element: <MainLayout />,
+    element: (
+      <ProtectedRoutes>
+        <MainLayout />
+      </ProtectedRoutes>
+    ),
     children: [
       { path: "home", element: <Dashboard /> },
       { path: "assets", element: <AssetsPanel /> },
