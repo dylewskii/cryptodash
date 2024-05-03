@@ -48,6 +48,9 @@ const registerUser = async (req, res) => {
       { expiresIn: "1h" }
     );
 
+    newUser.token = token;
+    await newUser.save();
+
     res.cookie("token", token, { httpOnly: true, maxAge: 3600000 });
 
     res.json({
@@ -99,7 +102,14 @@ const loginUser = async (req, res) => {
 
 // GET /logout
 const logoutUser = (req, res) => {
-  res.json({ msg: "JWT token must be deleted client-side to log out." });
+  // check if token cookie exists - i.e user logged in
+  if (!req.cookies["token"]) {
+    return res.status(403).json({ msg: "User not logged in." });
+  }
+
+  // invalidate cookie - set expiration to past date
+  res.cookie("token", "", { httpOnly: true, expires: new Date(0) });
+  res.status(200).json({ msg: "Logged out successfully" });
 };
 
 // GET /profile
