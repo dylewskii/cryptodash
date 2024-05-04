@@ -4,6 +4,9 @@ const Coin = require("../models/Coin");
 const coinsController = require("../controllers/coinsController");
 
 // GET -> all coins
-router.get("/", coinsController.getAllCoins);
+router.get("/all", coinsController.getAllCoins);
+
+// POST -> add a coin
+router.post("/add", coinsController.addCoin);
 
 module.exports = router;
