@@ -22,6 +22,14 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    coins: [
+      {
+        coin: {
+          type: Schema.Types.ObjectId,
+          ref: "Coin",
+        },
+      },
+    ],
   },
   {
     timestamps: true,
