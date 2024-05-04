@@ -11,5 +11,5 @@ export default function ProtectedRoutes({
 }: ProtectedRoutesProps): JSX.Element {
   const { user } = useContext(UserContext);
 
-  return user ? <>{children}</> : <Navigate to="/login" replace />;
+  return user.userId ? <>{children}</> : <Navigate to="/login" replace />;
 }
