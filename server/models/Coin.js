@@ -22,7 +22,6 @@ const CoinSchema = new mongoose.Schema(
     purchasePrice: {
       type: Number,
       min: 0,
-      required: true,
     },
     addedAt: {
       type: Date,
