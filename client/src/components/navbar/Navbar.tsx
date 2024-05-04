@@ -29,6 +29,7 @@ export default function Navbar() {
     setUser({
       userId: "",
       username: "",
+      isAuthenticated: false,
     });
 
     // redirect
