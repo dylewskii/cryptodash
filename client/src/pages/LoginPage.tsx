@@ -55,21 +55,10 @@ export default function LoginPage() {
         return;
       }
 
-      console.log(data);
-
-      if (data.token) {
-        sessionStorage.setItem("token", data.token);
-        setUser({
-          userId: data.user.id,
-          username: data.user.username,
-        });
-      } else {
-        console.log("token not provided");
-      }
-
       setUser({
         userId: data.user.id,
         username: data.user.username,
+        isAuthenticated: true,
       });
 
       navigate("/app/home");
