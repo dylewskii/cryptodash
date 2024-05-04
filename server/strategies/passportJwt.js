@@ -5,15 +5,14 @@ const User = require("../models/User");
 require("dotenv").config();
 
 const cookieExtractor = function (req) {
-  let token = null;
-  if (req && req.cookies) {
-    token = req.cookies["token"];
-  }
-  return token;
+  return req && req.cookies ? req.cookies["token"] : null;
 };
 
 const options = {
-  jwtFromRequest: cookieExtractor,
+  jwtFromRequest: ExtractJwt.fromExtractors([
+    cookieExtractor, // attempt to get token from cookie
+    ExtractJwt.fromAuthHeaderAsBearerToken(), // if no cookie, check the Authorization header
+  ]),
   secretOrKey: process.env.JWT_KEY,
 };
 
