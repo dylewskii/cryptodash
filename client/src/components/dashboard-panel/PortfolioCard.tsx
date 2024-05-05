@@ -1,3 +1,4 @@
+// ui
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
@@ -11,8 +12,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+// react
 import { useEffect, useState } from "react";
 
+// types
 interface Coin {
   name: string;
   symbol: string;
@@ -20,10 +23,17 @@ interface Coin {
   currentPrice: number;
 }
 
+interface CoinData {
+  name: string;
+  amount: string;
+}
+
 export default function PortfolioCard() {
   const [portfolio, setPortfolio] = useState<Coin[]>([]);
   const [addedCoin, setAddedCoin] = useState<string>("");
-  const [isDialogOpen, setDialogOpen] = useState(false);
+  const [addedAmount, setAddedAmount] = useState<string>("");
+  const [error, setError] = useState<string>("");
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
     const portfolioCoins = ["bitcoin", "ethereum", "solana", "dogecoin"];
@@ -56,38 +66,89 @@ export default function PortfolioCard() {
           (result) => result !== null
         ) as Coin[]; // filter out any nulls & assert type Coin[]
         setPortfolio(filteredResults);
-        // console.log(results);
       })
       .catch((error) => console.error("Error with Promise.all:", error));
   };
 
-  const addCoinToPortfolio = async () => {
-    if (!addedCoin) return;
+  const sendAddCoinPostReq = async (coinData: CoinData): Promise<void> => {
+    const url = `http://localhost:8000/coins/add`;
+    console.log(coinData);
 
-    const url = `https://api.coingecko.com/api/v3/coins/${addedCoin.toLowerCase()}`;
     try {
-      const response = await fetch(url);
-      const data = await response.json();
-      const newCoin = {
-        name: data.name,
-        symbol: data.symbol,
-        image: data.image.thumb,
-        currentPrice: data.market_data.current_price.usd,
-      };
-      setPortfolio((prevState) => [...prevState, newCoin]);
+      const res = await fetch(url, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(coinData),
+      });
+
+      if (!res.ok) {
+        throw new Error(`HTTP error. status: ${res.status}`);
+      }
+
+      const jsonData = await res.json();
+
+      if (!jsonData.success) {
+        setError("Coin could not be added. Please try again.");
+        return;
+      }
+
+      console.log("coin added");
+      // -- IMPLEMENT TOAST FEEDBACK HERE --
       setDialogOpen(false);
-      console.log(`${newCoin.name} has been added`);
     } catch (error) {
-      console.error("Error fetching data for new coin:", error);
+      console.error(`Failed to add coin`, error);
     }
   };
+
+  const addCoin = async () => {
+    // check if coin name & amount have been added
+    if (!addedCoin || !addedAmount) {
+      setError("Please enter a valid coin name and amount");
+      return;
+    }
+
+    sendAddCoinPostReq({
+      name: addedCoin,
+      amount: addedAmount,
+    });
+  };
+
+  // const addCoinToPortfolio = async () => {
+  //   if (!addedCoin) return;
+
+  //   const url = `https://api.coingecko.com/api/v3/coins/${addedCoin.toLowerCase()}`;
+  //   try {
+  //     const response = await fetch(url);
+  //     const data = await response.json();
+  //     const newCoin = {
+  //       name: data.name,
+  //       symbol: data.symbol,
+  //       image: data.image.thumb,
+  //       currentPrice: data.market_data.current_price.usd,
+  //     };
+  //     setPortfolio((prevState) => [...prevState, newCoin]);
+  //     setDialogOpen(false);
+  //     console.log(`${newCoin.name} has been added`);
+  //   } catch (error) {
+  //     console.error("Error fetching data for new coin:", error);
+  //   }
+  // };
 
   return (
     <ScrollArea className="rounded-md border">
       <div className="p-4">
         <div className="flex justify-between mb-6">
           <h4 className="text-lg font-medium leading-none">Portfolio</h4>
-          <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
+          <Dialog
+            open={dialogOpen}
+            onOpenChange={() => {
+              setDialogOpen(!dialogOpen);
+              setError("");
+            }}
+          >
             <DialogTrigger>
               <svg
                 className="w-6 h-6"
@@ -114,30 +175,35 @@ export default function PortfolioCard() {
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="grid grid-cols-4 items-center gap-4">
-                  <label htmlFor="coinName" className="text-right">
+                  <label htmlFor="coinName" className="text-left">
                     Coin
                   </label>
                   <Input
                     id="coinName"
-                    placeholder="Bitcoin"
+                    type="text"
+                    placeholder="Enter a coin name"
                     value={addedCoin}
                     onChange={(e) => setAddedCoin(e.target.value)}
                     className="col-span-3"
                   />
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
-                  <label htmlFor="coinAmount" className="text-right">
+                  <label htmlFor="coinAmount" className="text-left">
                     Amount
                   </label>
                   <Input
                     id="coinAmount"
-                    placeholder="1"
+                    type="number"
+                    placeholder="Enter an amount"
+                    value={addedAmount}
+                    onChange={(e) => setAddedAmount(e.target.value)}
                     className="col-span-3"
                   />
                 </div>
               </div>
+              <div className="text-red-600">{error}</div>
               <DialogFooter>
-                <Button type="submit" onClick={addCoinToPortfolio}>
+                <Button type="submit" onClick={addCoin}>
                   Save
                 </Button>
               </DialogFooter>
