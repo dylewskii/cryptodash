@@ -28,7 +28,19 @@ const addCoin = async (req, res) => {
 
   try {
     const user = await User.findById(userId);
-    console.log(user);
+
+    const coinAlreadyAddedToPortfolio = user.portfolio.some((coin) => {
+      return name === coin.name;
+    });
+
+    if (coinAlreadyAddedToPortfolio) {
+      console.log("Coin already exists within portfolio.");
+      return res.status(409).json({
+        success: false,
+        msg: "Coin already exists within portfolio.",
+      });
+    }
+
     if (!user) {
       return res.status(404).json({ success: false, msg: "User not found" });
     }
