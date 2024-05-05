@@ -22,12 +22,11 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
-    coins: [
+    portfolio: [
       {
-        coin: {
-          type: Schema.Types.ObjectId,
-          ref: "Coin",
-        },
+        name: { type: String, required: true, trim: true },
+        amount: { type: Number, required: true },
+        addedAt: { type: Date, default: Date.now },
       },
     ],
   },
