@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dialog";
 // react
 import { useEffect, useState } from "react";
+import { useToast } from "../ui/use-toast";
 
 // types
 interface Coin {
@@ -34,6 +35,7 @@ export default function PortfolioCard() {
   const [addedAmount, setAddedAmount] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [dialogOpen, setDialogOpen] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     const portfolioCoins = ["bitcoin", "ethereum", "solana", "dogecoin"];
@@ -72,7 +74,6 @@ export default function PortfolioCard() {
 
   const sendAddCoinPostReq = async (coinData: CoinData): Promise<void> => {
     const url = `http://localhost:8000/coins/add`;
-    console.log(coinData);
 
     try {
       const res = await fetch(url, {
@@ -95,8 +96,10 @@ export default function PortfolioCard() {
         return;
       }
 
-      console.log("coin added");
-      // -- IMPLEMENT TOAST FEEDBACK HERE --
+      toast({
+        title: `${coinData.name} has been added`,
+        description: `Amount: ${coinData.amount}`,
+      });
       setDialogOpen(false);
     } catch (error) {
       console.error(`Failed to add coin`, error);
