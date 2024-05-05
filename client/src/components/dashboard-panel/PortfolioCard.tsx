@@ -101,6 +101,8 @@ export default function PortfolioCard() {
         description: `Amount: ${coinData.amount}`,
       });
       setDialogOpen(false);
+      setAddedCoin("");
+      setAddedAmount("");
     } catch (error) {
       console.error(`Failed to add coin`, error);
     }
