@@ -1,12 +1,27 @@
 const User = require("../models/User");
 
-// const getAllCoins = async (req, res) => {
-//   try {
-//     res.json({success: true, msg: "Here is a list of all your coins"});
-//   } catch (err) {
-//     res.status(500).json({ message: err.message });
-//   }
-// };
+const getPortfolio = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, msg: "User not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      msg:
+        user.portfolio.length > 0
+          ? "Portfolio retrieved succesfully"
+          : "Portfolio is empty",
+      data: user.portfolio,
+    });
+  } catch (err) {
+    console.error("Failed to retrieve portfolio:", err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
 
 const addCoin = async (req, res) => {
   const { name, amount } = req.body;
@@ -63,6 +78,6 @@ const addCoin = async (req, res) => {
 };
 
 module.exports = {
-  // getAllCoins,
+  getPortfolio,
   addCoin,
 };
