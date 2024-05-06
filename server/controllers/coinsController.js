@@ -13,7 +13,7 @@ const getPortfolio = async (req, res) => {
       success: true,
       msg:
         user.portfolio.length > 0
-          ? "Portfolio retrieved succesfully"
+          ? "Portfolio retrieved successfully"
           : "Portfolio is empty",
       data: user.portfolio,
     });
