@@ -15,6 +15,11 @@ import {
 // react
 import { useEffect, useState } from "react";
 import { useToast } from "../ui/use-toast";
+// utils
+import {
+  fetchPortfolioCoinData,
+  sendAddCoinPostReq,
+} from "@/lib/portfolioUtils";
 
 // types
 interface Coin {
@@ -22,11 +27,6 @@ interface Coin {
   symbol: string;
   image: string;
   currentPrice: number;
-}
-
-interface CoinData {
-  name: string;
-  amount: string;
 }
 
 export default function PortfolioCard() {
@@ -40,73 +40,12 @@ export default function PortfolioCard() {
   useEffect(() => {
     const portfolioCoins = ["bitcoin", "ethereum", "solana", "dogecoin"];
 
-    fetchPortfolioCoinData(portfolioCoins);
+    fetchPortfolioCoinData(portfolioCoins)
+      .then((data) => setPortfolio(data))
+      .catch((error) => {
+        console.error("Failed to load portfolio data:", error);
+      });
   }, []);
-
-  const fetchPortfolioCoinData = async (coins: string[]) => {
-    const requests = coins.map((coin) => {
-      const url = `https://api.coingecko.com/api/v3/coins/${coin}`;
-      return fetch(url)
-        .then((res) => res.json())
-        .then((data) => {
-          return {
-            name: data.name,
-            symbol: data.symbol,
-            image: data.image.small,
-            currentPrice: data.market_data.current_price.usd,
-          };
-        })
-        .catch((error) => {
-          console.error("Error fetching portfolio data:", error);
-          return null;
-        });
-    });
-
-    Promise.all(requests)
-      .then((results) => {
-        const filteredResults = results.filter(
-          (result) => result !== null
-        ) as Coin[]; // filter out any nulls & assert type Coin[]
-        setPortfolio(filteredResults);
-      })
-      .catch((error) => console.error("Error with Promise.all:", error));
-  };
-
-  const sendAddCoinPostReq = async (coinData: CoinData): Promise<void> => {
-    const url = `http://localhost:8000/coins/add`;
-
-    try {
-      const res = await fetch(url, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(coinData),
-      });
-
-      if (!res.ok) {
-        throw new Error(`HTTP error. status: ${res.status}`);
-      }
-
-      const jsonData = await res.json();
-
-      if (!jsonData.success) {
-        setError("Coin could not be added. Please try again.");
-        return;
-      }
-
-      toast({
-        title: `${coinData.name} has been added`,
-        description: `Amount: ${coinData.amount}`,
-      });
-      setDialogOpen(false);
-      setAddedCoin("");
-      setAddedAmount("");
-    } catch (error) {
-      console.error(`Failed to add coin`, error);
-    }
-  };
 
   const addCoin = async () => {
     // check if coin name & amount have been added
@@ -118,29 +57,25 @@ export default function PortfolioCard() {
     sendAddCoinPostReq({
       name: addedCoin,
       amount: addedAmount,
-    });
+    })
+      .then((res) => {
+        if (res.success) {
+          toast({
+            title: `${res.coinData.name} has been added`,
+            description: `Amount: ${res.coinData.amount}`,
+          });
+          setDialogOpen(false);
+          setAddedCoin("");
+          setAddedAmount("");
+        } else {
+          setError("Failed to add coin");
+        }
+      })
+      .catch((error) => {
+        console.error(`Error while adding coin: ${error}`);
+        setError("Error adding coin");
+      });
   };
-
-  // const addCoinToPortfolio = async () => {
-  //   if (!addedCoin) return;
-
-  //   const url = `https://api.coingecko.com/api/v3/coins/${addedCoin.toLowerCase()}`;
-  //   try {
-  //     const response = await fetch(url);
-  //     const data = await response.json();
-  //     const newCoin = {
-  //       name: data.name,
-  //       symbol: data.symbol,
-  //       image: data.image.thumb,
-  //       currentPrice: data.market_data.current_price.usd,
-  //     };
-  //     setPortfolio((prevState) => [...prevState, newCoin]);
-  //     setDialogOpen(false);
-  //     console.log(`${newCoin.name} has been added`);
-  //   } catch (error) {
-  //     console.error("Error fetching data for new coin:", error);
-  //   }
-  // };
 
   return (
     <ScrollArea className="rounded-md border">
