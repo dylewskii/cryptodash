@@ -5,6 +5,13 @@ interface Coin {
   currentPrice: number;
 }
 
+interface CoinDB {
+  name: string;
+  amount: number;
+  _id: string;
+  addedAt: string;
+}
+
 interface CoinData {
   name: string;
   amount: string;
@@ -19,6 +26,13 @@ interface CoinResponse {
   };
 }
 
+/** -----------------------------------------------------------------------------------------------
+ * Sends GET request to CoinGecko for each coin found in the provided array argument.
+ * Handles API failures by returning null for failed requests and filtering out null values from the final result.
+ *
+ * @param coins String array of coins names to fetch details for.
+ * @returns Promise resolving to an array of Coin objects with details from CoinGecko.
+ */
 export const fetchPortfolioCoinData = async (coins: string[]) => {
   const requests = coins.map((coin) => {
     const url = `https://api.coingecko.com/api/v3/coins/${coin}`;
@@ -26,11 +40,12 @@ export const fetchPortfolioCoinData = async (coins: string[]) => {
     return fetch(url)
       .then((res) => res.json())
       .then((data) => {
+        console.log(data);
         return {
           name: data.name,
           symbol: data.symbol,
-          image: data.image.small,
-          currentPrice: data.market_data.current_price.usd,
+          image: data.image?.small,
+          currentPrice: data?.market_data.current_price.usd,
         };
       })
       .catch((error) => {
@@ -53,6 +68,12 @@ export const fetchPortfolioCoinData = async (coins: string[]) => {
     });
 };
 
+/** -----------------------------------------------------------------------------------------------
+ * Sends a POST request to /add endpoint - returns Promise confirming whether coin was added to DB
+ *
+ * @param coinData data of the coin to add (name and amount).
+ * @returns Promise resolving to the response from the server confirming if successful.
+ */
 export const sendAddCoinPostReq = async (
   coinData: CoinData
 ): Promise<CoinResponse> => {
@@ -84,7 +105,30 @@ export const sendAddCoinPostReq = async (
   }
 };
 
-export const fetchUserPortfolioList = async () => {};
+/** -----------------------------------------------------------------------------------------------
+ * Retrieves the list of coins in the user's portfolio from the /portfolio server endpoint.
+ * Only the names of the coins are returned.
+ *
+ * @returns Promise resolving to an array of coin names from the user's portfolio.
+ */
+export const fetchPortfolioList = async () => {
+  try {
+    const url = `http://localhost:8000/coins/portfolio`;
+    const res = await fetch(url, {
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const resData = await res.json();
+    const portfolioList = resData.data.map((coin: CoinDB) => coin.name);
+    return portfolioList;
+  } catch (error) {
+    console.error(`Failed to fetch portolio list`, error);
+    throw Error;
+  }
+};
 
 // const addCoinToPortfolio = async () => {
 //   if (!addedCoin) return;
