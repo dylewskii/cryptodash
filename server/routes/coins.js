@@ -4,7 +4,11 @@ const passport = require("passport");
 const coinsController = require("../controllers/coinsController");
 
 // GET -> all coins
-// router.get("/all", coinsController.getAllCoins);
+router.get(
+  "/portfolio",
+  passport.authenticate("jwt", { session: false }),
+  coinsController.getPortfolio
+);
 
 // POST -> add a coin
 router.post(
