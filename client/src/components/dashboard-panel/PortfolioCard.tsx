@@ -18,6 +18,7 @@ import { useToast } from "../ui/use-toast";
 // utils
 import {
   fetchPortfolioCoinData,
+  fetchPortfolioList,
   sendAddCoinPostReq,
 } from "@/lib/portfolioUtils";
 
@@ -30,20 +31,34 @@ interface Coin {
 }
 
 export default function PortfolioCard() {
+  // array of objects containing info on each coin
   const [portfolio, setPortfolio] = useState<Coin[]>([]);
+  // add coin name & amount
   const [addedCoin, setAddedCoin] = useState<string>("");
   const [addedAmount, setAddedAmount] = useState<string>("");
+  // misc
   const [error, setError] = useState<string>("");
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const { toast } = useToast();
 
   useEffect(() => {
-    const portfolioCoins = ["bitcoin", "ethereum", "solana", "dogecoin"];
+    //   setPortfolioCoins(["bitcoin", "ethereum", "solana", "binancecoin"]);
+    setLoading(true);
 
-    fetchPortfolioCoinData(portfolioCoins)
-      .then((data) => setPortfolio(data))
-      .catch((error) => {
-        console.error("Failed to load portfolio data:", error);
+    // fetch string array of every coin held by user in DB
+    fetchPortfolioList()
+      .then((portfolioList) => {
+        return fetchPortfolioCoinData(portfolioList); // fetch detailed data for each coin
+      })
+      .then((detailedCoins) => {
+        setPortfolio(detailedCoins);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Failed to load data:", err);
+        setError("Failed to load data");
+        setLoading(false);
       });
   }, []);
 
@@ -71,11 +86,15 @@ export default function PortfolioCard() {
           setError("Failed to add coin");
         }
       })
-      .catch((error) => {
-        console.error(`Error while adding coin: ${error}`);
+      .catch((err) => {
+        console.error(`Error while adding coin: ${err}`);
         setError("Error adding coin");
       });
   };
+
+  if (loading) {
+    return <div>Loading...</div>; // REPLACE W/ SKELETON LOADING COMPONENT
+  }
 
   return (
     <ScrollArea className="rounded-md border">
