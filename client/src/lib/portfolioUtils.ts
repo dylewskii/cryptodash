@@ -1,8 +1,11 @@
+// ------------------------------- TYPES -------------------------------
 interface Coin {
   name: string;
   symbol: string;
   image: string;
   currentPrice: number;
+  marketCap: number;
+  ath: number;
 }
 
 interface CoinDB {
@@ -12,12 +15,12 @@ interface CoinDB {
   addedAt: string;
 }
 
-interface CoinData {
+interface CoinAdditionData {
   name: string;
   amount: string;
 }
 
-interface CoinResponse {
+interface CoinAdditionResponse {
   success: boolean;
   message: string;
   coinData: {
@@ -44,8 +47,10 @@ export const fetchPortfolioCoinData = async (coins: string[]) => {
         return {
           name: data.name,
           symbol: data.symbol,
-          image: data.image?.small,
+          image: data.image.small,
           currentPrice: data?.market_data.current_price.usd,
+          marketCap: data.market_data.market_cap.usd,
+          ath: data.market_data.ath.usd,
         };
       })
       .catch((error) => {
@@ -75,8 +80,8 @@ export const fetchPortfolioCoinData = async (coins: string[]) => {
  * @returns Promise resolving to the response from the server confirming if successful.
  */
 export const sendAddCoinPostReq = async (
-  coinData: CoinData
-): Promise<CoinResponse> => {
+  coinData: CoinAdditionData
+): Promise<CoinAdditionResponse> => {
   const url = `http://localhost:8000/coins/add`;
 
   try {
@@ -98,7 +103,7 @@ export const sendAddCoinPostReq = async (
       throw new Error("Response was not successful");
     }
 
-    return jsonData as CoinResponse;
+    return jsonData as CoinAdditionResponse;
   } catch (error) {
     console.error(`Failed to add coin`, error);
     throw Error;
