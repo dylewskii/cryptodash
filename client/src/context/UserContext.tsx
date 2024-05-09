@@ -27,11 +27,14 @@ const defaultUser: UserType = {
 interface DetailedCoin {
   name: string;
   amount: string;
-  symbol: string;
-  image: string;
-  currentPrice: number;
-  marketCap: number;
-  ath: number;
+  info: {
+    symbol: string;
+    image: string;
+    currentPrice: number;
+    marketCap: number;
+    ath: number;
+    webSlug: string;
+  };
 }
 
 // Overall portfolio structure
@@ -91,21 +94,26 @@ export function UserProvider({ children }: UserProviderProps) {
           // fetch detailed data for each coin (price, ath, marketCap etc)
           fetchPortfolioCoinData(portfolioCoinNameList)
             .then((detailedCoinsArray) => {
-              console.log(detailedCoinsArray);
-
               // combine amount data w/ detailed coin data
               const combinedDetailedCoins = detailedCoinsArray.map((coin) => {
-                console.log(coin);
                 const foundCoin = portfolioObjects.find(
                   (item) => item.name.toLowerCase() === coin.name.toLowerCase()
                 );
-                console.log(foundCoin);
+
+                // return a new object for each coin combining the detailed API data with the amount from the user's portfolio.
                 return {
-                  ...coin,
+                  name: coin.name,
                   amount: foundCoin ? foundCoin.amount.toString() : "0",
+                  info: {
+                    symbol: coin.symbol,
+                    image: coin.image,
+                    currentPrice: coin.currentPrice,
+                    marketCap: coin.marketCap,
+                    ath: coin.ath,
+                    webSlug: coin.webSlug,
+                  },
                 };
               });
-              console.log(combinedDetailedCoins);
 
               setPortfolio((prevPortfolio) => ({
                 ...prevPortfolio,
