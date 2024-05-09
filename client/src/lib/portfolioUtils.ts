@@ -6,6 +6,7 @@ interface Coin {
   currentPrice: number;
   marketCap: number;
   ath: number;
+  webSlug: string;
 }
 
 interface CoinDB {
@@ -43,7 +44,6 @@ export const fetchPortfolioCoinData = async (coins: string[]) => {
     return fetch(url)
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         return {
           name: data.name,
           symbol: data.symbol,
@@ -51,6 +51,7 @@ export const fetchPortfolioCoinData = async (coins: string[]) => {
           currentPrice: data?.market_data.current_price.usd,
           marketCap: data.market_data.market_cap.usd,
           ath: data.market_data.ath.usd,
+          webSlug: data.market_data.web_slug,
         };
       })
       .catch((error) => {
