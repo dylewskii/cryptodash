@@ -23,12 +23,6 @@ export default function FavoriteCoins() {
           <Card>
             <Skeleton className="h-[100px] w-[320px] rounded-xl" />
           </Card>
-          <Card>
-            <Skeleton className="h-[100px] w-[320px] rounded-xl" />
-          </Card>
-          <Card>
-            <Skeleton className="h-[100px] w-[320px] rounded-xl" />
-          </Card>
         </>
       ) : (
         portfolio.detailed.map((coinObject) => {
