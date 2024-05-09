@@ -6,7 +6,7 @@ import {
   Dispatch,
   SetStateAction,
 } from "react";
-import { fetchPortfolioList } from "@/lib/portfolioUtils";
+import { fetchPortfolioCoinData, fetchPortfolio } from "@/lib/portfolioUtils";
 
 // ------------------------------- TYPES -------------------------------
 // shape of user data
@@ -23,14 +23,28 @@ const defaultUser: UserType = {
   isAuthenticated: false,
 };
 
-// shape of each portfolio item
-interface PortfolioType {
+// detailed information about each coin
+interface DetailedCoin {
   name: string;
-  amount: number;
+  amount: string;
+  symbol: string;
+  image: string;
+  currentPrice: number;
+  marketCap: number;
+  ath: number;
 }
 
-// default empty array for portfolio items
-const defaultPortfolio: PortfolioType[] = [];
+// Overall portfolio structure
+interface Portfolio {
+  list: string[];
+  detailed: DetailedCoin[];
+}
+
+// Default value for the portfolio
+const defaultPortfolio: Portfolio = {
+  list: [],
+  detailed: [],
+};
 
 interface UserProviderProps {
   children: ReactNode;
@@ -39,15 +53,19 @@ interface UserProviderProps {
 interface UserContextType {
   user: UserType;
   setUser: Dispatch<SetStateAction<UserType>>;
-  portfolioList: PortfolioType[];
-  setPortfolioList: Dispatch<SetStateAction<PortfolioType[]>>;
+  portfolio: Portfolio;
+  setPortfolio: Dispatch<SetStateAction<Portfolio>>;
+  loading: boolean;
+  setLoading: Dispatch<SetStateAction<boolean>>;
 }
 
 const defaultContextValue: UserContextType = {
   user: defaultUser,
   setUser: () => {},
-  portfolioList: defaultPortfolio,
-  setPortfolioList: () => {},
+  portfolio: defaultPortfolio,
+  setPortfolio: () => {},
+  loading: false,
+  setLoading: () => {},
 };
 
 const UserContext = createContext<UserContextType>(defaultContextValue);
@@ -55,24 +73,69 @@ const UserContext = createContext<UserContextType>(defaultContextValue);
 // ---------------------------- UserProvider ----------------------------
 export function UserProvider({ children }: UserProviderProps) {
   const [user, setUser] = useState<UserType>(defaultUser);
-  const [portfolioList, setPortfolioList] =
-    useState<PortfolioType[]>(defaultPortfolio);
+  const [portfolio, setPortfolio] = useState<Portfolio>(defaultPortfolio);
+  const [loading, setLoading] = useState<boolean>(false);
 
   // fetch user's portfolio when userId becomes available
   useEffect(() => {
     if (user.userId) {
-      // fetch string array of every coin held by user in DB
-      fetchPortfolioList()
-        .then((portfolioArrayFromDB) => {
-          setPortfolioList(portfolioArrayFromDB);
+      setLoading(true);
+
+      fetchPortfolio()
+        .then((portfolioObjects) => {
+          // extract coin names into a string array
+          const portfolioCoinNameList = portfolioObjects.map(
+            (coin) => coin.name
+          );
+
+          // fetch detailed data for each coin (price, ath, marketCap etc)
+          fetchPortfolioCoinData(portfolioCoinNameList)
+            .then((detailedCoinsArray) => {
+              console.log(detailedCoinsArray);
+
+              // combine amount data w/ detailed coin data
+              const combinedDetailedCoins = detailedCoinsArray.map((coin) => {
+                console.log(coin);
+                const foundCoin = portfolioObjects.find(
+                  (item) => item.name.toLowerCase() === coin.name.toLowerCase()
+                );
+                console.log(foundCoin);
+                return {
+                  ...coin,
+                  amount: foundCoin ? foundCoin.amount.toString() : "0",
+                };
+              });
+              console.log(combinedDetailedCoins);
+
+              setPortfolio((prevPortfolio) => ({
+                ...prevPortfolio,
+                detailed: combinedDetailedCoins,
+              }));
+
+              setLoading(false);
+            })
+            .catch((error) => {
+              console.error("Error fetching detailed coin data:", error);
+              setLoading(false);
+            });
         })
-        .catch((error) => console.error("Error fetching portfolio", error));
+        .catch((error) => {
+          console.error("Error fetching portfolio", error);
+          setLoading(false);
+        });
     }
   }, [user.userId]);
 
   return (
     <UserContext.Provider
-      value={{ user, setUser, portfolioList, setPortfolioList }}
+      value={{
+        user,
+        setUser,
+        portfolio,
+        setPortfolio,
+        loading,
+        setLoading,
+      }}
     >
       {children}
     </UserContext.Provider>
