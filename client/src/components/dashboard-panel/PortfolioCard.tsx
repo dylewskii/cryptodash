@@ -140,19 +140,20 @@ export default function PortfolioCard() {
             {portfolio.detailed.map((coin, i) => (
               <div key={i} className="grid grid-cols-[50px_3fr] gap-2">
                 <span className="grid place-items-center grid-col-1 max-w-6">
-                  <img src={coin?.image} alt={coin?.name} />
+                  <img src={coin.info.image} alt={coin?.name} />
                 </span>
                 <div className="grid-col-2 flex justify-between">
                   <div className="flex flex-col">
                     <p>{coin.name}</p>
                     <p className="text-zinc-500">
                       <span>$</span>
-                      {coin.currentPrice}
+                      {coin.totalValue}
                     </p>
                   </div>
                   <div className="flex items-center">
                     <p className="text-sm">
-                      {coin.amount} <span>{coin.symbol.toUpperCase()}</span>
+                      {coin.amount}{" "}
+                      <span>{coin.info.symbol.toUpperCase()}</span>
                     </p>
                   </div>
                 </div>
