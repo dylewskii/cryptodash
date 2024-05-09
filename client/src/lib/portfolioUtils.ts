@@ -111,12 +111,12 @@ export const sendAddCoinPostReq = async (
 };
 
 /** -----------------------------------------------------------------------------------------------
- * Retrieves the list of coins in the user's portfolio from the /portfolio server endpoint.
- * Only the names of the coins are returned.
+ * Retrieves an array of coin objects found in the user's portfolio from the /portfolio endpoint.
+ * The coin name, amount, addedAt and _id are returned
  *
- * @returns Promise resolving to an array of coin names from the user's portfolio.
+ * @returns Promise resolving to an array of objects containing the coin's name, amount, addedAt & _id
  */
-export const fetchPortfolioList = async () => {
+export const fetchPortfolio = async (): Promise<CoinDB[]> => {
   try {
     const url = `http://localhost:8000/coins/portfolio`;
     const res = await fetch(url, {
@@ -126,32 +126,17 @@ export const fetchPortfolioList = async () => {
       },
     });
 
+    // const portfolioList = resData.data.map((coin: CoinDB) => coin.name);
     const resData = await res.json();
-    const portfolioList = resData.data.map((coin: CoinDB) => coin.name);
-    return portfolioList;
+    if (!resData.success) {
+      throw new Error(
+        `Fetching portfolio from /portfolio failed: ${resData.msg}`
+      );
+    }
+
+    return resData.data;
   } catch (error) {
     console.error(`Failed to fetch portolio list`, error);
     throw Error;
   }
 };
-
-// const addCoinToPortfolio = async () => {
-//   if (!addedCoin) return;
-
-//   const url = `https://api.coingecko.com/api/v3/coins/${addedCoin.toLowerCase()}`;
-//   try {
-//     const response = await fetch(url);
-//     const data = await response.json();
-//     const newCoin = {
-//       name: data.name,
-//       symbol: data.symbol,
-//       image: data.image.thumb,
-//       currentPrice: data.market_data.current_price.usd,
-//     };
-//     setPortfolio((prevState) => [...prevState, newCoin]);
-//     setDialogOpen(false);
-//     console.log(`${newCoin.name} has been added`);
-//   } catch (error) {
-//     console.error("Error fetching data for new coin:", error);
-//   }
-// };
