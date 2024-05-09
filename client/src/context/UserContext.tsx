@@ -27,6 +27,7 @@ const defaultUser: UserType = {
 interface DetailedCoin {
   name: string;
   amount: string;
+  totalValue: number;
   info: {
     symbol: string;
     image: string;
@@ -96,14 +97,20 @@ export function UserProvider({ children }: UserProviderProps) {
             .then((detailedCoinsArray) => {
               // combine amount data w/ detailed coin data
               const combinedDetailedCoins = detailedCoinsArray.map((coin) => {
+                // find the corresponding coin object from the user's portfolio based on the coin name
                 const foundCoin = portfolioObjects.find(
                   (item) => item.name.toLowerCase() === coin.name.toLowerCase()
                 );
 
-                // return a new object for each coin combining the detailed API data with the amount from the user's portfolio.
+                const amount = foundCoin ? foundCoin.amount : 0;
+                const currentPrice = coin.currentPrice || 0;
+                const totalValue = amount * currentPrice;
+
+                // return a new object for each coin combining the detailed API data with the amount from the user's portfolio
                 return {
                   name: coin.name,
                   amount: foundCoin ? foundCoin.amount.toString() : "0",
+                  totalValue,
                   info: {
                     symbol: coin.symbol,
                     image: coin.image,
