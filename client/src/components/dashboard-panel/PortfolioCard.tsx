@@ -14,68 +14,25 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-
 // react
-import { useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { useToast } from "../ui/use-toast";
 // utils
-import {
-  fetchPortfolioCoinData,
-  fetchPortfolioList,
-  sendAddCoinPostReq,
-} from "@/lib/portfolioUtils";
-// import UserContext from "@/context/UserContext";
-
-// ------------------------------- TYPES -------------------------------
-// shape of each detailed portfolio coin
-interface DetailedCoin {
-  name: string;
-  symbol: string;
-  image: string;
-  currentPrice: number;
-  marketCap: number;
-  ath: number;
-}
+import { sendAddCoinPostReq } from "@/lib/portfolioUtils";
+import UserContext from "@/context/UserContext";
 
 export default function PortfolioCard() {
-  // const { portfolioList } = useContext(UserContext);
-  // array of objects containing info on each coin
-  const [detailedPortfolio, setDetailedPortfolio] = useState<DetailedCoin[]>(
-    []
-  );
-  // add coin name & amount
+  const { portfolio, loading } = useContext(UserContext);
   const [addedCoin, setAddedCoin] = useState<string>("");
   const [addedAmount, setAddedAmount] = useState<string>("");
-  // misc
-  const [error, setError] = useState<string>("");
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
   const { toast } = useToast();
-
-  useEffect(() => {
-    //   setPortfolioCoins(["bitcoin", "ethereum", "solana", "binancecoin"]);
-    setLoading(true);
-
-    // fetch string array of every coin held by user in DB
-    fetchPortfolioList()
-      .then((portfolioArrayFromDB) => {
-        return fetchPortfolioCoinData(portfolioArrayFromDB); // fetch detailed data for each coin
-      })
-      .then((detailedCoins) => {
-        setDetailedPortfolio(detailedCoins);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Failed to load data:", err);
-        setError("Failed to load data");
-        setLoading(false);
-      });
-  }, []);
 
   const addCoin = async () => {
     // check if coin name & amount have been added
     if (!addedCoin || !addedAmount) {
-      setError("Please enter a valid coin name and amount");
+      setErrorMessage("Please enter a valid coin name and amount");
       return;
     }
 
@@ -93,12 +50,12 @@ export default function PortfolioCard() {
           setAddedCoin("");
           setAddedAmount("");
         } else {
-          setError("Failed to add coin");
+          setErrorMessage("Failed to add coin");
         }
       })
       .catch((err) => {
         console.error(`Error while adding coin: ${err}`);
-        setError("Error adding coin");
+        setErrorMessage("Error adding coin");
       });
   };
 
@@ -115,7 +72,7 @@ export default function PortfolioCard() {
                 open={dialogOpen}
                 onOpenChange={() => {
                   setDialogOpen(!dialogOpen);
-                  setError("");
+                  setErrorMessage("");
                 }}
               >
                 <DialogTrigger>
@@ -170,7 +127,7 @@ export default function PortfolioCard() {
                       />
                     </div>
                   </div>
-                  <div className="text-red-600">{error}</div>
+                  <div className="text-red-600">{errorMessage}</div>
                   <DialogFooter>
                     <Button type="submit" onClick={addCoin}>
                       Save
@@ -180,7 +137,7 @@ export default function PortfolioCard() {
               </Dialog>
             </div>
 
-            {detailedPortfolio.map((coin, i) => (
+            {portfolio.detailed.map((coin, i) => (
               <div key={i} className="grid grid-cols-[50px_3fr] gap-2">
                 <span className="grid place-items-center grid-col-1 max-w-6">
                   <img src={coin?.image} alt={coin?.name} />
@@ -195,7 +152,7 @@ export default function PortfolioCard() {
                   </div>
                   <div className="flex items-center">
                     <p className="text-sm">
-                      1.72 <span>{coin.symbol.toUpperCase()}</span>
+                      {coin.amount} <span>{coin.symbol.toUpperCase()}</span>
                     </p>
                   </div>
                 </div>
