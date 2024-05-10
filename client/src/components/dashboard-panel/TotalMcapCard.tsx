@@ -9,30 +9,20 @@ import { useEffect, useState } from "react";
 import formatCurrency from "@/lib/formatCurrency";
 
 interface TotalMcapCardProps {
-  className?: string; // optional
+  className?: string;
 }
 
 export default function TotalMcapCard({ className = "" }: TotalMcapCardProps) {
   const [totalMcap, setTotalMcap] = useState("");
-
-  // useEffect(() => {
-  //   const url = `https://api.coingecko.com/api/v3/global`;
-
-  //   const fetchData = async () => {
-  //     const res = await fetch(url);
-  //     const data = await res.json();
-  //     const total = data.data.total_market_cap.usd;
-
-  //     setTotalMcap(formatCurrency(url));
-  //   };
-
-  //   fetchData();
-  // }, []);
+  const url = "http://localhost:8000/data/total-market-cap";
 
   useEffect(() => {
-    const fetchData = () => {
-      const url2 = 100000000000000;
-      setTotalMcap(formatCurrency(url2));
+    const fetchData = async () => {
+      const res = await fetch(url, {
+        credentials: "include",
+      });
+      const data = await res.json();
+      setTotalMcap(formatCurrency(data.data.usd));
     };
     fetchData();
   }, []);
@@ -40,9 +30,11 @@ export default function TotalMcapCard({ className = "" }: TotalMcapCardProps) {
   return (
     <div className={`${className}`}>
       <Card>
-        <CardHeader>
+        <CardHeader className="relative">
           <CardTitle className="flex items-center gap-2">
             Total Crypto Market Cap
+          </CardTitle>
+          <div className="absolute top-0 right-0 pr-2">
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger>
@@ -74,7 +66,7 @@ export default function TotalMcapCard({ className = "" }: TotalMcapCardProps) {
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
-          </CardTitle>
+          </div>
         </CardHeader>
         <CardContent>
           {totalMcap === "" ? <p>Loading...</p> : <p>{totalMcap}</p>}
