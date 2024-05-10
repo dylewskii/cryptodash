@@ -27,7 +27,7 @@ export default function FavoriteCoins() {
       ) : (
         portfolio.detailed.map((coinObject) => {
           return (
-            <Card>
+            <Card key={coinObject.name}>
               <CardHeader>
                 <CardTitle>{coinObject.name}</CardTitle>
                 <CardDescription>
