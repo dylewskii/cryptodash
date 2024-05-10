@@ -1,4 +1,10 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Tooltip,
   TooltipContent,
@@ -14,6 +20,7 @@ interface TotalMcapCardProps {
 
 export default function TotalMcapCard({ className = "" }: TotalMcapCardProps) {
   const [totalMcap, setTotalMcap] = useState("");
+  const [lastUpdated, setLastUpdated] = useState("");
   const url = "http://localhost:8000/data/total-market-cap";
 
   useEffect(() => {
@@ -26,6 +33,8 @@ export default function TotalMcapCard({ className = "" }: TotalMcapCardProps) {
       if (cachedData) {
         const { data, timestamp } = JSON.parse(cachedData);
         const expiryTime = 24 * 60 * 60 * 1000; // 24hrs in millisecs
+        const lastUpdatedDate = new Date(timestamp);
+        setLastUpdated(lastUpdatedDate.toLocaleString());
         if (now.getTime() - timestamp < expiryTime) {
           setTotalMcap(formatCurrency(data.usd));
           return;
@@ -37,11 +46,13 @@ export default function TotalMcapCard({ className = "" }: TotalMcapCardProps) {
       const jsonData = await res.json();
 
       if (jsonData.success) {
+        const currentTimestamp = now.getTime();
         localStorage.setItem(
           cacheKey,
-          JSON.stringify({ data: jsonData.data, timestamp: now.getTime() })
+          JSON.stringify({ data: jsonData.data, timestamp: currentTimestamp })
         );
         setTotalMcap(formatCurrency(jsonData.data.usd));
+        setLastUpdated(new Date(currentTimestamp).toLocaleString());
       } else {
         console.error("Failed to fetch total mcap data");
       }
@@ -94,6 +105,9 @@ export default function TotalMcapCard({ className = "" }: TotalMcapCardProps) {
         <CardContent>
           {totalMcap === "" ? <p>Loading...</p> : <p>{totalMcap}</p>}
         </CardContent>
+        <CardFooter className="text-xs text-zinc-400">
+          Last updated: {lastUpdated}
+        </CardFooter>
       </Card>
     </div>
   );
