@@ -4,6 +4,7 @@ const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 const authRouter = require("./routes/auth");
 const coinsRouter = require("./routes/coins");
+const dataRouter = require("./routes/data");
 const passport = require("passport");
 require("./strategies/passportJwt");
 require("dotenv").config();
@@ -24,15 +25,15 @@ app.use(cookieParser());
 app.use(
   cors({
     origin: ["http://localhost:5173"],
-    credentials: true, // allows sending of cookies & authorization headers with CORS
+    credentials: true, // allow cookies & auth headers with CORS
   })
 );
 app.use(passport.initialize());
 
 // routes
 app.use("/", authRouter);
-
 app.use("/coins", coinsRouter);
+app.use("/data", dataRouter);
 
 app.listen(PORT, () => {
   console.log(`Express listening on port: ${PORT}`);
