@@ -18,12 +18,35 @@ export default function TotalMcapCard({ className = "" }: TotalMcapCardProps) {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await fetch(url, {
-        credentials: "include",
-      });
-      const data = await res.json();
-      setTotalMcap(formatCurrency(data.data.usd));
+      const cacheKey = "totalMcapData";
+      const cachedData = localStorage.getItem(cacheKey);
+      const now = new Date();
+
+      // use cached data if it's within 24hrs
+      if (cachedData) {
+        const { data, timestamp } = JSON.parse(cachedData);
+        const expiryTime = 24 * 60 * 60 * 1000; // 24hrs in millisecs
+        if (now.getTime() - timestamp < expiryTime) {
+          setTotalMcap(formatCurrency(data.usd));
+          return;
+        }
+      }
+
+      // fetch new data if older than 24hrs
+      const res = await fetch(url, { credentials: "include" });
+      const jsonData = await res.json();
+
+      if (jsonData.success) {
+        localStorage.setItem(
+          cacheKey,
+          JSON.stringify({ data: jsonData.data, timestamp: now.getTime() })
+        );
+        setTotalMcap(formatCurrency(jsonData.data.usd));
+      } else {
+        console.error("Failed to fetch total mcap data");
+      }
     };
+
     fetchData();
   }, []);
 
