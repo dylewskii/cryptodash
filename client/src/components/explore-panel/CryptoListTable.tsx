@@ -6,10 +6,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useEffect, useState } from "react";
 import formatCurrency from "@/lib/formatCurrency";
 
-interface CoinObject {
+export interface CoinObject {
   ath: number;
   ath_change_percentage: number;
   ath_date: string;
@@ -38,25 +37,11 @@ interface CoinObject {
   total_volume: number;
 }
 
-export default function CryptoListTable() {
-  const [cryptoList, setCryptoList] = useState<CoinObject[]>([]);
+interface CryptoListTableProps {
+  cryptoList: CoinObject[];
+}
 
-  useEffect(() => {
-    const fetchCryptoCoinsList = async () => {
-      const url = `http://localhost:8000/data/coins-list-with-data`;
-      try {
-        const response = await fetch(url, {
-          credentials: "include",
-        });
-        const data = await response.json();
-        setCryptoList(data.data);
-      } catch (err) {
-        console.error("Failed to fetch coins list from API:", err);
-      }
-    };
-    fetchCryptoCoinsList();
-  }, []);
-
+export default function CryptoListTable({ cryptoList }: CryptoListTableProps) {
   return (
     <Table className="mt-4">
       <TableHeader>
@@ -70,9 +55,9 @@ export default function CryptoListTable() {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {cryptoList.map((coinObject) => {
+        {cryptoList.map((coinObject: CoinObject) => {
           return (
-            <TableRow>
+            <TableRow key={coinObject.name}>
               <TableCell className="font-medium flex items-center">
                 {coinObject.market_cap_rank}
               </TableCell>

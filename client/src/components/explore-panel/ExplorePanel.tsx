@@ -1,7 +1,39 @@
-import { Input } from "@/components/ui/input";
+// components
 import CryptoListTable from "./CryptoListTable";
+// react
+import { useEffect, useMemo, useState } from "react";
+// interface
+import { CoinObject } from "./CryptoListTable";
+// misc
+import { Input } from "@/components/ui/input";
 
 export default function ExplorePanel() {
+  const [cryptoList, setCryptoList] = useState<CoinObject[]>([]);
+  const [searchActive, setSearchActive] = useState<boolean>(false);
+  const [query, setQuery] = useState<string>("");
+
+  const filteredCryptoCoins = useMemo(() => {
+    return cryptoList.filter((coin) =>
+      coin.name.toLowerCase().includes(query.toLowerCase())
+    );
+  }, [query, cryptoList]);
+
+  useEffect(() => {
+    const fetchCryptoCoinsList = async () => {
+      const url = `http://localhost:8000/data/coins-list-with-data`;
+      try {
+        const response = await fetch(url, {
+          credentials: "include",
+        });
+        const data = await response.json();
+        setCryptoList(data.data);
+      } catch (err) {
+        console.error("Failed to fetch coins list from API:", err);
+      }
+    };
+    fetchCryptoCoinsList();
+  }, []);
+
   return (
     <section className="my-4">
       <div className="flex items-center border-2 border-black rounded py-2">
@@ -25,10 +57,18 @@ export default function ExplorePanel() {
         <Input
           className="border-none"
           placeholder="Search the cryptocurrency market"
+          type="text"
+          value={query}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            setSearchActive(e.target.value.trim().length > 0);
+          }}
         />
       </div>
 
-      <CryptoListTable />
+      <CryptoListTable
+        cryptoList={searchActive ? filteredCryptoCoins : cryptoList}
+      />
     </section>
   );
 }
