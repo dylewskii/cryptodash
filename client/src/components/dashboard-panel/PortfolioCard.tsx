@@ -20,6 +20,7 @@ import { useToast } from "../ui/use-toast";
 // utils
 import { sendAddCoinPostReq } from "@/lib/portfolioUtils";
 import UserContext from "@/context/UserContext";
+import formatCurrency from "@/lib/formatCurrency";
 
 export default function PortfolioCard() {
   const { portfolio, loading } = useContext(UserContext);
@@ -146,8 +147,7 @@ export default function PortfolioCard() {
                   <div className="flex flex-col">
                     <p>{coin.name}</p>
                     <p className="text-zinc-500">
-                      <span>$</span>
-                      {coin.totalValue}
+                      {formatCurrency(coin.totalValue)}
                     </p>
                   </div>
                   <div className="flex items-center">
