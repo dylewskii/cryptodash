@@ -11,6 +11,7 @@ export default function ExplorePanel() {
   const [cryptoList, setCryptoList] = useState<CoinObject[]>([]);
   const [searchActive, setSearchActive] = useState<boolean>(false);
   const [query, setQuery] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
 
   const filteredCryptoCoins = useMemo(() => {
     return cryptoList.filter((coin) =>
@@ -20,12 +21,14 @@ export default function ExplorePanel() {
 
   useEffect(() => {
     const fetchCryptoCoinsList = async () => {
+      setLoading(true);
       const url = `http://localhost:8000/data/coins-list-with-data`;
       try {
         const response = await fetch(url, {
           credentials: "include",
         });
         const data = await response.json();
+        setLoading(false);
         setCryptoList(data.data);
       } catch (err) {
         console.error("Failed to fetch coins list from API:", err);
@@ -68,6 +71,7 @@ export default function ExplorePanel() {
 
       <CryptoListTable
         cryptoList={searchActive ? filteredCryptoCoins : cryptoList}
+        loading={loading}
       />
     </section>
   );

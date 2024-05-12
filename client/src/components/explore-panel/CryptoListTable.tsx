@@ -6,6 +6,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Skeleton } from "../ui/skeleton";
 import formatCurrency from "@/lib/formatCurrency";
 
 export interface CoinObject {
@@ -39,40 +40,52 @@ export interface CoinObject {
 
 interface CryptoListTableProps {
   cryptoList: CoinObject[];
+  loading: boolean;
 }
 
-export default function CryptoListTable({ cryptoList }: CryptoListTableProps) {
+export default function CryptoListTable({
+  cryptoList,
+  loading,
+}: CryptoListTableProps) {
   return (
-    <Table className="mt-4">
-      <TableHeader>
-        <TableRow>
-          <TableHead className="w-[25px]">Rank</TableHead>
-          <TableHead className="w-[25px]">Icon</TableHead>
+    <>
+      {loading ? (
+        <Skeleton className="h-[200px] w-[350px] md:h-[400px] md:w-[600px] rounded-xl mt-4" />
+      ) : (
+        <Table className="mt-4">
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[25px]">Rank</TableHead>
+              <TableHead className="w-[25px]">Icon</TableHead>
 
-          <TableHead>Name</TableHead>
-          <TableHead>Price</TableHead>
-          <TableHead className="text-right">Market Cap</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {cryptoList.map((coinObject: CoinObject) => {
-          return (
-            <TableRow key={coinObject.name}>
-              <TableCell className="font-medium flex items-center">
-                {coinObject.market_cap_rank}
-              </TableCell>
-              <TableCell>
-                <img src={coinObject.image} alt=""></img>
-              </TableCell>
-              <TableCell>{coinObject.name}</TableCell>
-              <TableCell>{formatCurrency(coinObject.current_price)}</TableCell>
-              <TableCell className="text-right">
-                {formatCurrency(coinObject.market_cap)}
-              </TableCell>
+              <TableHead>Name</TableHead>
+              <TableHead>Price</TableHead>
+              <TableHead className="text-right">Market Cap</TableHead>
             </TableRow>
-          );
-        })}
-      </TableBody>
-    </Table>
+          </TableHeader>
+          <TableBody>
+            {cryptoList.map((coinObject: CoinObject) => {
+              return (
+                <TableRow key={coinObject.name}>
+                  <TableCell className="font-medium flex items-center">
+                    {coinObject.market_cap_rank}
+                  </TableCell>
+                  <TableCell>
+                    <img src={coinObject.image} alt=""></img>
+                  </TableCell>
+                  <TableCell>{coinObject.name}</TableCell>
+                  <TableCell>
+                    {formatCurrency(coinObject.current_price)}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {formatCurrency(coinObject.market_cap)}
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      )}
+    </>
   );
 }
