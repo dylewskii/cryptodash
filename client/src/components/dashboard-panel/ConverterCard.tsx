@@ -34,7 +34,7 @@ export default function ConverterCard({ className = "" }) {
 
     setCryptoAmount(inputValue);
 
-    const cryptoAmountInt = parseInt(inputValue, 10);
+    const cryptoAmountInt = Number(inputValue);
     const cryptoCurrentPrice = await getCryptoDollarValue(cryptoValue);
     const total = cryptoAmountInt * cryptoCurrentPrice;
     setFiatAmount(`${total}`);
