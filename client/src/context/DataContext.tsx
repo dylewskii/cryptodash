@@ -57,7 +57,6 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
 
     // check if there's valid cached data to use.
     if (cacheEntry && currentTime - cacheEntry.timestamp < hourInMilliseconds) {
-      console.log("Using cached data for", coinName);
       return cacheEntry.value;
     }
 
@@ -75,7 +74,6 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
         [coinName]: { value: dollarValue, timestamp: currentTime },
       }));
 
-      console.log("Fetched new data for", coinName);
       return dollarValue;
     } catch (error) {
       console.error("Failed to fetch crypto dollar value:", error);
