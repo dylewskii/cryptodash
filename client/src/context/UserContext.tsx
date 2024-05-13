@@ -24,7 +24,7 @@ const defaultUser: UserType = {
 };
 
 // detailed information about each coin
-interface DetailedCoin {
+export interface DetailedCoin {
   name: string;
   amount: string;
   totalValue: number;
