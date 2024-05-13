@@ -14,13 +14,20 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useToast } from "../ui/use-toast";
 // react
 import { useContext, useState } from "react";
-import { useToast } from "../ui/use-toast";
+import { Link } from "react-router-dom";
 // utils
 import { sendAddCoinPostReq } from "@/lib/portfolioUtils";
 import UserContext from "@/context/UserContext";
 import formatCurrency from "@/lib/formatCurrency";
+// types
+import { DetailedCoin } from "@/context/UserContext";
+
+interface PortfolioEntryLineProps {
+  coin: DetailedCoin;
+}
 
 export default function PortfolioCard() {
   const { portfolio, loading } = useContext(UserContext);
@@ -138,31 +145,36 @@ export default function PortfolioCard() {
               </Dialog>
             </div>
 
-            {portfolio.detailed.map((coin, i) => (
-              <div key={i} className="grid grid-cols-[50px_3fr] gap-2">
-                <span className="grid place-items-center grid-col-1 max-w-6">
-                  <img src={coin.info.image} alt={coin?.name} />
-                </span>
-                <div className="grid-col-2 flex justify-between">
-                  <div className="flex flex-col">
-                    <p>{coin.name}</p>
-                    <p className="text-zinc-500">
-                      {formatCurrency(coin.totalValue)}
-                    </p>
-                  </div>
-                  <div className="flex items-center">
-                    <p className="text-sm">
-                      {coin.amount}{" "}
-                      <span>{coin.info.symbol.toUpperCase()}</span>
-                    </p>
-                  </div>
-                </div>
-                <Separator className="my-2 col-span-2" />
-              </div>
+            {portfolio.detailed.map((coin) => (
+              <Link to={`/app/coin/${coin.name.toLowerCase()}`}>
+                <PortfolioEntryLine key={coin.name} coin={coin} />
+              </Link>
             ))}
           </>
         )}
       </div>
     </ScrollArea>
+  );
+}
+
+function PortfolioEntryLine({ coin }: PortfolioEntryLineProps) {
+  return (
+    <div className="grid grid-cols-[50px_3fr] gap-2">
+      <span className="grid place-items-center grid-col-1 max-w-6">
+        <img src={coin.info.image} alt={coin?.name} />
+      </span>
+      <div className="grid-col-2 flex justify-between">
+        <div className="flex flex-col">
+          <p>{coin.name}</p>
+          <p className="text-zinc-500">{formatCurrency(coin.totalValue)}</p>
+        </div>
+        <div className="flex items-center">
+          <p className="text-sm">
+            {coin.amount} <span>{coin.info.symbol.toUpperCase()}</span>
+          </p>
+        </div>
+      </div>
+      <Separator className="my-2 col-span-2" />
+    </div>
   );
 }
