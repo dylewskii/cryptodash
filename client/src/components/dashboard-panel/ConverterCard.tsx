@@ -21,6 +21,15 @@ export default function ConverterCard({ className = "" }) {
   const [fiatAmount, setFiatAmount] = useState("");
   const [fiatSelection, setFiatSelection] = useState("Dollars (USD)");
 
+  /** -----------------------------------------------------------------------------------------------
+   * Sets the fiatAmount input state to the value of the entered crypto amount.
+   *
+   * This function first checks if an input is empty and clears relevant states. It then calculates
+   * the equivalent fiat amount based on the current market price of the selected crypto coin.
+   *
+   * @param e the event object.
+   * @returns {void} does NOT return a value but updates the state for fiatAmount based on the crypto input and selected crypto.
+   */
   const cryptoToFiatCalculation = async (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -38,12 +47,24 @@ export default function ConverterCard({ className = "" }) {
       const cryptoAmountInt = Number(inputValue);
       const cryptoCurrentPrice = await getCryptoDollarValue(cryptoSelection);
       const total = cryptoAmountInt * cryptoCurrentPrice;
+
+      setFiatAmount("");
       setFiatAmount(total.toString());
     } catch (err) {
       console.error("error during crypto > fiat conversion", err);
+      setFiatAmount("");
     }
   };
 
+  /** -----------------------------------------------------------------------------------------------
+   * Sets the cryptoAmount input state to the value of the entered fiat amount.
+   *
+   * This function first checks if an input is empty and clears relevant states. It then calculates
+   * the equivalent cryptocurrency amount based on the current market price of the selected crypto coin.
+   *
+   * @param e the event object.
+   * @returns {void} does NOT return a value but updates the state for cryptoAmount based on the fiat input and selected crypto coin.
+   */
   const fiatToCryptoCalculation = async (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -62,9 +83,6 @@ export default function ConverterCard({ className = "" }) {
       return;
     }
 
-    // clear the cryptoAmount field before setting a new value
-    setCryptoAmount("");
-
     try {
       const fiatAmountInt = Number(inputValue);
 
@@ -78,9 +96,12 @@ export default function ConverterCard({ className = "" }) {
       }
 
       const total = Number(fiatAmountInt) / Number(cryptoCurrentPrice);
+
+      setCryptoAmount("");
       setCryptoAmount(total.toString());
     } catch (err) {
       console.error("error during fiat > crypto conversion", err);
+      setCryptoAmount("");
     }
   };
 
