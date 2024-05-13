@@ -31,47 +31,42 @@ interface CoinAdditionResponse {
 }
 
 /** -----------------------------------------------------------------------------------------------
- * Sends GET request to CoinGecko for each coin found in the provided array argument.
+ * Sends GET request to API for each coin found in the provided array argument.
  * Handles API failures by returning null for failed requests and filtering out null values from the final result.
  *
  * @param coins String array of coins names to fetch details for.
  * @returns Promise resolving to an array of Coin objects with details from CoinGecko.
  */
-export const fetchPortfolioCoinData = async (coins: string[]) => {
-  const requests = coins.map((coin) => {
-    const url = `https://api.coingecko.com/api/v3/coins/${coin}`;
+export const fetchPortfolioCoinData = async (
+  coins: string[]
+): Promise<Coin[]> => {
+  const fetchCoinData = async (coin: string): Promise<Coin | null> => {
+    const url = `http://localhost:8000/data/portfolio-coin-data?coin=${coin}`;
 
-    return fetch(url)
-      .then((res) => res.json())
-      .then((data) => {
-        return {
-          name: data.name,
-          symbol: data.symbol,
-          image: data.image.small,
-          currentPrice: data?.market_data.current_price.usd,
-          marketCap: data.market_data.market_cap.usd,
-          ath: data.market_data.ath.usd,
-          webSlug: data.market_data.web_slug,
-        };
-      })
-      .catch((error) => {
-        console.error("Error fetching portfolio data:", error);
-        return null; // null results filtered out below
-      });
-  });
+    try {
+      const response = await fetch(url, { credentials: "include" });
+      const data = await response.json();
+      return {
+        name: data.data.name,
+        symbol: data.data.symbol,
+        image: data.data.image.small,
+        currentPrice: data.data.market_data.current_price.usd,
+        marketCap: data.data.market_data.market_cap.usd,
+        ath: data.data.market_data.ath.usd,
+        webSlug: data.data.market_data.web_slug,
+      };
+    } catch (error) {
+      console.error("Error fetching portfolio data for coin:", coin, error);
+      return null; // return null to indicate failure
+    }
+  };
 
-  return Promise.all(requests)
-    .then((results) => {
-      // filter out null results to handle failed requests
-      const filteredResults = results.filter(
-        (result): result is Coin => result !== null
-      );
-      return filteredResults;
-    })
-    .catch((error) => {
-      console.error("Error with Promise.all:", error);
-      throw error;
-    });
+  const requests = coins.map(fetchCoinData);
+  const results = await Promise.all(requests);
+  // filter out null results to handle failed requests
+  // assert coin type
+  const filteredResults = results.filter((coin): coin is Coin => coin !== null);
+  return filteredResults;
 };
 
 /** -----------------------------------------------------------------------------------------------
