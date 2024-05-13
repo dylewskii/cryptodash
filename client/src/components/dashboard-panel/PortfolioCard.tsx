@@ -146,8 +146,12 @@ export default function PortfolioCard() {
             </div>
 
             {portfolio.detailed.map((coin) => (
-              <Link to={`/app/coin/${coin.name.toLowerCase()}`}>
-                <PortfolioEntryLine key={coin.name} coin={coin} />
+              <Link
+                to={`/app/coin/${coin.name.toLowerCase()}`}
+                state={{ coin }}
+                key={coin.name}
+              >
+                <PortfolioEntryLine coin={coin} />
               </Link>
             ))}
           </>
