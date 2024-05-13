@@ -15,13 +15,36 @@ const fiatList = [
 export default function ConverterCard({ className = "" }) {
   const { cryptoList, loading, getCryptoDollarValue } = useContext(DataContext);
 
-  const [cryptoValue, setCryptoValue] = useState("");
+  const [cryptoSelection, setCryptoSelection] = useState("Bitcoin");
   const [cryptoAmount, setCryptoAmount] = useState("");
 
   const [fiatAmount, setFiatAmount] = useState("");
-  const [fiatValue, setFiatValue] = useState("");
+  const [fiatSelection, setFiatSelection] = useState("Dollars (USD)");
 
   const cryptoToFiatCalculation = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const inputValue = e.target.value;
+
+    if (!inputValue) {
+      setCryptoAmount("");
+      setFiatAmount("");
+      return;
+    }
+
+    try {
+      setCryptoAmount(inputValue);
+
+      const cryptoAmountInt = Number(inputValue);
+      const cryptoCurrentPrice = await getCryptoDollarValue(cryptoSelection);
+      const total = cryptoAmountInt * cryptoCurrentPrice;
+      setFiatAmount(total.toString());
+    } catch (err) {
+      console.error("error during crypto > fiat conversion", err);
+    }
+  };
+
+  const fiatToCryptoCalculation = async (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const inputValue = e.target.value;
@@ -32,26 +55,33 @@ export default function ConverterCard({ className = "" }) {
       return;
     }
 
-    setCryptoAmount(inputValue);
+    setFiatAmount(inputValue);
 
-    const cryptoAmountInt = Number(inputValue);
-    const cryptoCurrentPrice = await getCryptoDollarValue(cryptoValue);
-    const total = cryptoAmountInt * cryptoCurrentPrice;
-    setFiatAmount(`${total}`);
-  };
-
-  const fiatToCryptoCalculation = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = e.target.value;
-
-    if (inputValue === "") {
-      setCryptoAmount("");
-      setFiatAmount("");
+    // check if user has selected a crypto coin to convert to
+    if (!cryptoSelection) {
       return;
     }
 
-    setFiatAmount(inputValue);
+    // clear the cryptoAmount field before setting a new value
+    setCryptoAmount("");
 
-    console.log(e.target.value);
+    try {
+      const fiatAmountInt = Number(inputValue);
+
+      // obtain cryptoSelection dollar value
+      const cryptoCurrentPrice = await getCryptoDollarValue(cryptoSelection);
+
+      // if fiatSelection is not dollar -> convert cryptoSelection dollar value into fiatSelection value
+      if (fiatSelection !== "Dollars (USD)") {
+        // TODO: GET DOLLAR/fiatSelection RATE THEN CONVERT
+        console.log("converting dollar value into other currency");
+      }
+
+      const total = Number(fiatAmountInt) / Number(cryptoCurrentPrice);
+      setCryptoAmount(total.toString());
+    } catch (err) {
+      console.error("error during fiat > crypto conversion", err);
+    }
   };
 
   if (loading) return <div>Loading...</div>;
@@ -67,8 +97,8 @@ export default function ConverterCard({ className = "" }) {
           <Selector
             label="Select a coin"
             items={cryptoList}
-            value={cryptoValue}
-            onChange={(newCryptoValue) => setCryptoValue(newCryptoValue)}
+            value={cryptoSelection}
+            onChange={(newCryptoValue) => setCryptoSelection(newCryptoValue)}
           />
 
           {/* CRYPTO VALUE */}
@@ -106,8 +136,8 @@ export default function ConverterCard({ className = "" }) {
           <Selector
             label="Select a currency"
             items={fiatList}
-            value={fiatValue}
-            onChange={(newFiatValue) => setFiatValue(newFiatValue)}
+            value={fiatSelection}
+            onChange={(newFiatValue) => setFiatSelection(newFiatValue)}
           />
         </CardContent>
       </Card>
