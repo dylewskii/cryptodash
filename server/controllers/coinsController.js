@@ -77,7 +77,51 @@ const addCoin = async (req, res) => {
   }
 };
 
+const deleteCoin = async (req, res) => {
+  const { coinName } = req.body;
+  const userId = req.user.id;
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, msg: "User not found" });
+    }
+
+    const coinExists = user.portfolio.some((coin) => coinName === coin.name);
+
+    if (!coinExists) {
+      return res
+        .status(404)
+        .json({ success: false, msg: "Coin not found within portfolio" });
+    }
+
+    // $pull removes the coin from the user's portfolio
+    const result = await User.updateOne(
+      { _id: userId },
+      { $pull: { portfolio: { name: coinName } } }
+    );
+
+    // check if deletion was successful
+    // if modifiedCount is 0 ->  no documents were changed during the operation
+    if (result.modifiedCount === 0) {
+      return res
+        .status(404)
+        .json({
+          success: false,
+          msg: "coin deletion failed or already removed from portfolio ",
+        });
+    }
+
+    res.json({
+      msg: `deleting coin ${coinName} completed`,
+    });
+  } catch (err) {
+    console.error("Failed to delete coin:", err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
 module.exports = {
   getPortfolio,
   addCoin,
+  deleteCoin,
 };
