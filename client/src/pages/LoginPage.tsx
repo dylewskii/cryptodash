@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
+import { Loader2 } from "lucide-react";
 import UserContext from "@/context/UserContext";
 
 export default function LoginPage() {
@@ -160,9 +161,16 @@ export default function LoginPage() {
             </div>
           )}
 
-          <Button type="submit" className="w-80">
-            {isSubmitting ? "Logging in..." : "Login"}
-          </Button>
+          {isSubmitting ? (
+            <Button className="w-80" disabled>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Logging in...
+            </Button>
+          ) : (
+            <Button type="submit" className="w-80">
+              Login
+            </Button>
+          )}
         </form>
       </div>
     </section>
