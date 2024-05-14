@@ -17,4 +17,11 @@ router.post(
   coinsController.addCoin
 );
 
+// DELETE -> delete a coin
+router.delete(
+  "/delete",
+  passport.authenticate("jwt", { session: false }),
+  coinsController.deleteCoin
+);
+
 module.exports = router;
