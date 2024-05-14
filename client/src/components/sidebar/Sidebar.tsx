@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 
 export default function Sidebar() {
   return (
-    <nav className="md:px-6">
-      <ul className="flex justify-center md:flex-col">
-        <li className="md:pt-4 mx-1 my-2">
+    <menu className="md:px-4">
+      <ul className="flex justify-center mx-1 md:flex-col">
+        <li className="md:pt-4 my-2">
           <Link to="/app/home">
             <Button variant="link">
               <svg
@@ -113,6 +113,6 @@ export default function Sidebar() {
           </Link>
         </li>
       </ul>
-    </nav>
+    </menu>
   );
 }
