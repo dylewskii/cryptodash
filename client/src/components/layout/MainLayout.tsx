@@ -9,7 +9,7 @@ export default function MainLayout() {
     <>
       <Navbar />
       <Toaster />
-      <div className="flex flex-col md:flex-row">
+      <div className="flex flex-col md:flex-row mx-2">
         <Sidebar />
         <MainContent>
           <Outlet />
