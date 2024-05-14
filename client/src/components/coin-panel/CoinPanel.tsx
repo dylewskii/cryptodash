@@ -15,14 +15,14 @@ export default function CoinPanel() {
   const coinData = location.state.coin;
 
   return (
-    <div>
-      <Card className="w-[350px]">
+    <div className="flex flex-col justify-between md:flex-row gap-3">
+      <Card className="w-full md:w-[350px] flex justify-center flex-col">
         <CardHeader>
           <CardTitle className="flex gap-2">
             <img
               src={coinData.info.image}
               alt="Cryptocurrency Icon"
-              className="h-16 md:h-24"
+              className="h-20 md:h-28"
             />
             <div>
               <p className="text-2xl">
@@ -42,6 +42,16 @@ export default function CoinPanel() {
         <CardFooter className="flex justify-end">
           <Button>Edit Position</Button>
         </CardFooter>
+      </Card>
+      <Card className="w-full md:w-[350px]">
+        <CardHeader>
+          <CardTitle>Token Info</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p>Market Cap: {formatCurrency(coinData.info.marketCap)}</p>
+          <p>All-Time High: {formatCurrency(coinData.info.ath)}</p>
+        </CardContent>
+        <CardFooter></CardFooter>
       </Card>
       <div className="flex"></div>
     </div>
