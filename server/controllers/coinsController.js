@@ -80,14 +80,17 @@ const addCoin = async (req, res) => {
 const deleteCoin = async (req, res) => {
   const { coinName } = req.body;
   const userId = req.user.id;
+  const coinToDelete = coinName.toLowerCase();
+
   try {
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ success: false, msg: "User not found" });
     }
 
-    const coinExists = user.portfolio.some((coin) => coinName === coin.name);
-
+    const coinExists = user.portfolio.some(
+      (coin) => coinToDelete === coin.name
+    );
     if (!coinExists) {
       return res
         .status(404)
@@ -97,22 +100,27 @@ const deleteCoin = async (req, res) => {
     // $pull removes the coin from the user's portfolio
     const result = await User.updateOne(
       { _id: userId },
-      { $pull: { portfolio: { name: coinName } } }
+      { $pull: { portfolio: { name: coinToDelete } } }
     );
 
     // check if deletion was successful
-    // if modifiedCount is 0 ->  no documents were changed during the operation
+    // if modifiedCount is 0 -> no documents were changed during the operation (i.e deletion failed)
     if (result.modifiedCount === 0) {
-      return res
-        .status(404)
-        .json({
-          success: false,
-          msg: "coin deletion failed or already removed from portfolio ",
-        });
+      return res.status(404).json({
+        success: false,
+        msg: "Coin deletion failed or already removed from portfolio ",
+      });
+    }
+
+    // check if the portfolio is now empty and handle appropriately
+    const updatedUser = await User.findById(userId);
+    if (updatedUser.portfolio.length === 0) {
+      // reset the portfolio to empty array
+      await User.updateOne({ _id: userId }, { $set: { portfolio: [] } });
     }
 
     res.json({
-      msg: `deleting coin ${coinName} completed`,
+      msg: `Coin deletion completed - ${coinToDelete} removed from portfolio`,
     });
   } catch (err) {
     console.error("Failed to delete coin:", err);
