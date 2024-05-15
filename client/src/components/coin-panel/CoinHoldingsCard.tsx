@@ -40,13 +40,17 @@ export default function CoinHoldingsCard({ coin }: CoinHoldingsCardProps) {
   const saveEditedHolding = () => {};
 
   const deleteHolding = async () => {
+    const coinToDelete = coin.name.toLowerCase();
     const url = `http://localhost:8000/coins/delete`;
 
     try {
       const res = await fetch(url, {
         method: "DELETE",
         credentials: "include",
-        body: coin.name,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ coinName: coinToDelete }),
       });
       const data = await res.json();
 
