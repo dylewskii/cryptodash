@@ -24,4 +24,11 @@ router.delete(
   coinsController.deleteCoin
 );
 
+// PATCH -> edit coin holding amount
+router.patch(
+  "/edit",
+  passport.authenticate("jwt", { session: false }),
+  coinsController.editCoin
+);
+
 module.exports = router;
