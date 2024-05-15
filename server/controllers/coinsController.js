@@ -128,8 +128,42 @@ const deleteCoin = async (req, res) => {
   }
 };
 
+const editCoin = async (req, res) => {
+  const { coinName, editedAmount } = req.body;
+  const userId = req.user.id;
+  const coinToEdit = coinName.toLowerCase();
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, msg: "User not found" });
+    }
+
+    const coin = user.portfolio.find((c) => c.name === coinToEdit);
+    if (!coin) {
+      return res.status(404).json({
+        success: false,
+        msg: "Coin not found in portfolio",
+      });
+    }
+
+    coin.amount = editedAmount;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      msg: "Coin amount updated successfully",
+      portfolio: user.portfolio,
+    });
+  } catch (err) {
+    console.error("Failed to edit coin:", err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
 module.exports = {
   getPortfolio,
   addCoin,
   deleteCoin,
+  editCoin,
 };
