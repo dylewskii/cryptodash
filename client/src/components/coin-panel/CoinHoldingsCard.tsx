@@ -37,7 +37,37 @@ export default function CoinHoldingsCard({ coin }: CoinHoldingsCardProps) {
   const [editedHolding, setEditedHolding] = useState<string>("");
   const { toast } = useToast();
 
-  const saveEditedHolding = () => {};
+  const editHolding = async () => {
+    const coinToEdit = coin.name.toLowerCase();
+    const url = `http://localhost:8000/coins/edit`;
+
+    try {
+      const res = await fetch(url, {
+        method: "PATCH",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          coinName: coinToEdit,
+          editedAmount: editedHolding,
+        }),
+      });
+      const data = await res.json();
+
+      if (!data.success) {
+        setErrorMessage("Failed to edit holding amount");
+      }
+
+      toast({
+        title: `${coin.name} holding amount has been edited to ${editedHolding}`,
+      });
+      setDialogOpen(false);
+      setEditedHolding("");
+    } catch (err) {
+      console.error("Failed to send edit request to API", err);
+    }
+  };
 
   const deleteHolding = async () => {
     const coinToDelete = coin.name.toLowerCase();
@@ -100,9 +130,10 @@ export default function CoinHoldingsCard({ coin }: CoinHoldingsCardProps) {
             setErrorMessage("");
           }}
         >
-          <DialogTrigger>
-            <Button>Edit Position</Button>
-          </DialogTrigger>
+          <Button>
+            <DialogTrigger>Edit Position</DialogTrigger>
+          </Button>
+
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
               <DialogTitle>{coin.name}</DialogTitle>
@@ -140,7 +171,7 @@ export default function CoinHoldingsCard({ coin }: CoinHoldingsCardProps) {
               >
                 Delete Holding
               </Button>
-              <Button type="submit" onClick={saveEditedHolding}>
+              <Button type="submit" onClick={editHolding}>
                 Save
               </Button>
             </DialogFooter>
