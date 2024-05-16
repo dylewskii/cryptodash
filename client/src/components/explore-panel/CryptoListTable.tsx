@@ -50,7 +50,7 @@ export default function CryptoListTable({
   return (
     <>
       {loading ? (
-        <Skeleton className="h-[200px] w-[350px] md:h-[400px] md:w-[600px] rounded-xl mt-4" />
+        <Skeleton className="h-[300px] w-full md:h-[600px] rounded-xl mt-4" />
       ) : (
         <Table className="mt-4">
           <TableHeader>
