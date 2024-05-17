@@ -13,6 +13,7 @@ import { fetchPortfolioCoinData, fetchPortfolio } from "@/lib/portfolioUtils";
 interface UserType {
   userId: string;
   username: string;
+  email: string;
   isAuthenticated: boolean;
 }
 
@@ -20,6 +21,7 @@ interface UserType {
 const defaultUser: UserType = {
   userId: "",
   username: "",
+  email: "",
   isAuthenticated: false,
 };
 
