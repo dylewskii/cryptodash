@@ -46,7 +46,7 @@ export default function ProfilePanel() {
         <Input id="username" value={user.username} disabled></Input>
 
         <Label htmlFor="email">Email: </Label>
-        <Input id="email"></Input>
+        <Input id="email" value={user.email} disabled></Input>
 
         <h3 className="text-2xl underline self-center">Security</h3>
         <div className="flex flex-col gap-2">
