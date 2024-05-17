@@ -5,23 +5,25 @@ interface PasswordInputProps {
   id: string;
   value?: string;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  className?: string;
 }
 
 /**
  * A reusable password input component which has an integrated visibility toggle.
  *
- * @param {PasswordInputProps} props - the props for the component are: id, value and onChange.
+ * @param {PasswordInputProps} props - the props for the component are: id, value, onChange & className.
  * @returns {JSX.Element} the password input element with a visibility toggle.
  */
 const PasswordInput: React.FC<PasswordInputProps> = ({
   id,
   value,
   onChange,
+  className,
 }) => {
   const [passwordHidden, togglePasswordVisibility] = usePasswordToggle();
 
   return (
-    <div className="flex items-center gap-2">
+    <div className={`flex items-center gap-2 ${className}`}>
       <Input
         id={id}
         type={passwordHidden ? "password" : "text"}
