@@ -73,7 +73,10 @@ export default function Navbar() {
             <DropdownMenuContent>
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="flex cursor-pointer">
+              <DropdownMenuItem
+                className="flex cursor-pointer"
+                onClick={() => navigate("/app/profile")}
+              >
                 <svg
                   className="w-4 h-4 mr-2"
                   viewBox="0 0 24 24"
