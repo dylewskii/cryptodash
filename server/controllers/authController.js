@@ -43,20 +43,26 @@ const registerUser = async (req, res) => {
 
     // gen JWT token for the new user
     const token = jwt.sign(
-      { id: newUser._id.toString(), username: newUser.username },
+      {
+        id: newUser._id.toString(),
+        username: newUser.username,
+        email: newUser.email,
+      },
       process.env.JWT_KEY,
       { expiresIn: "1h" }
     );
 
-    newUser.token = token;
-    await newUser.save();
-
+    // set token in a HTTP-only cookie
     res.cookie("token", token, { httpOnly: true, maxAge: 3600000 });
 
     res.json({
       msg: "User Registered Successfully",
       token: "Bearer " + token,
-      user: { id: newUser._id, username: newUser.username },
+      user: {
+        id: newUser._id,
+        username: newUser.username,
+        email: newUser.email,
+      },
     });
   } catch (err) {
     console.error("Server error:", err);
@@ -82,18 +88,19 @@ const loginUser = async (req, res) => {
 
     // gen jwt token
     const token = jwt.sign(
-      { id: user._id.toString(), username: user.username },
+      { id: user._id.toString(), username: user.username, email: user.email },
       process.env.JWT_KEY,
       { expiresIn: "1h" }
     );
 
-    // add token to cookie
+    // set token in a HTTP-only cookie
     res.cookie("token", token, { httpOnly: true, maxAge: 3600000 });
+
     res.json({
       success: true,
       msg: "login successful",
       token: "Bearer " + token,
-      user: { id: user._id, username: user.username },
+      user: { id: user._id, username: user.username, email: user.email },
     });
   } catch (error) {
     return res.status(500).json({ msg: "Internal server error" });
