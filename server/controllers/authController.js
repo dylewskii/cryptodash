@@ -1,6 +1,7 @@
 const bcryptjs = require("bcryptjs");
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
+const sendResetEmail = require("../utils/sendResetEmail");
 require("dotenv").config();
 
 // POST /register
@@ -119,16 +120,80 @@ const logoutUser = (req, res) => {
   res.status(200).json({ msg: "Logged out successfully" });
 };
 
-// GET /profile
-const getProfile = (req, res) => {
-  if (req.user) {
+// POST /request-password-reset
+const requestPasswordReset = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    // check if user exists
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ success: false, msg: "User not found." });
+    }
+
+    // gen a reset token
+    const resetToken = jwt.sign(
+      { id: user._id.toString() },
+      process.env.JWT_KEY,
+      { expiresIn: "1h" }
+    );
+
+    // send the reset token to the user's email
+    await sendResetEmail(email, resetToken);
+
     res.json({
-      id: req.user._id,
-      username: req.user.username,
-      email: req.user.email,
+      success: true,
+      msg: "Password reset token sent to the provided email.",
+      user: user,
     });
-  } else {
-    res.status(401).json({ msg: "User not authenticated" });
+  } catch (err) {
+    console.error("Server error:", err);
+    return res
+      .status(500)
+      .json({ success: false, msg: "Internal server error" });
+  }
+};
+
+// POST /reset-password
+const resetPassword = async (req, res) => {
+  const { newPassword, newPasswordConfirmation, resetToken } = req.body;
+
+  try {
+    // verify token
+    const decoded = jwt.verify(resetToken, process.env.JWT_KEY);
+    const user = await User.findById(decoded.id);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, msg: "Invalid token or user not found." });
+    }
+
+    // check if new passwords match
+    if (newPassword !== newPasswordConfirmation) {
+      return res
+        .status(400)
+        .json({ success: false, msg: "Passwords must match." });
+    }
+
+    // check if new passwords meet length criteria
+    if (newPassword.length < 6 || newPasswordConfirmation.length < 6) {
+      return res.status(400).json({
+        success: false,
+        msg: "Passwords must be at least 6 characters long.",
+      });
+    }
+
+    // hash new password
+    const hashedPassword = await bcryptjs.hash(newPassword, 10);
+    user.password = hashedPassword;
+    await user.save();
+
+    res.json({ success: true, msg: "Password has been reset successfully." });
+  } catch (err) {
+    console.error("Server error:", err);
+    return res
+      .status(500)
+      .json({ success: false, msg: "Internal server error" });
   }
 };
 
@@ -136,5 +201,6 @@ module.exports = {
   registerUser,
   loginUser,
   logoutUser,
-  getProfile,
+  requestPasswordReset,
+  resetPassword,
 };
