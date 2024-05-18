@@ -3,7 +3,8 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 // pages
 import LoginPage from "./pages/LoginPage.tsx";
 import RegisterPage from "./pages/RegisterPage.tsx";
-import ResetPage from "./pages/ResetPage.tsx";
+import RequestResetPage from "./pages/RequestResetPage.tsx";
+import ResetPasswordPage from "./pages/ResetPasswordPage.tsx";
 // components
 import MainLayout from "./components/layout/MainLayout.tsx";
 import ProfilePanel from "./components/profile-panel/ProfilePanel.tsx";
@@ -35,7 +36,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/reset",
-    element: <ResetPage />,
+    element: <RequestResetPage />,
+  },
+  {
+    path: "/reset-password",
+    element: <ResetPasswordPage />,
   },
   {
     path: "/app",
