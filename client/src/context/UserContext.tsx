@@ -7,6 +7,7 @@ import {
   SetStateAction,
 } from "react";
 import { fetchPortfolioCoinData, fetchPortfolio } from "@/lib/portfolioUtils";
+import fetchProfilePicUrl from "@/lib/fetchProfilePicUrl";
 
 // ------------------------------- TYPES -------------------------------
 // shape of user data
@@ -40,13 +41,13 @@ export interface DetailedCoin {
   };
 }
 
-// Overall portfolio structure
+// overall portfolio structure
 interface Portfolio {
   list: string[];
   detailed: DetailedCoin[];
 }
 
-// Default value for the portfolio
+// default value for the portfolio
 const defaultPortfolio: Portfolio = {
   list: [],
   detailed: [],
@@ -63,6 +64,8 @@ interface UserContextType {
   setPortfolio: Dispatch<SetStateAction<Portfolio>>;
   loading: boolean;
   setLoading: Dispatch<SetStateAction<boolean>>;
+  profilePicUrl: string;
+  setProfilePicUrl: Dispatch<SetStateAction<string>>;
 }
 
 const defaultContextValue: UserContextType = {
@@ -72,6 +75,8 @@ const defaultContextValue: UserContextType = {
   setPortfolio: () => {},
   loading: false,
   setLoading: () => {},
+  profilePicUrl: "",
+  setProfilePicUrl: () => {},
 };
 
 const UserContext = createContext<UserContextType>(defaultContextValue);
@@ -81,6 +86,15 @@ export function UserProvider({ children }: UserProviderProps) {
   const [user, setUser] = useState<UserType>(defaultUser);
   const [portfolio, setPortfolio] = useState<Portfolio>(defaultPortfolio);
   const [loading, setLoading] = useState<boolean>(false);
+  const [profilePicUrl, setProfilePicUrl] = useState<string>("");
+
+  // fetch & set the profile picture URL
+  const fetchAndSetProfilePicUrl = async () => {
+    const url = await fetchProfilePicUrl();
+    if (url) {
+      setProfilePicUrl(url);
+    }
+  };
 
   // fetch user's portfolio when userId becomes available
   useEffect(() => {
@@ -141,6 +155,8 @@ export function UserProvider({ children }: UserProviderProps) {
           setLoading(false);
         });
     }
+
+    fetchAndSetProfilePicUrl();
   }, [user.userId]);
 
   return (
@@ -152,6 +168,8 @@ export function UserProvider({ children }: UserProviderProps) {
         setPortfolio,
         loading,
         setLoading,
+        profilePicUrl,
+        setProfilePicUrl,
       }}
     >
       {children}
