@@ -12,7 +12,7 @@ import UserContext from "@/context/UserContext";
 import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
-  const { user, setUser } = useContext(UserContext);
+  const { user, setUser, profilePicUrl } = useContext(UserContext);
   const navigate = useNavigate();
 
   const logoutUser = async () => {
@@ -30,6 +30,7 @@ export default function Navbar() {
       userId: "",
       username: "",
       isAuthenticated: false,
+      email: "",
     });
 
     // redirect
@@ -66,8 +67,10 @@ export default function Navbar() {
           <DropdownMenu>
             <DropdownMenuTrigger>
               <Avatar>
-                <AvatarImage src="https://github.com/dylewskii.png" />
-                <AvatarFallback>User</AvatarFallback>
+                <AvatarImage src={profilePicUrl} />
+                <AvatarFallback>
+                  {user.username.slice(0, 2).toUpperCase()}
+                </AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
