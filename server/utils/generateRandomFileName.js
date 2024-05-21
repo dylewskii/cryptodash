@@ -9,4 +9,4 @@ const generateRandomFileName = (bytes = 32) => {
   return crypto.randomBytes(bytes).toString("hex");
 };
 
-export default generateRandomFileName;
+module.exports = generateRandomFileName;
