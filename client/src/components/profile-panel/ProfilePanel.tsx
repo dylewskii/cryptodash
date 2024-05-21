@@ -1,36 +1,13 @@
 import UserContext from "@/context/UserContext";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 
 export default function ProfilePanel() {
-  const { user } = useContext(UserContext);
+  const { user, profilePicUrl, setProfilePicUrl } = useContext(UserContext);
   const hiddenFileUpload = useRef<HTMLInputElement | null>(null);
   const [uploading, setUploading] = useState<boolean>(false);
-  const [profilePicUrl, setProfilePicUrl] = useState<string>("");
-
-  const fetchProfilePicUrl = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:8000/upload/profile-picture-url`,
-        {
-          method: "GET",
-          credentials: "include",
-        }
-      );
-      const data = await response.json();
-      if (data.success) {
-        setProfilePicUrl(data.presignedUrl);
-      }
-    } catch (err) {
-      console.error("Could not fetch profile picture URL", err);
-    }
-  };
-
-  useEffect(() => {
-    fetchProfilePicUrl();
-  }, []);
 
   // opens the file upload dialog
   const handleClick = () => {
