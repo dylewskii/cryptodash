@@ -8,6 +8,7 @@ import ResetPasswordPage from "./pages/ResetPasswordPage.tsx";
 // components
 import MainLayout from "./components/layout/MainLayout.tsx";
 import ProfilePanel from "./components/profile-panel/ProfilePanel.tsx";
+import SettingsPanel from "./components/settings-panel/SettingsPanel.tsx";
 import Dashboard from "./components/dashboard-panel/Dashboard.tsx";
 import AssetsPanel from "./components/assets-panel/AssetsPanel.tsx";
 import ExplorePanel from "./components/explore-panel/ExplorePanel.tsx";
@@ -51,6 +52,7 @@ const router = createBrowserRouter([
     ),
     children: [
       { path: "profile", element: <ProfilePanel /> },
+      { path: "settings", element: <SettingsPanel /> },
       { path: "home", element: <Dashboard /> },
       { path: "assets", element: <AssetsPanel /> },
       { path: "explore", element: <ExplorePanel /> },
