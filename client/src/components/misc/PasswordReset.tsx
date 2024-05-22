@@ -8,6 +8,10 @@ import { Loader2 } from "lucide-react";
 interface PasswordResetProps {
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   className?: string;
+  showTitle: boolean;
+  showLabel: boolean;
+  title?: string;
+  label?: string;
 }
 
 /**
@@ -16,7 +20,13 @@ interface PasswordResetProps {
  * @param {PasswordResetProps} props - the props for the component are: onChange & className.
  * @returns {JSX.Element} the reset password email input field and submit button to send the request.
  */
-const PasswordReset: React.FC<PasswordResetProps> = ({ className }) => {
+const PasswordReset: React.FC<PasswordResetProps> = ({
+  className,
+  showTitle,
+  showLabel,
+  title,
+  label,
+}) => {
   const {
     email,
     setEmail,
@@ -80,12 +90,19 @@ const PasswordReset: React.FC<PasswordResetProps> = ({ className }) => {
 
   return (
     <div className={`flex flex-col ${className}`}>
-      <h2 className="text-2xl mb-4 text-center">Forgot Password</h2>
+      {showTitle && (
+        <h2 className="text-2xl mb-4 text-center">
+          {title ? title : "Forgot Password"}
+        </h2>
+      )}
       <div className="flex flex-col items-center gap-2">
-        <Label htmlFor="sendResetLink" className="w-68 ">
-          Enter the email address associated with your account and we'll send
-          you a link to reset your password:
-        </Label>
+        {showLabel && (
+          <Label htmlFor="sendResetLink" className="w-68">
+            {label
+              ? label
+              : "Enter the email address associated with your account and we'll send you a link to reset your password:"}
+          </Label>
+        )}
         <Input
           id="sendResetLink"
           type="email"
@@ -106,7 +123,11 @@ const PasswordReset: React.FC<PasswordResetProps> = ({ className }) => {
         )}
       </div>
 
-      <p className={!resetStatus.success ? "text-red-600" : "text-green-600"}>
+      <p
+        className={
+          !resetStatus.success ? "text-red-600 pt-3" : "text-green-600 pt-3"
+        }
+      >
         {resetStatus.msg}
       </p>
     </div>
