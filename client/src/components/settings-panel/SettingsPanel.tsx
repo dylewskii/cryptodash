@@ -8,10 +8,21 @@ import {
   CardTitle,
 } from "../ui/card";
 import { Switch } from "../ui/switch";
+import { useState } from "react";
 
 export default function SettingsPanel() {
+  const [darkMode, setDarkMode] = useState(false);
+
+  const handleThemeChange = () => {
+    setDarkMode(!darkMode);
+  };
+
   return (
-    <section className="flex flex-col items-center mt-10 gap-10">
+    <section
+      className={`flex flex-col items-center mt-10 gap-10 ${
+        darkMode && "dark"
+      }`}
+    >
       <h3 className="text-2xl underline self-center">Settings</h3>
 
       <Card className="w-full">
@@ -20,7 +31,7 @@ export default function SettingsPanel() {
           <CardDescription>Choose your look and feel.</CardDescription>
         </CardHeader>
         <CardContent className="flex gap-2">
-          <Switch id="dark-mode" />
+          <Switch id="dark-mode" onCheckedChange={handleThemeChange} />
           <Label htmlFor="dark-mode">Dark Mode</Label>
         </CardContent>
       </Card>
