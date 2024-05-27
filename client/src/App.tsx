@@ -18,6 +18,7 @@ import CoinPanel from "./components/coin-panel/CoinPanel.tsx";
 // context
 import { UserProvider } from "./context/UserContext";
 import { DataProvider } from "./context/DataContext";
+import { ThemeProvider } from "./context/ThemeContext.tsx";
 // css
 import "./globals.css";
 import ProtectedRoutes from "./lib/ProtectedRoutes.tsx";
@@ -65,11 +66,13 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <DataProvider>
-      <UserProvider>
-        <RouterProvider router={router} />
-      </UserProvider>
-    </DataProvider>
+    <ThemeProvider defaultTheme="dark" storageKey="cryptodashe-ui-theme">
+      <DataProvider>
+        <UserProvider>
+          <RouterProvider router={router} />
+        </UserProvider>
+      </DataProvider>
+    </ThemeProvider>
   );
 }
 
