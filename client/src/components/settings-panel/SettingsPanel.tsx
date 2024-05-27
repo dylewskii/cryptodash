@@ -1,4 +1,3 @@
-import { Label } from "@radix-ui/react-label";
 import PasswordReset from "../misc/PasswordReset";
 import {
   Card,
@@ -7,32 +6,20 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { Switch } from "../ui/switch";
-import { useState } from "react";
+import ModeToggle from "../../components/ui/mode-toggle";
 
 export default function SettingsPanel() {
-  const [darkMode, setDarkMode] = useState(false);
-
-  const handleThemeChange = () => {
-    setDarkMode(!darkMode);
-  };
-
   return (
-    <section
-      className={`flex flex-col items-center mt-10 gap-10 ${
-        darkMode && "dark"
-      }`}
-    >
+    <section className={`flex flex-col items-center mt-10 gap-10`}>
       <h3 className="text-2xl underline self-center">Settings</h3>
 
-      <Card className="w-full">
+      <Card className="w-full flex items-center justify-between">
         <CardHeader>
           <CardTitle>Theme</CardTitle>
           <CardDescription>Choose your look and feel.</CardDescription>
         </CardHeader>
-        <CardContent className="flex gap-2">
-          <Switch id="dark-mode" onCheckedChange={handleThemeChange} />
-          <Label htmlFor="dark-mode">Dark Mode</Label>
+        <CardContent>
+          <ModeToggle />
         </CardContent>
       </Card>
 
