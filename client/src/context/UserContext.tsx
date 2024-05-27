@@ -90,6 +90,9 @@ export function UserProvider({ children }: UserProviderProps) {
 
   // fetch & set the profile picture URL
   const fetchAndSetProfilePicUrl = async () => {
+    if (!user.isAuthenticated) {
+      return 0;
+    }
     const url = await fetchProfilePicUrl();
     if (url) {
       setProfilePicUrl(url);
