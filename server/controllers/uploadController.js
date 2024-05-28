@@ -5,44 +5,56 @@ const generateRandomFileName = require("../utils/generateRandomFileName");
 const {
   generatePresignedUrl,
   uploadFileToS3,
-} = require("../services/s3Service");
+  deleteFileFromS3,
+} = require("../services/s3Services");
 
 // handles a profile picture upload
 const uploadProfilePic = async (req, res) => {
   const file = req.file;
   const userId = req.user.id;
 
+  // check if a file was uploaded / posted
   if (!file) {
     return res.status(400).json({ success: false, msg: "No file uploaded" });
   }
 
-  const fileName = generateRandomFileName();
+  // check if user exists
+  const user = await User.findById(userId);
+  if (!user) {
+    return res.status(404).json({ success: false, msg: "User not found" });
+  }
 
-  const buffer = await sharp(file.buffer)
-    .resize({
-      height: 150,
-      width: 150,
-      fit: "cover",
-    })
-    .toBuffer();
-
-  const params = {
-    Bucket: process.env.BUCKET_NAME,
-    Key: fileName,
-    Body: buffer,
-    ContentType: file.mimetype,
-  };
+  // delete existing profile pic if it exists
+  if (user.profilePicture) {
+    try {
+      await deleteFileFromS3(user.profilePicture);
+    } catch (err) {
+      console.error("failed to delete existing profile pic from s3", err);
+    }
+  }
 
   try {
+    const fileName = generateRandomFileName();
+
+    // resize uploaded image using sharp
+    const buffer = await sharp(file.buffer)
+      .resize({
+        height: 150,
+        width: 150,
+        fit: "cover",
+      })
+      .toBuffer();
+
+    const params = {
+      Bucket: process.env.BUCKET_NAME,
+      Key: fileName,
+      Body: buffer,
+      ContentType: file.mimetype,
+    };
+
     await uploadFileToS3(params);
 
     // const s3Url = `https://${process.env.BUCKET_NAME}.s3.${process.env.BUCKET_REGION}.amazonaws.com/${fileName}`;
-
-    // check if user exists
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ success: false, msg: "User not found" });
-    }
 
     // save file key in user document
     user.profilePicture = fileName;
