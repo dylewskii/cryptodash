@@ -3,11 +3,16 @@ import { useContext, useRef, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
+import { Loader2 } from "lucide-react";
 
 export default function ProfilePanel() {
   const { user, profilePicUrl, setProfilePicUrl } = useContext(UserContext);
   const hiddenFileUpload = useRef<HTMLInputElement | null>(null);
   const [uploading, setUploading] = useState<boolean>(false);
+  const [errorStatus, setErrorStatus] = useState({
+    success: true,
+    msg: "",
+  });
 
   // opens the file upload dialog
   const handleClick = () => {
@@ -38,8 +43,17 @@ export default function ProfilePanel() {
           const data = await response.json();
           console.log(data);
           setProfilePicUrl(data.presignedUrl);
+          setErrorStatus({
+            success: true,
+            msg: "",
+          });
         } else {
+          const data = await response.json();
           console.error("Failed to upload avatar");
+          setErrorStatus({
+            success: false,
+            msg: data.msg,
+          });
         }
       } catch (err) {
         console.error("Could not send upload request to API", err);
@@ -52,26 +66,39 @@ export default function ProfilePanel() {
   return (
     <section className="flex flex-col items-center mt-10 gap-10">
       <div>
-        <Avatar
-          className="w-36 h-36 cursor-pointer relative group hover:opacity-60"
-          onClick={handleClick}
-        >
-          <p className="absolute pb-2 inset-0 flex items-end justify-center text-black opacity-0 group-hover:opacity-100 transition-opacity">
-            EDIT
-          </p>
-          <Input
-            id="picture"
-            type="file"
-            className="hidden"
-            ref={hiddenFileUpload}
-            onChange={handleFileChange}
-          />
-          <AvatarImage src={profilePicUrl} />
-          <AvatarFallback className="text-5xl">
-            {user.username.slice(0, 2).toUpperCase()}
-          </AvatarFallback>
-        </Avatar>
-        {uploading && <p>Uploading...</p>}
+        {uploading ? (
+          <Loader2 className="mr-2 h-12 w-12 animate-spin" />
+        ) : (
+          <div
+            className="relative w-36 h-36 cursor-pointer group"
+            onClick={handleClick}
+          >
+            <Input
+              id="picture"
+              type="file"
+              className="hidden"
+              ref={hiddenFileUpload}
+              onChange={handleFileChange}
+            />
+            <Avatar className="w-36 h-36">
+              <AvatarImage
+                src={profilePicUrl}
+                className="group-hover:brightness-50 transition duration-300"
+              />
+              <AvatarFallback className="text-5xl">
+                {user.username.slice(0, 2).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+            <p className="absolute bottom-2 inset-x-0 text-center text-white opacity-0 group-hover:opacity-100 transition duration-300">
+              EDIT
+            </p>
+          </div>
+        )}
+      </div>
+      <div>
+        <p className="text-red-600">
+          {!errorStatus.success && errorStatus.msg}
+        </p>
       </div>
       <div className="flex flex-col gap-4 w-64">
         <h3 className="text-2xl underline self-center">Profile</h3>
