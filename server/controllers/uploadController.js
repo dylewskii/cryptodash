@@ -8,6 +8,9 @@ const {
   deleteFileFromS3,
 } = require("../services/s3Services");
 
+// 3MB in bytes
+const MAX_FILE_SIZE = 3 * 1024 * 1024;
+
 // handles a profile picture upload
 const uploadProfilePic = async (req, res) => {
   const file = req.file;
@@ -16,6 +19,13 @@ const uploadProfilePic = async (req, res) => {
   // check if a file was uploaded / posted
   if (!file) {
     return res.status(400).json({ success: false, msg: "No file uploaded" });
+  }
+
+  // ensure file size is under 3MB (MAX_FILE_SIZE)
+  if (file.size > MAX_FILE_SIZE) {
+    return res
+      .status(400)
+      .json({ success: false, msg: "Image cannot exceed 3MB" });
   }
 
   // check if user exists
@@ -36,20 +46,21 @@ const uploadProfilePic = async (req, res) => {
   try {
     const fileName = generateRandomFileName();
 
-    // resize uploaded image using sharp
+    // resize & convert uploaded image to webp using sharp
     const buffer = await sharp(file.buffer)
       .resize({
         height: 150,
         width: 150,
         fit: "cover",
       })
+      .toFormat("webp")
       .toBuffer();
 
     const params = {
       Bucket: process.env.BUCKET_NAME,
       Key: fileName,
       Body: buffer,
-      ContentType: file.mimetype,
+      ContentType: "image/webp",
     };
 
     await uploadFileToS3(params);
