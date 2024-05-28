@@ -1,10 +1,11 @@
+require("dotenv").config();
+const sharp = require("sharp");
 const User = require("../models/User");
 const generateRandomFileName = require("../utils/generateRandomFileName");
 const {
   generatePresignedUrl,
   uploadFileToS3,
 } = require("../services/s3Service");
-require("dotenv").config();
 
 // handles a profile picture upload
 const uploadProfilePic = async (req, res) => {
@@ -16,10 +17,19 @@ const uploadProfilePic = async (req, res) => {
   }
 
   const fileName = generateRandomFileName();
+
+  const buffer = await sharp(file.buffer)
+    .resize({
+      height: 150,
+      width: 150,
+      fit: "cover",
+    })
+    .toBuffer();
+
   const params = {
     Bucket: process.env.BUCKET_NAME,
     Key: fileName,
-    Body: file.buffer,
+    Body: buffer,
     ContentType: file.mimetype,
   };
 
