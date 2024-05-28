@@ -2,6 +2,7 @@ const {
   S3Client,
   GetObjectCommand,
   PutObjectCommand,
+  DeleteObjectCommand,
 } = require("@aws-sdk/client-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 
@@ -35,8 +36,30 @@ const uploadFileToS3 = async (params) => {
   await s3.send(command);
 };
 
+/**
+ * Deletes a file from the S3 bucket.
+ * @param {string} key - key of the file to delete.
+ * @returns {Promise} - a promise that resolves if the file is successfully deleted.
+ */
+const deleteFileFromS3 = async (key) => {
+  const params = {
+    Bucket: process.env.BUCKET_NAME,
+    Key: key,
+  };
+
+  try {
+    const command = new DeleteObjectCommand(params);
+    await s3.send(command);
+    console.log(`s3 file deleted successfully: ${key}`);
+  } catch (err) {
+    console.error(`error deleting s3 file: ${key}`, err);
+    throw err;
+  }
+};
+
 module.exports = {
   generatePresignedUrl,
   uploadFileToS3,
+  deleteFileFromS3,
   s3,
 };
