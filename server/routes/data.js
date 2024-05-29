@@ -17,6 +17,13 @@ router.get(
   dataController.fetchCoinsListWithMarketData
 );
 
+// GET -> /all-coins
+router.get(
+  "/all-coins",
+  passport.authenticate("jwt", { session: false }),
+  dataController.fetchAllCoins
+);
+
 // GET -> /total-market-cap
 router.get(
   "/total-market-cap",
