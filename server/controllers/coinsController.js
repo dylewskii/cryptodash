@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const { validateCoinName } = require("../services/coinServices");
 
 const getPortfolio = async (req, res) => {
   try {
@@ -31,6 +32,12 @@ const addCoin = async (req, res) => {
   if (name.length < 1) {
     res.json({ sucess: false, msg: "Coin name invalid" });
     return;
+  }
+
+  // check if coin name is valid (i.e exists within API)
+  const isValidCoin = await validateCoinName(name);
+  if (!isValidCoin) {
+    return res.status(400).json({ success: false, msg: "Invalid coin name" });
   }
 
   // convert amount to float num
