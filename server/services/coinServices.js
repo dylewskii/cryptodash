@@ -15,12 +15,12 @@ const validateCoinName = async (coinName) => {
 
   try {
     const response = await fetch(url, options);
-    const validCoins = response.data;
+    const validCoins = await response.json();
+
     return validCoins.some(
       (coin) => coin.name.toLowerCase() === coinName.toLowerCase()
     );
   } catch (error) {
-    console.error("Error fetching coin list:", error);
     throw new Error("Failed to validate coin name");
   }
 };
