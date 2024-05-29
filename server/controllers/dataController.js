@@ -85,8 +85,32 @@ const fetchTotalMcapData = async (req, res) => {
   }
 };
 
+const fetchAllCoins = async (req, res) => {
+  const url = "https://api.coingecko.com/api/v3/coins/list";
+
+  const options = {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "x-cg-demo-api-key": process.env.COINGECKO_API_KEY,
+    },
+  };
+
+  try {
+    const response = await fetch(url, options);
+    const data = await response.json();
+    return res
+      .status(200)
+      .json({ success: true, msg: "Retrieved all coins successfully", data });
+  } catch (error) {
+    console.error("Error fetching coin list from CG:", error);
+    throw new Error("Failed to fetch coin list from CG");
+  }
+};
+
 module.exports = {
   fetchPortfolioCoinData,
   fetchCoinsListWithMarketData,
   fetchTotalMcapData,
+  fetchAllCoins,
 };
