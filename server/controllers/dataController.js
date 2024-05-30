@@ -99,7 +99,7 @@ const fetchAllCoins = async (req, res) => {
   try {
     const response = await fetch(url, options);
     const data = await response.json();
-    return res
+    res
       .status(200)
       .json({ success: true, msg: "Retrieved all coins successfully", data });
   } catch (error) {
@@ -108,9 +108,34 @@ const fetchAllCoins = async (req, res) => {
   }
 };
 
+const fetchAllCoinsWithMarketData = async (req, res) => {
+  const url = `https://api.coingecko.com/api/v3/coins/markets`;
+  const queryParams = `?vs_currency=usd&order=market_cap_desc`;
+  const options = {
+    method: "GET",
+    headers: {
+      accept: "application/json",
+      "x-cg-demo-api-key": process.env.COINGECKO_API_KEY,
+    },
+  };
+
+  try {
+    const response = await fetch(`${url}${queryParams}`, options);
+    const data = await response.json();
+    res.status(200).json({
+      success: true,
+      data,
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, msg: err.message });
+    throw new Error("Failed to fetch coin list w/ market data from CG");
+  }
+};
+
 module.exports = {
   fetchPortfolioCoinData,
   fetchCoinsListWithMarketData,
   fetchTotalMcapData,
   fetchAllCoins,
+  fetchAllCoinsWithMarketData,
 };
