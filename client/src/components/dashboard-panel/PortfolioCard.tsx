@@ -1,5 +1,6 @@
 // ------------------------------ IMPORTS ------------------------------
 // ui
+import SelectorDropdown from "../ui/SelectorDropdown";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
@@ -24,6 +25,8 @@ import UserContext from "@/context/UserContext";
 import formatCurrency from "@/lib/formatCurrency";
 // types
 import { DetailedCoin } from "@/context/UserContext";
+// context
+import DataContext from "@/context/DataContext";
 
 interface PortfolioEntryLineProps {
   coin: DetailedCoin;
@@ -31,6 +34,7 @@ interface PortfolioEntryLineProps {
 
 export default function PortfolioCard() {
   const { portfolio, loading } = useContext(UserContext);
+  const { cryptoList } = useContext(DataContext);
   const [addedCoin, setAddedCoin] = useState<string>("");
   const [addedAmount, setAddedAmount] = useState<string>("");
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
@@ -45,7 +49,7 @@ export default function PortfolioCard() {
     }
 
     sendAddCoinPostReq({
-      name: addedCoin,
+      name: addedCoin.toLowerCase(),
       amount: addedAmount,
     })
       .then((res) => {
@@ -112,13 +116,11 @@ export default function PortfolioCard() {
                       <label htmlFor="coinName" className="text-left">
                         Coin
                       </label>
-                      <Input
-                        id="coinName"
-                        type="text"
-                        placeholder="Enter a coin name"
+                      <SelectorDropdown
+                        label="Select a coin"
+                        items={cryptoList}
                         value={addedCoin}
-                        onChange={(e) => setAddedCoin(e.target.value)}
-                        className="col-span-3"
+                        onChange={setAddedCoin}
                       />
                     </div>
                     <div className="grid grid-cols-4 items-center gap-4">

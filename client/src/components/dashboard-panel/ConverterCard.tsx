@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import Selector from "../ui/Selector";
+import SelectorDropdown from "../ui/SelectorDropdown";
 import DataContext from "@/context/DataContext";
 
 const fiatList = [
@@ -115,7 +115,7 @@ export default function ConverterCard({ className = "" }) {
         </CardHeader>
         <CardContent className="p-4 pt-0 flex flex-col justify-center">
           {/* CRYPTO SELECTOR */}
-          <Selector
+          <SelectorDropdown
             label="Select a coin"
             items={cryptoList}
             value={cryptoSelection}
@@ -154,7 +154,7 @@ export default function ConverterCard({ className = "" }) {
             placeholder="Fiat Amount"
           />
           {/* FIAT SELECTOR */}
-          <Selector
+          <SelectorDropdown
             label="Select a currency"
             items={fiatList}
             value={fiatSelection}
