@@ -84,7 +84,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
   // load crypto names on mount and cache them if necessary
   useEffect(() => {
     const fetchData = async () => {
-      const cache = localStorage.getItem("cryptoData");
+      const cache = localStorage.getItem("allCryptoCoinsCache");
 
       if (cache) {
         const { data, timestamp } = JSON.parse(cache);
@@ -95,13 +95,14 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
           return;
         }
       }
-      const response = await fetch(
-        `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1`
-      );
-      const data = await response.json();
+      const response = await fetch("http://localhost:8000/data/all-coins", {
+        method: "GET",
+        credentials: "include",
+      });
+      const { data } = await response.json();
       const coinNames = data.map((coin: Coin) => coin.name);
       localStorage.setItem(
-        "cryptoData",
+        "allCryptoCoinsCache",
         JSON.stringify({ data: coinNames, timestamp: Date.now() })
       );
       setCryptoList(coinNames);
