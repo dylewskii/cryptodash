@@ -25,4 +25,26 @@ const validateCoinName = async (coinName) => {
   }
 };
 
-module.exports = { validateCoinName };
+const validateCoinId = async (coinId) => {
+  const url = `https://api.coingecko.com/api/v3/coins/${coinId}`;
+  const options = {
+    method: "GET",
+    headers: {
+      accept: "application/json",
+      "x-cg-demo-api-key": process.env.COINGECKO_API_KEY,
+    },
+  };
+
+  try {
+    const response = await fetch(url, options);
+
+    if (response.status !== 200) {
+      return false;
+    }
+    return true;
+  } catch (error) {
+    throw new Error("Failed to validate coin name");
+  }
+};
+
+module.exports = { validateCoinName, validateCoinId };
