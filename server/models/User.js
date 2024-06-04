@@ -25,7 +25,7 @@ const userSchema = new Schema(
     profilePicture: { type: String },
     portfolio: [
       {
-        name: { type: String, required: true, trim: true },
+        id: { type: String, required: true, trim: true },
         amount: { type: Number, required: true },
         addedAt: { type: Date, default: Date.now },
       },
