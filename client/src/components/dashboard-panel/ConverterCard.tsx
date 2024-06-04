@@ -5,11 +5,11 @@ import SelectorDropdown from "../ui/SelectorDropdown";
 import DataContext from "@/context/DataContext";
 
 const fiatList = [
-  "Pound Sterling (GBP)",
-  "Dollars (USD)",
-  "Euro (EUR)",
-  "Swiss Franc (CHF)",
-  "Yuan (CN)",
+  { id: "GBP", name: "Pound Sterling (GBP)", symbol: "GBP" },
+  { id: "USD", name: "Dollars (USD)", symbol: "USD" },
+  { id: "EUR", name: "Euro (EUR)", symbol: "EUR" },
+  { id: "CHF", name: "Swiss Franc (CHF)", symbol: "CHF" },
+  { id: "CN", name: "Yuan (CN)", symbol: "CN" },
 ];
 
 export default function ConverterCard({ className = "" }) {
