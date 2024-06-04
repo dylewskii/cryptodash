@@ -38,7 +38,7 @@ export default function CoinHoldingsCard({ coin }: CoinHoldingsCardProps) {
   const { toast } = useToast();
 
   const editHolding = async () => {
-    const coinToEdit = coin.name.toLowerCase();
+    const coinToEdit = coin.id;
     const url = `http://localhost:8000/coins/edit`;
 
     try {
@@ -49,7 +49,7 @@ export default function CoinHoldingsCard({ coin }: CoinHoldingsCardProps) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          coinName: coinToEdit,
+          coinId: coinToEdit,
           editedAmount: editedHolding,
         }),
       });
@@ -60,7 +60,7 @@ export default function CoinHoldingsCard({ coin }: CoinHoldingsCardProps) {
       }
 
       toast({
-        title: `${coin.name} holding amount has been edited to ${editedHolding}`,
+        title: `Your ${coinToEdit} position has been edited to: ${editedHolding}`,
       });
       setDialogOpen(false);
       setEditedHolding("");
@@ -70,7 +70,7 @@ export default function CoinHoldingsCard({ coin }: CoinHoldingsCardProps) {
   };
 
   const deleteHolding = async () => {
-    const coinToDelete = coin.name.toLowerCase();
+    const coinToDelete = coin.id;
     const url = `http://localhost:8000/coins/delete`;
 
     try {
@@ -80,7 +80,7 @@ export default function CoinHoldingsCard({ coin }: CoinHoldingsCardProps) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ coinName: coinToDelete }),
+        body: JSON.stringify({ coinId: coinToDelete }),
       });
       const data = await res.json();
 
@@ -89,7 +89,7 @@ export default function CoinHoldingsCard({ coin }: CoinHoldingsCardProps) {
       }
 
       toast({
-        title: `${coin.name} has been deleted`,
+        title: `${coinToDelete} has been deleted`,
       });
       setDialogOpen(false);
       setEditedHolding("");

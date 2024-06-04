@@ -1,5 +1,6 @@
 // ------------------------------- TYPES -------------------------------
 interface Coin {
+  id: string;
   name: string;
   symbol: string;
   image: string;
@@ -10,14 +11,14 @@ interface Coin {
 }
 
 interface CoinDB {
-  name: string;
+  id: string;
   amount: number;
   _id: string;
   addedAt: string;
 }
 
 interface CoinAdditionData {
-  name: string;
+  id: string;
   amount: string;
 }
 
@@ -25,8 +26,8 @@ interface CoinAdditionResponse {
   success: boolean;
   message: string;
   coinData: {
-    name: string;
     amount: string;
+    id: string;
   };
 }
 
@@ -47,6 +48,7 @@ export const fetchPortfolioCoinData = async (
       const response = await fetch(url, { credentials: "include" });
       const data = await response.json();
       return {
+        id: data.data.id,
         name: data.data.name,
         symbol: data.data.symbol,
         image: data.data.image.small,

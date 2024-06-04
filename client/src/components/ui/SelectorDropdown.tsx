@@ -14,9 +14,14 @@ import {
   CommandList,
 } from "@/components/ui/command";
 
+interface Coin {
+  id: string;
+  name: string;
+}
+
 interface SelectorDropdownProps {
   label: string;
-  items: string[];
+  items: Coin[];
   value: string;
   onChange: (value: string) => void;
 }
@@ -31,7 +36,7 @@ export default function SelectorDropdown({
   const [filter, setFilter] = useState("");
 
   const filteredItems = items.filter((item) =>
-    item.toLowerCase().includes(filter.toLowerCase())
+    item.name.toLowerCase().includes(filter.toLowerCase())
   );
 
   return (
@@ -51,6 +56,7 @@ export default function SelectorDropdown({
         <Command>
           <div className="flex items-center border-b px-3">
             <input
+              id="itemSelection"
               type="text"
               placeholder={`${label}...`}
               value={filter}
@@ -72,20 +78,20 @@ export default function SelectorDropdown({
                   const item = filteredItems[index];
                   return (
                     <CommandItem
-                      key={item}
-                      value={item}
+                      key={item.id}
+                      value={item.name}
                       style={style}
                       onSelect={() => {
-                        onChange(item === value ? "" : item);
+                        onChange(item.name === value ? "" : item.name);
                         setOpen(false);
                       }}
                     >
                       <Check
                         className={`mr-2 h-4 w-4 ${
-                          item === value ? "opacity-100" : "opacity-0"
+                          item.name === value ? "opacity-100" : "opacity-0"
                         }`}
                       />
-                      {item}
+                      {item.name}
                     </CommandItem>
                   );
                 }}
