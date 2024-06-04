@@ -1,5 +1,5 @@
 const User = require("../models/User");
-const { validateCoinName } = require("../services/coinServices");
+const { validateCoinId } = require("../services/coinServices");
 
 const getPortfolio = async (req, res) => {
   try {
@@ -25,19 +25,13 @@ const getPortfolio = async (req, res) => {
 };
 
 const addCoin = async (req, res) => {
-  const { name, amount } = req.body;
+  const { id, amount } = req.body;
   const userId = req.user.id;
 
-  // check if coin name is valid - i.e not shorter than 1 character
-  if (name.length < 1) {
-    res.json({ sucess: false, msg: "Coin name invalid" });
-    return;
-  }
-
-  // check if coin name is valid (i.e exists within API)
-  const isValidCoin = await validateCoinName(name);
-  if (!isValidCoin) {
-    return res.status(400).json({ success: false, msg: "Invalid coin name" });
+  // check if coin id is valid (i.e exists within API)
+  const isValidCoinId = await validateCoinId(id);
+  if (!isValidCoinId) {
+    return res.status(400).json({ success: false, msg: "Invalid coin ID" });
   }
 
   // convert amount to float num
@@ -52,7 +46,7 @@ const addCoin = async (req, res) => {
     const user = await User.findById(userId);
 
     const coinAlreadyAddedToPortfolio = user.portfolio.some((coin) => {
-      return name === coin.name;
+      return id === coin.id;
     });
 
     if (coinAlreadyAddedToPortfolio) {
@@ -68,7 +62,7 @@ const addCoin = async (req, res) => {
     }
 
     // add coin to user's portfolio array
-    const newCoin = { name, amount: numericAmount };
+    const newCoin = { id, amount: numericAmount };
     user.portfolio.push(newCoin);
 
     await user.save();
@@ -85,9 +79,8 @@ const addCoin = async (req, res) => {
 };
 
 const deleteCoin = async (req, res) => {
-  const { coinName } = req.body;
+  const { coinId } = req.body;
   const userId = req.user.id;
-  const coinToDelete = coinName.toLowerCase();
 
   try {
     const user = await User.findById(userId);
@@ -95,9 +88,7 @@ const deleteCoin = async (req, res) => {
       return res.status(404).json({ success: false, msg: "User not found" });
     }
 
-    const coinExists = user.portfolio.some(
-      (coin) => coinToDelete === coin.name
-    );
+    const coinExists = user.portfolio.some((coin) => coin.id === coinId);
     if (!coinExists) {
       return res
         .status(404)
@@ -107,7 +98,7 @@ const deleteCoin = async (req, res) => {
     // $pull removes the coin from the user's portfolio
     const result = await User.updateOne(
       { _id: userId },
-      { $pull: { portfolio: { name: coinToDelete } } }
+      { $pull: { portfolio: { id: coinId } } }
     );
 
     // check if deletion was successful
@@ -127,7 +118,7 @@ const deleteCoin = async (req, res) => {
     }
 
     res.json({
-      msg: `Coin deletion completed - ${coinToDelete} removed from portfolio`,
+      msg: `Coin deletion completed - ${coinId} removed from portfolio`,
     });
   } catch (err) {
     console.error("Failed to delete coin:", err);
@@ -136,9 +127,8 @@ const deleteCoin = async (req, res) => {
 };
 
 const editCoin = async (req, res) => {
-  const { coinName, editedAmount } = req.body;
+  const { coinId, editedAmount } = req.body;
   const userId = req.user.id;
-  const coinToEdit = coinName.toLowerCase();
 
   try {
     const user = await User.findById(userId);
@@ -146,7 +136,7 @@ const editCoin = async (req, res) => {
       return res.status(404).json({ success: false, msg: "User not found" });
     }
 
-    const coin = user.portfolio.find((c) => c.name === coinToEdit);
+    const coin = user.portfolio.find((c) => c.id === coinId);
     if (!coin) {
       return res.status(404).json({
         success: false,
