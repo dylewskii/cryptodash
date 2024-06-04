@@ -28,6 +28,7 @@ const defaultUser: UserType = {
 
 // detailed information about each coin
 export interface DetailedCoin {
+  id: string;
   name: string;
   amount: string;
   totalValue: number;
@@ -107,9 +108,7 @@ export function UserProvider({ children }: UserProviderProps) {
       fetchPortfolio()
         .then((portfolioObjects) => {
           // extract coin names into a string array
-          const portfolioCoinNameList = portfolioObjects.map(
-            (coin) => coin.name
-          );
+          const portfolioCoinNameList = portfolioObjects.map((coin) => coin.id);
 
           // fetch detailed data for each coin (price, ath, marketCap etc)
           fetchPortfolioCoinData(portfolioCoinNameList)
@@ -118,7 +117,7 @@ export function UserProvider({ children }: UserProviderProps) {
               const combinedDetailedCoins = detailedCoinsArray.map((coin) => {
                 // find the corresponding coin object from the user's portfolio based on the coin name
                 const foundCoin = portfolioObjects.find(
-                  (item) => item.name.toLowerCase() === coin.name.toLowerCase()
+                  (item) => item.id.toLowerCase() === coin.id.toLowerCase()
                 );
 
                 const amount = foundCoin ? foundCoin.amount : 0;
@@ -127,6 +126,7 @@ export function UserProvider({ children }: UserProviderProps) {
 
                 // return a new object for each coin combining the detailed API data with the amount from the user's portfolio
                 return {
+                  id: coin.id,
                   name: coin.name,
                   amount: foundCoin ? foundCoin.amount.toString() : "0",
                   totalValue,
