@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 
 export default function Sidebar() {
   return (
-    <menu className="md:px-4">
-      <ul className="flex justify-center mx-1 md:flex-col">
+    <div className="md:px-4">
+      <menu className="flex justify-center mx-1 md:flex-col">
         <li className="md:pt-4 my-2">
           <Link to="/app/home">
             <Button variant="link">
@@ -70,6 +70,27 @@ export default function Sidebar() {
           </Link>
         </li>
         <li className="mx-1 my-2">
+          <Link to="/app/insights">
+            <Button variant="link">
+              <svg
+                className="w-5 h-5 mr-1"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M8 13V17M16 11V17M12 7V17M7.8 21H16.2C17.8802 21 18.7202 21 19.362 20.673C19.9265 20.3854 20.3854 19.9265 20.673 19.362C21 18.7202 21 17.8802 21 16.2V7.8C21 6.11984 21 5.27976 20.673 4.63803C20.3854 4.07354 19.9265 3.6146 19.362 3.32698C18.7202 3 17.8802 3 16.2 3H7.8C6.11984 3 5.27976 3 4.63803 3.32698C4.07354 3.6146 3.6146 4.07354 3.32698 4.63803C3 5.27976 3 6.11984 3 7.8V16.2C3 17.8802 3 18.7202 3.32698 19.362C3.6146 19.9265 4.07354 20.3854 4.63803 20.673C5.27976 21 6.11984 21 7.8 21Z"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              <p className="hidden md:block">Insights</p>
+            </Button>
+          </Link>
+        </li>
+        <li className="mx-1 my-2">
           <Link to="/app/swap">
             <Button variant="link">
               <svg
@@ -93,7 +114,7 @@ export default function Sidebar() {
         <li className="mx-1 my-2">
           <Link to="/app/send">
             <Button variant="link">
-              <div className="md:flex md:flex-col"></div>
+              {/* <div className="md:flex md:flex-col"></div> */}
               <svg
                 className="w-5 h-5 mr-1"
                 viewBox="0 0 24 24"
@@ -112,7 +133,7 @@ export default function Sidebar() {
             </Button>
           </Link>
         </li>
-      </ul>
-    </menu>
+      </menu>
+    </div>
   );
 }
