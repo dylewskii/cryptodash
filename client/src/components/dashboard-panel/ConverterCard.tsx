@@ -15,11 +15,11 @@ const fiatList = [
 export default function ConverterCard({ className = "" }) {
   const { cryptoList, loading, getCryptoDollarValue } = useContext(DataContext);
 
-  const [cryptoSelection, setCryptoSelection] = useState("Bitcoin");
-  const [cryptoAmount, setCryptoAmount] = useState("");
+  const [cryptoSelection, setCryptoSelection] = useState<string>("");
+  const [cryptoAmount, setCryptoAmount] = useState<string>("");
 
-  const [fiatAmount, setFiatAmount] = useState("");
-  const [fiatSelection, setFiatSelection] = useState("Dollars (USD)");
+  const [fiatAmount, setFiatAmount] = useState<string>("");
+  const [fiatSelection, setFiatSelection] = useState<string>("Dollars (USD)");
 
   /** -----------------------------------------------------------------------------------------------
    * Sets the fiatAmount input state to the value of the entered crypto amount.
