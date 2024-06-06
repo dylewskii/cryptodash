@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import SelectorDropdown from "../ui/SelectorDropdown";
 import DataContext from "@/context/DataContext";
+import useCryptoDollarValue from "@/hooks/useCryptoDollarValue";
 
 interface ConverterCardProps {
   coinId: string;
@@ -23,7 +24,8 @@ export default function ConverterCard({
   coinName,
   className = "",
 }: ConverterCardProps) {
-  const { loading, getCryptoDollarValue } = useContext(DataContext);
+  const { loading } = useContext(DataContext);
+  const { getCryptoDollarValue } = useCryptoDollarValue();
 
   // const [cryptoSelection, setCryptoSelection] = useState<string>("");
   const [cryptoAmount, setCryptoAmount] = useState<string>("");
