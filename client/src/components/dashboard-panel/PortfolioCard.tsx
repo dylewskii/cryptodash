@@ -49,33 +49,28 @@ export default function PortfolioCard() {
     }
 
     const selectedCoin = cryptoList.find((coin) => coin.name === addedCoin);
-
     if (!selectedCoin) {
       setErrorMessage("Selected coin is invalid");
       return;
     }
 
-    sendAddCoinPostReq({
+    const res = await sendAddCoinPostReq({
       id: selectedCoin.id,
       amount: addedAmount,
-    })
-      .then((res) => {
-        if (res.success) {
-          toast({
-            title: `${addedCoin} has been added succesfully`,
-            description: `Amount: ${res.coinData.amount}`,
-          });
-          setDialogOpen(false);
-          setAddedCoin("");
-          setAddedAmount("");
-        } else {
-          setErrorMessage("Failed to add coin");
-        }
-      })
-      .catch((err) => {
-        console.error(`Error while adding coin: ${err}`);
-        setErrorMessage("Error adding coin");
+    });
+
+    if (res.success) {
+      toast({
+        title: `${addedCoin} has been added succesfully`,
+        description: `Amount: ${res.coinData.amount}`,
       });
+      setDialogOpen(false);
+      setAddedCoin("");
+      setAddedAmount("");
+    } else {
+      setErrorMessage(res.msg);
+      return;
+    }
   };
 
   return (

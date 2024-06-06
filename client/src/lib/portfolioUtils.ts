@@ -30,7 +30,7 @@ interface CoinAdditionData {
 
 interface CoinAdditionResponse {
   success: boolean;
-  message: string;
+  msg: string;
   coinData: {
     amount: string;
     id: string;
@@ -102,19 +102,29 @@ export const sendAddCoinPostReq = async (
       body: JSON.stringify(coinData),
     });
 
+    if (res.status === 409) {
+      return {
+        success: false,
+        msg: "Coin already exists within portfolio",
+        coinData: {
+          amount: "",
+          id: "",
+        },
+      };
+    }
+
     if (!res.ok) {
-      throw new Error(`HTTP error. status: ${res.status}`);
+      throw new Error(`HTTP error: ${res.status}`);
     }
 
-    const jsonData = await res.json();
-    if (!jsonData.success) {
-      throw new Error("Response was not successful");
+    const data = await res.json();
+    if (!data.success) {
+      throw new Error(data.msg || "Unknown error");
     }
 
-    return jsonData as CoinAdditionResponse;
-  } catch (error) {
-    console.error(`Failed to add coin`, error);
-    throw Error;
+    return data as CoinAdditionResponse;
+  } catch (err) {
+    throw new Error(`Send add coin request failed ${err}`);
   }
 };
 
