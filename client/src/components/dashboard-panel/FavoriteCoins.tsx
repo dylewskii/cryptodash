@@ -26,6 +26,12 @@ export default function FavoriteCoins() {
         </>
       ) : (
         portfolio.detailed.map((coinObject) => {
+          const coinPrice = coinObject.info.currentPrice;
+          let underTwoDecimals = false;
+          if (coinPrice < 0.01) {
+            underTwoDecimals = true;
+          }
+
           return (
             <Card key={coinObject.name}>
               <CardHeader>
@@ -36,7 +42,9 @@ export default function FavoriteCoins() {
               </CardHeader>
               <CardContent>
                 <p className="text-3xl">
-                  {formatCurrency(coinObject.info.currentPrice)}
+                  {underTwoDecimals
+                    ? formatCurrency(coinPrice, "USD", 6)
+                    : formatCurrency(coinPrice, "USD", 2)}
                 </p>
               </CardContent>
             </Card>
