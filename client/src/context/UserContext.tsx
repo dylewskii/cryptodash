@@ -120,7 +120,6 @@ export function UserProvider({ children }: UserProviderProps) {
           // fetch detailed data for each coin (price, ath, marketCap etc)
           fetchPortfolioCoinData(portfolioCoinNameList)
             .then((detailedCoinsArray) => {
-              console.log(detailedCoinsArray);
               // combine amount data w/ detailed coin data
               const combinedDetailedCoins = detailedCoinsArray.map((coin) => {
                 // find the corresponding coin object from the user's portfolio based on the coin name
