@@ -174,7 +174,7 @@ function PortfolioEntryLine({ coin }: PortfolioEntryLineProps) {
   return (
     <div className="grid grid-cols-[50px_3fr] gap-2">
       <span className="grid place-items-center grid-col-1 max-w-6">
-        <img src={coin.info.image} alt={coin?.name} />
+        <img src={coin.info.image.sm} alt={coin?.name} />
       </span>
       <div className="grid-col-2 flex justify-between">
         <div className="flex flex-col">

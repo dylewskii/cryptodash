@@ -103,7 +103,7 @@ export default function CoinHoldingsCard({ coin }: CoinHoldingsCardProps) {
       <CardHeader>
         <CardTitle className="flex gap-2">
           <img
-            src={coin.info.image}
+            src={coin.info.image.lg}
             alt="Cryptocurrency Icon"
             className="h-20 md:h-28"
           />
