@@ -1,9 +1,15 @@
 // ------------------------------- TYPES -------------------------------
+interface imageData {
+  thumb: string;
+  sm: string;
+  lg: string;
+}
+
 interface Coin {
   id: string;
   name: string;
   symbol: string;
-  image: string;
+  image: imageData;
   currentPrice: number;
   marketCap: number;
   ath: number;
@@ -51,7 +57,11 @@ export const fetchPortfolioCoinData = async (
         id: data.data.id,
         name: data.data.name,
         symbol: data.data.symbol,
-        image: data.data.image.small,
+        image: {
+          thumb: data.data.image.thumb,
+          sm: data.data.image.small,
+          lg: data.data.image.large,
+        },
         currentPrice: data.data.market_data.current_price.usd,
         marketCap: data.data.market_data.market_cap.usd,
         ath: data.data.market_data.ath.usd,

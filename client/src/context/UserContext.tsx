@@ -26,6 +26,13 @@ const defaultUser: UserType = {
   isAuthenticated: false,
 };
 
+// img data structure
+interface imageData {
+  thumb: string;
+  sm: string;
+  lg: string;
+}
+
 // detailed information about each coin
 export interface DetailedCoin {
   id: string;
@@ -34,7 +41,7 @@ export interface DetailedCoin {
   totalValue: number;
   info: {
     symbol: string;
-    image: string;
+    image: imageData;
     currentPrice: number;
     marketCap: number;
     ath: number;
@@ -113,6 +120,7 @@ export function UserProvider({ children }: UserProviderProps) {
           // fetch detailed data for each coin (price, ath, marketCap etc)
           fetchPortfolioCoinData(portfolioCoinNameList)
             .then((detailedCoinsArray) => {
+              console.log(detailedCoinsArray);
               // combine amount data w/ detailed coin data
               const combinedDetailedCoins = detailedCoinsArray.map((coin) => {
                 // find the corresponding coin object from the user's portfolio based on the coin name
