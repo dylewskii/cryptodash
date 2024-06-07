@@ -1,19 +1,33 @@
 // app
+const { createServer } = require("node:http");
+const { Server } = require("socket.io");
 const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
+
+// routers
 const authRouter = require("./routes/auth");
 const coinsRouter = require("./routes/coins");
 const dataRouter = require("./routes/data");
 const uploadRouter = require("./routes/upload");
 const passport = require("passport");
+
 require("./strategies/passportJwt");
 require("dotenv").config();
 
-// app
-const PORT = process.env.PORT || 8000;
+// create express app & http server
 const app = express();
+const server = createServer(app);
+
+// setup socket.io w/ http server
+const io = new Server(server);
+io.on("connection", (socket) => {
+  console.log("a user connected");
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
+  });
+});
 
 // db
 mongoose
@@ -33,11 +47,13 @@ app.use(
 app.use(passport.initialize());
 
 // routes
-app.use("/", authRouter);
+app.use("/auth", authRouter);
 app.use("/coins", coinsRouter);
 app.use("/data", dataRouter);
 app.use("/upload", uploadRouter);
 
-app.listen(PORT, () => {
+// start server
+const PORT = process.env.PORT || 8000;
+server.listen(PORT, () => {
   console.log(`Express listening on port: ${PORT}`);
 });
