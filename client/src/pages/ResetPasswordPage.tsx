@@ -50,11 +50,8 @@ export default function ResetPasswordPage() {
     };
 
     try {
-      const response = await fetch(
-        "http://localhost:8000/reset-password",
-        options
-      );
-
+      const url = "http://localhost:8000/auth/reset-password";
+      const response = await fetch(url, options);
       const data = await response.json();
 
       if (!response.ok) {

@@ -61,7 +61,7 @@ const PasswordReset: React.FC<PasswordResetProps> = ({
 
     try {
       const response = await fetch(
-        "http://localhost:8000/request-password-reset",
+        "http://localhost:8000/auth/request-password-reset",
         options
       );
       const data = await response.json();

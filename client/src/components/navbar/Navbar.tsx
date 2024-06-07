@@ -17,7 +17,7 @@ export default function Navbar() {
 
   const logoutUser = async () => {
     // invalidate cookie server-side
-    const response = await fetch("http://localhost:8000/logout", {
+    const response = await fetch("http://localhost:8000/auth/logout", {
       credentials: "include",
     });
 
