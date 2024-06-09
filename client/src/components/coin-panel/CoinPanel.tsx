@@ -8,10 +8,12 @@ export default function CoinPanel() {
   const coinData = location.state.coin;
 
   return (
-    <div className="flex flex-col justify-between md:flex-row gap-3">
-      <CoinHoldingsCard coin={coinData} />
-      <CoinInfoCard coin={coinData} />
+    <section className="lg:flex lg:flex-col gap-3">
+      <div className="lg:flex lg:gap-2">
+        <CoinHoldingsCard coin={coinData} />
+        <CoinInfoCard coin={coinData} />
+      </div>
       <ConverterCard coinId={coinData.id} coinName={coinData.name} />
-    </div>
+    </section>
   );
 }
