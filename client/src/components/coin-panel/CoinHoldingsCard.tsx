@@ -29,9 +29,13 @@ import { useToast } from "../ui/use-toast";
 
 interface CoinHoldingsCardProps {
   coin: DetailedCoin;
+  className?: string;
 }
 
-export default function CoinHoldingsCard({ coin }: CoinHoldingsCardProps) {
+export default function CoinHoldingsCard({
+  coin,
+  className,
+}: CoinHoldingsCardProps) {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [editedHolding, setEditedHolding] = useState<string>("");
@@ -99,7 +103,9 @@ export default function CoinHoldingsCard({ coin }: CoinHoldingsCardProps) {
   };
 
   return (
-    <Card className="w-full md:w-[350px] flex justify-center flex-col">
+    <Card
+      className={`w-full md:w-[350px] flex justify-center flex-col ${className}`}
+    >
       <CardHeader>
         <CardTitle className="flex gap-2">
           <img

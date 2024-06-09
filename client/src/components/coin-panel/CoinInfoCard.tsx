@@ -10,11 +10,12 @@ import { DetailedCoin } from "@/context/UserContext";
 
 interface CoinInfoCardProps {
   coin: DetailedCoin;
+  className?: string;
 }
 
-export default function CoinInfoCard({ coin }: CoinInfoCardProps) {
+export default function CoinInfoCard({ coin, className }: CoinInfoCardProps) {
   return (
-    <Card className="w-full md:w-[350px]">
+    <Card className={`w-full md:w-[350px] ${className}`}>
       <CardHeader>
         <CardTitle>Token Info</CardTitle>
       </CardHeader>
