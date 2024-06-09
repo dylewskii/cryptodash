@@ -13,7 +13,7 @@ export default function CoinPanel() {
         <CoinHoldingsCard coin={coinData} />
         <CoinInfoCard coin={coinData} />
       </div>
-      <ConverterCard coinId={coinData.id} coinName={coinData.name} />
+      <ConverterCard coin={coinData} />
     </section>
   );
 }

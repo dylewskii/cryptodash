@@ -1,27 +1,35 @@
+// react
 import { useContext, useState } from "react";
+import DataContext from "@/context/DataContext";
+// components
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import SelectorDropdown from "../ui/SelectorDropdown";
-import DataContext from "@/context/DataContext";
 import useCryptoDollarValue from "@/hooks/useCryptoDollarValue";
+// types
+import { DetailedCoin } from "@/context/UserContext";
 
 interface ConverterCardProps {
-  coinId: string;
-  coinName: string;
+  coin: DetailedCoin;
   className?: string;
 }
 
 const fiatList = [
-  { id: "GBP", name: "Pound Sterling (GBP)", symbol: "GBP" },
-  { id: "USD", name: "Dollars (USD)", symbol: "USD" },
-  { id: "EUR", name: "Euro (EUR)", symbol: "EUR" },
-  { id: "CHF", name: "Swiss Franc (CHF)", symbol: "CHF" },
-  { id: "CN", name: "Yuan (CN)", symbol: "CN" },
+  { id: "gbp", name: "Pound Sterling (GBP)", symbol: "GBP" },
+  { id: "usd", name: "Dollars (USD)", symbol: "USD" },
+  { id: "eur", name: "Euro (EUR)", symbol: "EUR" },
+  { id: "chf", name: "Swiss Franc (CHF)", symbol: "CHF" },
+  { id: "cn", name: "Yuan (CN)", symbol: "CN" },
+  { id: "aed", name: "UAE Dirham (AED)", symbol: "AED" },
+  { id: "aud", name: "Australian Dollar (AUD)", symbol: "AUD" },
+  { id: "jpy", name: "Japanese Yen (JPY)", symbol: "JPY" },
+  { id: "cad", name: "Canadian Dollar (CAD)", symbol: "CAD" },
+  { id: "pln", name: "Polish Zloty (PLN)", symbol: "PLN" },
+  { id: "sek", name: "Swedish Krona (SEK)", symbol: "SEK" },
 ];
 
 export default function ConverterCard({
-  coinId,
-  coinName,
+  coin,
   className = "",
 }: ConverterCardProps) {
   const { loading } = useContext(DataContext);
@@ -57,7 +65,7 @@ export default function ConverterCard({
       setCryptoAmount(inputValue);
 
       const cryptoAmountInt = Number(inputValue);
-      const cryptoCurrentPrice = await getCryptoDollarValue(coinId);
+      const cryptoCurrentPrice = await getCryptoDollarValue(coin.id);
       const total = cryptoAmountInt * cryptoCurrentPrice;
 
       setFiatAmount("");
@@ -94,7 +102,7 @@ export default function ConverterCard({
       const fiatAmountInt = Number(inputValue);
 
       // obtain cryptoSelection dollar value
-      const cryptoCurrentPrice = await getCryptoDollarValue(coinId);
+      const cryptoCurrentPrice = await getCryptoDollarValue(coin.id);
 
       // if fiatSelection is not dollar -> convert cryptoSelection dollar value into fiatSelection value
       if (fiatSelection !== "Dollars (USD)") {
@@ -125,8 +133,8 @@ export default function ConverterCard({
             disabled={true}
             className="text-center text-orange-600"
             type="text"
-            value={coinName}
-            placeholder={coinName}
+            value={coin.name}
+            placeholder={coin.name}
           />
           {/* CRYPTO VALUE */}
           <Input
