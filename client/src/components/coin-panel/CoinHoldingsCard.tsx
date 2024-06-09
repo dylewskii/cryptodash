@@ -108,12 +108,12 @@ export default function CoinHoldingsCard({ coin }: CoinHoldingsCardProps) {
             className="h-20 md:h-28"
           />
           <div>
-            <p className="text-2xl">
+            <span className="text-2xl">
               {coin.name} &#40;{coin.info.symbol.toUpperCase()}&#41;
-            </p>
-            <p className="flex justify-center text-4xl">
+            </span>
+            <span className="flex justify-center text-4xl">
               {formatCurrency(coin.info.currentPrice)}
-            </p>
+            </span>
           </div>
           <CardDescription></CardDescription>
         </CardTitle>
