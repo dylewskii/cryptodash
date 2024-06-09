@@ -11,17 +11,22 @@ interface PriceCache {
   [key: string]: PriceCacheEntry;
 }
 
-export default function useCryptoDollarValue() {
+export default function useCryptoFiatValue() {
   const [priceCache, setPriceCache] = useState<PriceCache>({});
   /** -----------------------------------------------------------------------------------------------
-   * Fetches the current USD value of a specific cryptocurrency. If the price has been fetched
-   * within the last hour and is cached, the cached value is used. If the
-   * price is not cached or the cache is older than one hour, it fetches the price again.
+   * Fetches the current fiat value of the specified crypto coin.
    *
-   * @param coinId string name of the crypto coin to fetch dollar value for.
-   * @returns A promise that resolves to the dollar value of the cryptocurrency.
+   * If the price has been fetched within the last hour and is cached, the cached value is used.
+   * If the price is not cached or the cache is older than one hour, it fetches the price again.
+   *
+   * @param coinId string name of the crypto coin to fetch value for.
+   * @param currency string name of the desired fiat currency to fetch the value of. Default = "usd"
+   * @returns A promise that resolves to the fiat value of the cryptocurrency.
    */
-  const getCryptoDollarValue = async (coinId: string): Promise<number> => {
+  const getCryptoFiatValue = async (
+    coinId: string,
+    currency = "usd"
+  ): Promise<number> => {
     const currentTime = new Date().getTime();
     const cacheEntry = priceCache[coinId];
     const hourInMilliseconds = 3_600_000;
@@ -37,20 +42,20 @@ export default function useCryptoDollarValue() {
         `https://api.coingecko.com/api/v3/coins/${coinId}`
       );
       const data = await res.json();
-      const dollarValue = await data.market_data.current_price.usd;
+      const fiatValue = await data.market_data.current_price[currency];
 
       // update cache w/ new data
       setPriceCache((prev) => ({
         ...prev,
-        [coinId]: { value: dollarValue, timestamp: currentTime },
+        [coinId]: { value: fiatValue, timestamp: currentTime },
       }));
 
-      return dollarValue;
+      return fiatValue;
     } catch (error) {
       console.error("Failed to fetch crypto dollar value:", error);
       return 0;
     }
   };
 
-  return { getCryptoDollarValue };
+  return { getCryptoFiatValue };
 }
