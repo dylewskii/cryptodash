@@ -104,13 +104,14 @@ export default function RegisterPage() {
   };
 
   return (
-    <section className="h-full flex justify-center items-center">
+    <section className="h-full flex flex-col justify-center items-center">
       <div>
         <h2 className="text-2xl text-center mb-4">Sign Up</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <Label htmlFor="email">Email:</Label>
             <Input
+              name="email"
               id="email"
               type="email"
               value={details.email}
@@ -121,6 +122,7 @@ export default function RegisterPage() {
           <div className="mb-4">
             <Label htmlFor="username">Username:</Label>
             <Input
+              name="username"
               id="username"
               type="text"
               value={details.username}
@@ -170,6 +172,9 @@ export default function RegisterPage() {
           </Button>
         </form>
       </div>
+      <p className="flex max-w-[300px] mt-4 text-zinc-400 text-center">
+        By registering, you agree to our Terms of Service and Privacy Policy
+      </p>
     </section>
   );
 }
