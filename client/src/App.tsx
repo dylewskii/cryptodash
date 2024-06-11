@@ -5,6 +5,10 @@ import LoginPage from "./pages/LoginPage.tsx";
 import RegisterPage from "./pages/RegisterPage.tsx";
 import RequestResetPage from "./pages/RequestResetPage.tsx";
 import ResetPasswordPage from "./pages/ResetPasswordPage.tsx";
+import ToSPage from "./pages/ToSPage.tsx";
+import PrivacyPolicyPage from "./pages/PrivacyPolicyPage.tsx";
+import DisclaimerPage from "./pages/DisclaimerPage.tsx";
+import FAQPage from "./pages/FAQPage.tsx";
 // components
 import MainLayout from "./components/layout/MainLayout.tsx";
 import ProfilePanel from "./components/profile-panel/ProfilePanel.tsx";
@@ -44,6 +48,22 @@ const router = createBrowserRouter([
   {
     path: "/reset-password",
     element: <ResetPasswordPage />,
+  },
+  {
+    path: "/terms-of-service",
+    element: <ToSPage />,
+  },
+  {
+    path: "/privacy-policy",
+    element: <PrivacyPolicyPage />,
+  },
+  {
+    path: "/disclaimer",
+    element: <DisclaimerPage />,
+  },
+  {
+    path: "/faq",
+    element: <FAQPage />,
   },
   {
     path: "/app",
