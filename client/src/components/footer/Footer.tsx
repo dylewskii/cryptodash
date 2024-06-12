@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
-    <footer className="flex flex-col pt-4">
+    <footer className="flex flex-col pt-4 pb-2 px-6">
       <div className="border-t-2 border-black pb-1"></div>
 
       <section className="flex w-full justify-between text-left pt-4">
