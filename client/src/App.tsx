@@ -126,13 +126,15 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <ThemeProvider defaultTheme="dark" storageKey="cryptodashe-ui-theme">
-      <DataProvider>
-        <UserProvider>
-          <RouterProvider router={router} />
-        </UserProvider>
-      </DataProvider>
-    </ThemeProvider>
+    <div className="flex flex-col min-h-screen">
+      <ThemeProvider defaultTheme="dark" storageKey="cryptodashe-ui-theme">
+        <DataProvider>
+          <UserProvider>
+            <RouterProvider router={router} />
+          </UserProvider>
+        </DataProvider>
+      </ThemeProvider>
+    </div>
   );
 }
 
