@@ -11,7 +11,7 @@ export default function ExternalLayout({ children }: ExternalLayoutProps) {
     <>
       <ScrollToTop />
       <Toaster />
-      <div className="flex flex-col md:flex-row mx-2">
+      <div className="flex justify-center items-center min-h-screen">
         {children}
         <Outlet />
       </div>
