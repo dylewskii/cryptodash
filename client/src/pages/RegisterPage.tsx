@@ -104,7 +104,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <section className="h-full flex flex-col justify-center items-center">
+    <main className="flex flex-col justify-center items-center">
       <div>
         <h2 className="text-2xl text-center mb-4">Create an Account</h2>
         <form onSubmit={handleSubmit}>
@@ -175,6 +175,6 @@ export default function RegisterPage() {
       <p className="flex max-w-[300px] mt-4 text-zinc-400 text-center">
         By registering, you agree to our Terms of Service and Privacy Policy
       </p>
-    </section>
+    </main>
   );
 }

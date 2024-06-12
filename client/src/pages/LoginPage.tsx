@@ -72,7 +72,7 @@ export default function LoginPage() {
   };
 
   return (
-    <section className="h-full flex justify-center items-center">
+    <section className="flex justify-center items-center">
       <div>
         <h2 className="text-2xl text-center mb-4">Login</h2>
         <form onSubmit={handleSubmit}>
