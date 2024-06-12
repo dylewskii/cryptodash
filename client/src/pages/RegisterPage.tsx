@@ -106,7 +106,7 @@ export default function RegisterPage() {
   return (
     <section className="h-full flex flex-col justify-center items-center">
       <div>
-        <h2 className="text-2xl text-center mb-4">Sign Up</h2>
+        <h2 className="text-2xl text-center mb-4">Create an Account</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <Label htmlFor="email">Email:</Label>
