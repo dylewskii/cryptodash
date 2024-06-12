@@ -1,8 +1,6 @@
-import Footer from "@/components/footer/Footer";
-
 export default function PrivacyPolicyPage() {
   return (
-    <main className="px-8 py-12 max-w-[940px] mx-auto">
+    <main className="px-8 max-w-[940px] mx-auto">
       <h2 className="text-2xl text-center mb-8 uppercase underline">
         Privacy Policy
       </h2>
@@ -89,8 +87,6 @@ export default function PrivacyPolicyPage() {
           at dashecrypt@gmail.com.
         </p>
       </section>
-
-      <Footer />
     </main>
   );
 }

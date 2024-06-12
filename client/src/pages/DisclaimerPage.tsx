@@ -1,5 +1,3 @@
-import Footer from "@/components/footer/Footer";
-
 export default function DisclaimerPage() {
   return (
     <main className="px-8 py-12 max-w-[940px] mx-auto">
@@ -55,8 +53,6 @@ export default function DisclaimerPage() {
         <h3 className="text-xl mb-2 font-medium">5. No Solicitation</h3>
         <p>No content on our Site is meant to be a solicitation or offer.</p>
       </section>
-
-      <Footer />
     </main>
   );
 }

@@ -1,8 +1,6 @@
-import Footer from "@/components/footer/Footer";
-
 export default function ToSPage() {
   return (
-    <main className="px-8 py-2 max-w-[940px] mx-auto">
+    <main className="px-8 max-w-[940px] mx-auto">
       <h2 className="text-2xl text-center mb-8 uppercase underline">
         Terms of Service
       </h2>
@@ -71,8 +69,6 @@ export default function ToSPage() {
           us at dashecrypt@gmail.com.
         </p>
       </section>
-
-      <Footer />
     </main>
   );
 }

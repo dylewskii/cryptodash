@@ -1,8 +1,6 @@
-import Footer from "@/components/footer/Footer";
-
 export default function FAQPage() {
   return (
-    <main className="px-8 py-12 max-w-[940px] mx-auto">
+    <main className="px-8 max-w-[940px] mx-auto">
       <h2 className="text-2xl text-center mb-8 uppercase underline">FAQ</h2>
 
       <section className="mb-8">
@@ -88,8 +86,6 @@ export default function FAQPage() {
           .
         </p>
       </section>
-
-      <Footer />
     </main>
   );
 }
