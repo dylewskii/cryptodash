@@ -4,7 +4,7 @@ import Sidebar from "../sidebar/Sidebar";
 import MainContent from "../main-content/MainContent";
 import { Toaster } from "../ui/toaster";
 
-export default function MainLayout() {
+export default function AppLayout() {
   return (
     <>
       <Navbar />
