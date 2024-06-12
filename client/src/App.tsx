@@ -1,5 +1,8 @@
 // react router
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+// layouts
+import AppLayout from "./components/layout/AppLayout.tsx";
+import ExternalLayout from "./components/layout/ExternalLayout.tsx";
 // pages
 import LoginPage from "./pages/LoginPage.tsx";
 import RegisterPage from "./pages/RegisterPage.tsx";
@@ -10,7 +13,6 @@ import PrivacyPolicyPage from "./pages/PrivacyPolicyPage.tsx";
 import DisclaimerPage from "./pages/DisclaimerPage.tsx";
 import FAQPage from "./pages/FAQPage.tsx";
 // components
-import MainLayout from "./components/layout/MainLayout.tsx";
 import ProfilePanel from "./components/profile-panel/ProfilePanel.tsx";
 import SettingsPanel from "./components/settings-panel/SettingsPanel.tsx";
 import Dashboard from "./components/dashboard-panel/Dashboard.tsx";
@@ -31,45 +33,81 @@ import ProtectedRoutes from "./lib/ProtectedRoutes.tsx";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <LoginPage />,
+    element: (
+      <ExternalLayout>
+        <LoginPage />
+      </ExternalLayout>
+    ),
   },
   {
     path: "/login",
-    element: <LoginPage />,
+    element: (
+      <ExternalLayout>
+        <LoginPage />
+      </ExternalLayout>
+    ),
   },
   {
     path: "/register",
-    element: <RegisterPage />,
+    element: (
+      <ExternalLayout>
+        <RegisterPage />
+      </ExternalLayout>
+    ),
   },
   {
     path: "/reset",
-    element: <RequestResetPage />,
+    element: (
+      <ExternalLayout>
+        <RequestResetPage />
+      </ExternalLayout>
+    ),
   },
   {
     path: "/reset-password",
-    element: <ResetPasswordPage />,
+    element: (
+      <ExternalLayout>
+        <ResetPasswordPage />
+      </ExternalLayout>
+    ),
   },
   {
     path: "/terms-of-service",
-    element: <ToSPage />,
+    element: (
+      <ExternalLayout>
+        <ToSPage />
+      </ExternalLayout>
+    ),
   },
   {
     path: "/privacy-policy",
-    element: <PrivacyPolicyPage />,
+    element: (
+      <ExternalLayout>
+        <PrivacyPolicyPage />
+      </ExternalLayout>
+    ),
   },
   {
     path: "/disclaimer",
-    element: <DisclaimerPage />,
+    element: (
+      <ExternalLayout>
+        <DisclaimerPage />
+      </ExternalLayout>
+    ),
   },
   {
     path: "/faq",
-    element: <FAQPage />,
+    element: (
+      <ExternalLayout>
+        <FAQPage />
+      </ExternalLayout>
+    ),
   },
   {
     path: "/app",
     element: (
       <ProtectedRoutes>
-        <MainLayout />
+        <AppLayout />
       </ProtectedRoutes>
     ),
     children: [
