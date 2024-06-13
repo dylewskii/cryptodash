@@ -21,12 +21,12 @@ const app = express();
 const server = createServer(app);
 
 // setup socket.io w/ http server
-const io = new Server(server);
-io.on("connection", (socket) => {
-  console.log("a user connected");
-  socket.on("disconnect", () => {
-    console.log("user disconnected");
-  });
+const io = new Server(server, {
+  cors: {
+    origin: ["http://localhost:5173"],
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
 });
 
 // db
@@ -51,6 +51,9 @@ app.use("/auth", authRouter);
 app.use("/coins", coinsRouter);
 app.use("/data", dataRouter);
 app.use("/upload", uploadRouter);
+
+// socket.io
+app.set("socketio", io);
 
 // start server
 const PORT = process.env.PORT || 8000;
