@@ -67,6 +67,9 @@ const addCoin = async (req, res) => {
 
     await user.save();
 
+    const io = req.app.get("socketio");
+    io.emit("portfolioUpdated", { userId, portfolio: user.portfolio });
+
     res.json({
       success: true,
       message: "Coin added to portfolio successfully",
@@ -117,6 +120,9 @@ const deleteCoin = async (req, res) => {
       await User.updateOne({ _id: userId }, { $set: { portfolio: [] } });
     }
 
+    const io = req.app.get("socketio");
+    io.emit("portfolioUpdated", { userId, portfolio: updatedUser.portfolio });
+
     res.json({
       msg: `Coin deletion completed - ${coinId} removed from portfolio`,
     });
@@ -146,6 +152,9 @@ const editCoin = async (req, res) => {
 
     coin.amount = editedAmount;
     await user.save();
+
+    const io = req.app.get("socketio");
+    io.emit("portfolioUpdated", { userId, portfolio: user.portfolio });
 
     res.status(200).json({
       success: true,
