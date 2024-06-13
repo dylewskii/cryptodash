@@ -58,7 +58,6 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
         credentials: "include",
       });
       const { data } = await response.json();
-      console.log(data);
 
       const coins = data.map((coin: CoinApiResponse) => {
         return {
