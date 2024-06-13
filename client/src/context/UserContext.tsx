@@ -9,7 +9,7 @@ import {
 } from "react";
 import { fetchPortfolioCoinData, fetchPortfolio } from "@/lib/portfolioUtils";
 import fetchProfilePicUrl from "@/lib/fetchProfilePicUrl";
-
+import socket from "../socket/socket";
 // ------------------------------- TYPES -------------------------------
 // shape of user data
 interface UserType {
@@ -27,7 +27,7 @@ const defaultUser: UserType = {
   isAuthenticated: false,
 };
 
-// img data structure
+// shape of image data
 interface imageData {
   thumb: string;
   sm: string;
@@ -97,7 +97,6 @@ export function UserProvider({ children }: UserProviderProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const [profilePicUrl, setProfilePicUrl] = useState<string>("");
 
-  // fetch & set the profile picture URL
   const fetchAndSetProfilePicUrl = useCallback(async () => {
     if (!user.isAuthenticated) {
       return 0;
@@ -108,67 +107,80 @@ export function UserProvider({ children }: UserProviderProps) {
     }
   }, [user.isAuthenticated]);
 
-  // fetch user's portfolio when userId becomes available
-  useEffect(() => {
-    const fetchPortfolioData = async () => {
-      if (user.userId) {
-        setLoading(true);
+  const updatePortfolio = useCallback(async () => {
+    if (!user.userId) {
+      return;
+    }
 
-        try {
-          const portfolioObjects = await fetchPortfolio();
-          // extract coin names into a string array
-          const portfolioCoinNameList = portfolioObjects.map((coin) => coin.id);
+    setLoading(true);
 
-          // fetch detailed data for each coin (price, ath, marketCap etc)
-          const detailedCoinsArray = await fetchPortfolioCoinData(
-            portfolioCoinNameList
-          );
+    try {
+      const portfolioObjects = await fetchPortfolio();
 
-          // combine amount data w/ detailed coin data
-          const combinedDetailedCoins = detailedCoinsArray.map((coin) => {
-            // find the corresponding coin object from the user's portfolio based on the coin name
-            const foundCoin = portfolioObjects.find(
-              (item) => item.id.toLowerCase() === coin.id.toLowerCase()
-            );
+      // extract coin names into a string array
+      const portfolioCoinNameList = portfolioObjects.map((coin) => coin.id);
 
-            const amount = foundCoin ? foundCoin.amount : 0;
-            const currentPrice = coin.currentPrice || 0;
-            const totalValue = amount * currentPrice;
+      // fetch detailed data for each coin (price, ath, marketCap etc)
+      const detailedCoinsArray = await fetchPortfolioCoinData(
+        portfolioCoinNameList
+      );
 
-            // return a new object for each coin combining the detailed API data with the amount from the user's portfolio
-            return {
-              id: coin.id,
-              name: coin.name,
-              amount: foundCoin ? foundCoin.amount.toString() : "0",
-              totalValue,
-              info: {
-                symbol: coin.symbol,
-                image: coin.image,
-                currentPrice: coin.currentPrice,
-                marketCap: coin.marketCap,
-                ath: coin.ath,
-                webSlug: coin.webSlug,
-              },
-            };
-          });
+      // combine amount data w/ detailed coin data
+      const combinedDetailedCoins = detailedCoinsArray.map((coin) => {
+        // find the corresponding coin object from the user's portfolio based on the coin name
+        const foundCoin = portfolioObjects.find(
+          (item) => item.id.toLowerCase() === coin.id.toLowerCase()
+        );
 
-          setPortfolio((prevPortfolio) => ({
-            ...prevPortfolio,
-            detailed: combinedDetailedCoins,
-          }));
+        const amount = foundCoin ? foundCoin.amount : 0;
+        const currentPrice = coin.currentPrice || 0;
+        const totalValue = amount * currentPrice;
 
-          setLoading(false);
-        } catch (error) {
-          console.error("Error fetching portfolio", error);
-          setLoading(false);
-        }
-      }
+        // return a new object for each coin combining the detailed API data with the amount from the user's portfolio
+        return {
+          id: coin.id,
+          name: coin.name,
+          amount: foundCoin ? foundCoin.amount.toString() : "0",
+          totalValue,
+          info: {
+            symbol: coin.symbol,
+            image: coin.image,
+            currentPrice: coin.currentPrice,
+            marketCap: coin.marketCap,
+            ath: coin.ath,
+            webSlug: coin.webSlug,
+          },
+        };
+      });
 
-      await fetchAndSetProfilePicUrl();
-    };
+      setPortfolio((prevPortfolio) => ({
+        ...prevPortfolio,
+        detailed: combinedDetailedCoins,
+      }));
 
-    fetchPortfolioData();
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching portfolio", error);
+      setLoading(false);
+    }
+
+    await fetchAndSetProfilePicUrl();
   }, [user.userId, fetchAndSetProfilePicUrl]);
+
+  useEffect(() => {
+    updatePortfolio();
+
+    socket.on("portfolioUpdated", ({ userId, portfolio }) => {
+      if (user.userId === userId) {
+        updatePortfolio();
+        console.log("Portfolio updated:", portfolio);
+      }
+    });
+
+    return () => {
+      socket.off("portfolioUpdated");
+    };
+  }, [user.userId, fetchAndSetProfilePicUrl, updatePortfolio]);
 
   return (
     <UserContext.Provider
