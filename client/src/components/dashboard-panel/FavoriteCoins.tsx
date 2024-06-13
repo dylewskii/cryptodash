@@ -25,7 +25,19 @@ export default function FavoriteCoins() {
           </Card>
         </>
       ) : (
-        portfolio.detailed.map((coinObject) => {
+        portfolio.detailed.map((coinObject, i) => {
+          if (
+            !coinObject ||
+            !coinObject.info ||
+            coinObject.info.currentPrice === undefined
+          ) {
+            return (
+              <Card key={`${coinObject.name}${i}`}>
+                <Skeleton className="h-[100px] w-full rounded-xl" />
+              </Card>
+            );
+          }
+
           const coinPrice = coinObject.info.currentPrice;
           let underTwoDecimals = false;
           if (coinPrice < 0.01) {
@@ -33,7 +45,7 @@ export default function FavoriteCoins() {
           }
 
           return (
-            <Card key={coinObject.name}>
+            <Card key={`${coinObject.name}${i}`}>
               <CardHeader>
                 <CardTitle>{coinObject.name}</CardTitle>
                 <CardDescription>

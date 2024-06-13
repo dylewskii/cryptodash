@@ -77,7 +77,7 @@ export default function PortfolioCard() {
     <ScrollArea className="rounded-md border">
       <div className="p-4">
         {loading ? (
-          <Skeleton className="h-[150px] w-full rounded-xl" />
+          <Skeleton className="h-[150px] w-full rounded-xl mb-2" />
         ) : (
           <>
             <div className="flex justify-between mb-6">
@@ -149,15 +149,26 @@ export default function PortfolioCard() {
               </Dialog>
             </div>
 
-            {portfolio.detailed.map((coin) => (
-              <Link
-                to={`/app/coin/${coin.name.toLowerCase()}`}
-                state={{ coin }}
-                key={coin.name}
-              >
-                <PortfolioEntryLine coin={coin} />
-              </Link>
-            ))}
+            {portfolio.detailed.map((coin, i) => {
+              if (!coin || !coin.name || !coin.info) {
+                return (
+                  <Skeleton
+                    key={`${coin.id}${i}`}
+                    className="h-[50px] w-full rounded-xl mb-2"
+                  />
+                );
+              }
+
+              return (
+                <Link
+                  to={`/app/coin/${coin.name.toLowerCase()}`}
+                  state={{ coin }}
+                  key={coin.name}
+                >
+                  <PortfolioEntryLine coin={coin} />
+                </Link>
+              );
+            })}
           </>
         )}
       </div>
@@ -166,6 +177,10 @@ export default function PortfolioCard() {
 }
 
 function PortfolioEntryLine({ coin }: PortfolioEntryLineProps) {
+  if (!coin || !coin.info || !coin.info.image) {
+    return <Skeleton className="h-[50px] w-full rounded-xl mt-6" />;
+  }
+
   return (
     <div className="grid grid-cols-[50px_3fr] gap-2">
       <span className="grid place-items-center grid-col-1 max-w-6">
