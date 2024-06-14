@@ -124,6 +124,7 @@ const deleteCoin = async (req, res) => {
     io.emit("portfolioUpdated", { userId, portfolio: updatedUser.portfolio });
 
     res.json({
+      success: true,
       msg: `Coin deletion completed - ${coinId} removed from portfolio`,
     });
   } catch (err) {
