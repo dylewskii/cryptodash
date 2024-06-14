@@ -16,6 +16,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useToast } from "../ui/use-toast";
+import { Loader2 } from "lucide-react";
 // react
 import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
@@ -39,6 +40,7 @@ export default function PortfolioCard() {
   const [addedAmount, setAddedAmount] = useState<string>("");
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [addCoinPending, setAddCoinPending] = useState(false);
   const { toast } = useToast();
 
   const addCoin = async () => {
@@ -54,22 +56,29 @@ export default function PortfolioCard() {
       return;
     }
 
-    const res = await sendAddCoinPostReq({
-      id: selectedCoin.id,
-      amount: addedAmount,
-    });
-
-    if (res.success) {
-      toast({
-        title: `${addedCoin} has been added succesfully`,
-        description: `Amount: ${res.coinData.amount}`,
+    setAddCoinPending(true);
+    try {
+      const res = await sendAddCoinPostReq({
+        id: selectedCoin.id,
+        amount: addedAmount,
       });
-      setDialogOpen(false);
-      setAddedCoin("");
-      setAddedAmount("");
-    } else {
-      setErrorMessage(res.msg);
-      return;
+
+      if (res.success) {
+        toast({
+          title: `${addedCoin} has been added succesfully`,
+          description: `Amount: ${res.coinData.amount}`,
+        });
+        setDialogOpen(false);
+        setAddedCoin("");
+        setAddedAmount("");
+      } else {
+        setErrorMessage(res.msg);
+        return;
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setAddCoinPending(false);
     }
   };
 
@@ -142,7 +151,14 @@ export default function PortfolioCard() {
                   <div className="text-red-600">{errorMessage}</div>
                   <DialogFooter>
                     <Button type="submit" onClick={addCoin}>
-                      Save
+                      {addCoinPending ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          <p>Adding Coin...</p>
+                        </>
+                      ) : (
+                        "Save"
+                      )}
                     </Button>
                   </DialogFooter>
                 </DialogContent>
