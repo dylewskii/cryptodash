@@ -15,15 +15,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useToast } from "../ui/use-toast";
 import { Loader2 } from "lucide-react";
 // react
 import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 // utils
-import { sendAddCoinPostReq } from "@/lib/portfolioUtils";
+import { useDialog } from "@/hooks/useDialog";
 import UserContext from "@/context/UserContext";
 import formatCurrency from "@/lib/formatCurrency";
+import capitalizeFirstLetter from "@/lib/capitalizeFirstLetter";
 // types
 import { DetailedCoin } from "@/context/UserContext";
 // context
@@ -38,48 +38,39 @@ export default function PortfolioCard() {
   const { cryptoList } = useContext(DataContext);
   const [addedCoin, setAddedCoin] = useState<string>("");
   const [addedAmount, setAddedAmount] = useState<string>("");
-  const [dialogOpen, setDialogOpen] = useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = useState<string>("");
-  const [addCoinPending, setAddCoinPending] = useState(false);
-  const { toast } = useToast();
+  const {
+    dialogOpen,
+    setDialogErrorMsg,
+    dialogErrorMsg,
+    dialogReqPending,
+    handleDialogToggle,
+    handleRequest,
+  } = useDialog();
 
   const addCoin = async () => {
     // check if coin name & amount have been added
     if (!addedCoin || !addedAmount) {
-      setErrorMessage("Please enter a valid coin name and amount");
+      setDialogErrorMsg("Please enter a valid coin name and amount");
       return;
     }
 
+    // check if coin name is found within the CG crypto list
     const selectedCoin = cryptoList.find((coin) => coin.name === addedCoin);
     if (!selectedCoin) {
-      setErrorMessage("Selected coin is invalid");
+      setDialogErrorMsg("Selected coin is invalid");
       return;
     }
 
-    setAddCoinPending(true);
-    try {
-      const res = await sendAddCoinPostReq({
-        id: selectedCoin.id,
-        amount: addedAmount,
-      });
+    await handleRequest(
+      "http://localhost:8000/coins/add",
+      "POST",
+      { id: selectedCoin.id, amount: addedAmount },
+      `${capitalizeFirstLetter(addedCoin)} has been added successfully`,
+      "Failed to add coin"
+    );
 
-      if (res.success) {
-        toast({
-          title: `${addedCoin} has been added succesfully`,
-          description: `Amount: ${res.coinData.amount}`,
-        });
-        setDialogOpen(false);
-        setAddedCoin("");
-        setAddedAmount("");
-      } else {
-        setErrorMessage(res.msg);
-        return;
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setAddCoinPending(false);
-    }
+    setAddedCoin("");
+    setAddedAmount("");
   };
 
   return (
@@ -91,13 +82,7 @@ export default function PortfolioCard() {
           <>
             <div className="flex justify-between mb-6">
               <h4 className="text-lg font-medium leading-none">Portfolio</h4>
-              <Dialog
-                open={dialogOpen}
-                onOpenChange={() => {
-                  setDialogOpen(!dialogOpen);
-                  setErrorMessage("");
-                }}
-              >
+              <Dialog open={dialogOpen} onOpenChange={handleDialogToggle}>
                 <DialogTrigger>
                   <svg
                     className="w-6 h-6"
@@ -148,10 +133,10 @@ export default function PortfolioCard() {
                       />
                     </div>
                   </div>
-                  <div className="text-red-600">{errorMessage}</div>
+                  <div className="text-red-600">{dialogErrorMsg}</div>
                   <DialogFooter>
                     <Button type="submit" onClick={addCoin}>
-                      {addCoinPending ? (
+                      {dialogReqPending ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                           <p>Adding Coin...</p>
@@ -211,6 +196,34 @@ function PortfolioEntryLine({ coin }: PortfolioEntryLineProps) {
           <p className="text-sm">
             {coin.amount} <span>{coin.info.symbol.toUpperCase()}</span>
           </p>
+          {/* <svg
+            className="w-5 h-5"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13Z"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M12 6C12.5523 6 13 5.55228 13 5C13 4.44772 12.5523 4 12 4C11.4477 4 11 4.44772 11 5C11 5.55228 11.4477 6 12 6Z"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M12 20C12.5523 20 13 19.5523 13 19C13 18.4477 12.5523 18 12 18C11.4477 18 11 18.4477 11 19C11 19.5523 11.4477 20 12 20Z"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg> */}
         </div>
       </div>
       <Separator className="my-2 col-span-2" />
