@@ -1,6 +1,4 @@
-// react
 import { useState } from "react";
-// ui
 import {
   Card,
   CardHeader,
@@ -22,20 +20,20 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Loader2 } from "lucide-react";
-// utils
 import formatCurrency from "@/lib/formatCurrency";
 import capitalizeFirstLetter from "@/lib/capitalizeFirstLetter";
-// interfaces
 import { DetailedCoin } from "@/context/UserContext";
 import { useToast } from "../ui/use-toast";
 
 interface CoinHoldingsCardProps {
   coin: DetailedCoin;
+  updateCoinData: (updatedCoin: DetailedCoin) => void;
   className?: string;
 }
 
 export default function CoinHoldingsCard({
   coin,
+  updateCoinData,
   className,
 }: CoinHoldingsCardProps) {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
@@ -69,6 +67,16 @@ export default function CoinHoldingsCard({
         setErrorMessage("Failed to edit holding amount");
         return;
       }
+
+      const newTotalValue =
+        Number(editedHolding) * Number(coin.info.currentPrice);
+
+      const updatedCoin = {
+        ...coin,
+        amount: editedHolding,
+        totalValue: newTotalValue,
+      };
+      updateCoinData(updatedCoin);
 
       toast({
         title: `Edited ${capitalizeFirstLetter(
