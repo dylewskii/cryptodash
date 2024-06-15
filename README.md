@@ -10,3 +10,6 @@ CryptoDashe: a cryptocurrency dashboard that offers portfolio tracking with supp
   https://www.coingecko.com/en/api
 - Fear and Greed Index Image:
   https://alternative.me/crypto/fear-and-greed-index/#api
+- Charts:
+  TradingView Lightweight Charts™
+  Copyright (с) 2023 TradingView, Inc. https://www.tradingview.com/
