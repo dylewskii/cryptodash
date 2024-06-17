@@ -10,13 +10,6 @@ router.get(
   dataController.fetchPortfolioCoinData
 );
 
-// GET -> /coins-list-with-data
-router.get(
-  "/coins-list-with-data",
-  passport.authenticate("jwt", { session: false }),
-  dataController.fetchCoinsListWithMarketData
-);
-
 // GET -> /all-coins
 router.get(
   "/all-coins",
