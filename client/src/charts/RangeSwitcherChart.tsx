@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useContext, useEffect, useMemo, useRef } from "react";
 import {
   createChart,
   IChartApi,
@@ -7,6 +7,7 @@ import {
   DeepPartial,
   ChartOptions,
 } from "lightweight-charts";
+import { ThemeProviderContext } from "../context/ThemeContext";
 
 interface RangeSwitcherChartProps {
   dayData: LineData[];
@@ -16,19 +17,19 @@ interface RangeSwitcherChartProps {
 }
 
 const intervalColors: Record<string, string> = {
-  "1D": "#2962FF",
-  "1W": "rgb(225, 87, 90)",
-  "1M": "rgb(242, 142, 44)",
-  "1Y": "rgb(164, 89, 209)",
+  "1D": "#F28F3B",
+  "1W": "#F28F3B",
+  "1M": "#F28F3B",
+  "1Y": "#F28F3B",
 };
 
-const chartOptions: DeepPartial<ChartOptions> = {
-  layout: {
-    textColor: "black",
-    background: { color: "white" },
-  },
-  height: 200,
-};
+// const chartOptions: DeepPartial<ChartOptions> = {
+//   layout: {
+//     textColor: "black",
+//     background: { color: "white" },
+//   },
+//   height: 200,
+// };
 
 const RangeSwitcherChart: React.FC<RangeSwitcherChartProps> = ({
   dayData,
@@ -36,6 +37,7 @@ const RangeSwitcherChart: React.FC<RangeSwitcherChartProps> = ({
   monthData,
   yearData,
 }) => {
+  const { theme } = useContext(ThemeProviderContext);
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const lineSeriesRef = useRef<ISeriesApi<"Line"> | null>(null);
@@ -50,6 +52,16 @@ const RangeSwitcherChart: React.FC<RangeSwitcherChartProps> = ({
       ]),
     [dayData, weekData, monthData, yearData]
   );
+
+  const chartOptions: DeepPartial<ChartOptions> = useMemo(() => {
+    return {
+      layout: {
+        textColor: theme === "dark" ? "white" : "black",
+        background: { color: theme === "dark" ? "#00000" : "#ffffff" },
+      },
+      height: 200,
+    };
+  }, [theme]);
 
   useEffect(() => {
     if (!chartContainerRef.current) return;
@@ -73,16 +85,22 @@ const RangeSwitcherChart: React.FC<RangeSwitcherChartProps> = ({
 
     setChartInterval("1D"); // initial set
 
-    const handleResize = () => {
-      chart.applyOptions({ height: 200 });
-    };
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        chart.resize(width, height);
+      }
+    });
 
-    window.addEventListener("resize", handleResize);
+    if (chartContainerRef.current) {
+      resizeObserver.observe(chartContainerRef.current);
+    }
+
     return () => {
-      window.removeEventListener("resize", handleResize);
+      resizeObserver.disconnect();
       chart.remove();
     };
-  }, [seriesesData]);
+  }, [seriesesData, chartOptions]);
 
   const handleIntervalChange = (interval: string) => {
     if (lineSeriesRef.current && chartRef.current) {
@@ -100,19 +118,23 @@ const RangeSwitcherChart: React.FC<RangeSwitcherChartProps> = ({
   };
 
   return (
-    <div>
-      <div ref={chartContainerRef} className="h-52 relative" />
-      <div className="flex flex-row gap-2 mt-2">
-        {["1D", "1W", "1M", "1Y"].map((interval) => (
-          <button
-            key={interval}
-            onClick={() => handleIntervalChange(interval)}
-            className="font-sans text-lg font-medium leading-6 tracking-tight px-6 py-2 text-gray-800 bg-gray-200 rounded-lg cursor-pointer hover:bg-gray-300 active:bg-gray-400"
-          >
-            {interval}
-          </button>
-        ))}
+    <div className="w-full h-full">
+      <div className="flex items-center justify-between pb-6">
+        <p className="text-2xl font-semibold">Performance</p>
+        <div className="flex flex-row gap-2 mt-2">
+          {["1D", "1W", "1M", "1Y"].map((interval) => (
+            <button
+              key={interval}
+              onClick={() => handleIntervalChange(interval)}
+              className="px-4 py-2 font-sans text-lg font-medium leading-6 tracking-tight text-gray-800 bg-gray-200 rounded-lg cursor-pointer hover:bg-gray-300 active:bg-gray-400 md:px-6 md:py-2"
+            >
+              {interval}
+            </button>
+          ))}
+        </div>
       </div>
+
+      <div ref={chartContainerRef} className="w-full h-full relative" />
     </div>
   );
 };
