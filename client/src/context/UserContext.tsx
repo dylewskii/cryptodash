@@ -101,13 +101,18 @@ export function UserProvider({ children }: UserProviderProps) {
     if (!user.isAuthenticated) {
       return 0;
     }
-    const url = await fetchProfilePicUrl();
-    if (url) {
-      setProfilePicUrl(url);
+
+    try {
+      const url = await fetchProfilePicUrl();
+      if (url) {
+        setProfilePicUrl(url);
+      }
+    } catch (error) {
+      console.error("Error fetching profile picture URL", error);
     }
   }, [user.isAuthenticated]);
 
-  const updatePortfolio = useCallback(async () => {
+  const fetchAndSetPortfolioData = useCallback(async () => {
     if (!user.userId) {
       return;
     }
@@ -115,6 +120,7 @@ export function UserProvider({ children }: UserProviderProps) {
     setLoading(true);
 
     try {
+      // fetch array of coin objects from user's portfolio
       const portfolioObjects = await fetchPortfolio();
 
       // extract coin names into a string array
@@ -163,16 +169,19 @@ export function UserProvider({ children }: UserProviderProps) {
       console.error("Error fetching portfolio", error);
       setLoading(false);
     }
-
-    await fetchAndSetProfilePicUrl();
-  }, [user.userId, fetchAndSetProfilePicUrl]);
+  }, [user.userId]);
 
   useEffect(() => {
-    updatePortfolio();
+    const fetchAndSetUserData = async () => {
+      await fetchAndSetPortfolioData();
+      await fetchAndSetProfilePicUrl();
+    };
+
+    fetchAndSetUserData();
 
     socket.on("portfolioUpdated", ({ userId, portfolio }) => {
       if (user.userId === userId) {
-        updatePortfolio();
+        fetchAndSetPortfolioData();
         console.log("Portfolio updated:", portfolio);
       }
     });
@@ -180,7 +189,7 @@ export function UserProvider({ children }: UserProviderProps) {
     return () => {
       socket.off("portfolioUpdated");
     };
-  }, [user.userId, fetchAndSetProfilePicUrl, updatePortfolio]);
+  }, [user.userId, fetchAndSetProfilePicUrl, fetchAndSetPortfolioData]);
 
   return (
     <UserContext.Provider
