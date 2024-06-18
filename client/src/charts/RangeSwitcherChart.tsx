@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useRef } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
   createChart,
   IChartApi,
@@ -23,14 +23,6 @@ const intervalColors: Record<string, string> = {
   "1Y": "#F28F3B",
 };
 
-// const chartOptions: DeepPartial<ChartOptions> = {
-//   layout: {
-//     textColor: "black",
-//     background: { color: "white" },
-//   },
-//   height: 200,
-// };
-
 const RangeSwitcherChart: React.FC<RangeSwitcherChartProps> = ({
   dayData,
   weekData,
@@ -40,7 +32,8 @@ const RangeSwitcherChart: React.FC<RangeSwitcherChartProps> = ({
   const { theme } = useContext(ThemeProviderContext);
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
   const chartRef = useRef<IChartApi | null>(null);
-  const lineSeriesRef = useRef<ISeriesApi<"Line"> | null>(null);
+  const areaSeriesRef = useRef<ISeriesApi<"Area"> | null>(null);
+  const [selectedInterval, setSelectedInterval] = useState("1D");
 
   const seriesesData = useMemo(
     () =>
@@ -57,7 +50,21 @@ const RangeSwitcherChart: React.FC<RangeSwitcherChartProps> = ({
     return {
       layout: {
         textColor: theme === "dark" ? "white" : "black",
-        background: { color: theme === "dark" ? "#00000" : "#ffffff" },
+        background: { color: theme === "dark" ? "#000000" : "#ffffff" },
+      },
+      grid: {
+        vertLines: {
+          visible: false,
+        },
+        horzLines: {
+          visible: false,
+        },
+      },
+      timeScale: {
+        borderVisible: false,
+      },
+      priceScale: {
+        borderVisible: false,
       },
       height: 200,
     };
@@ -69,15 +76,21 @@ const RangeSwitcherChart: React.FC<RangeSwitcherChartProps> = ({
     const chart = createChart(chartContainerRef.current, chartOptions);
     chartRef.current = chart;
 
-    const lineSeries = chart.addLineSeries({ color: intervalColors["1D"] });
-    lineSeriesRef.current = lineSeries;
+    const areaSeries = chart.addAreaSeries({
+      topColor: intervalColors["1D"],
+      bottomColor: intervalColors["1D"] + "00", // transparent
+      lineColor: intervalColors["1D"],
+    });
+    areaSeriesRef.current = areaSeries;
 
     function setChartInterval(interval: string) {
       const data = seriesesData.get(interval);
       if (data) {
-        lineSeries.setData(data);
-        lineSeries.applyOptions({
-          color: intervalColors[interval],
+        areaSeries.setData(data);
+        areaSeries.applyOptions({
+          topColor: intervalColors[interval],
+          bottomColor: intervalColors[interval] + "00", // transparent
+          lineColor: intervalColors[interval],
         });
         chart.timeScale().fitContent();
       }
@@ -103,14 +116,17 @@ const RangeSwitcherChart: React.FC<RangeSwitcherChartProps> = ({
   }, [seriesesData, chartOptions]);
 
   const handleIntervalChange = (interval: string) => {
-    if (lineSeriesRef.current && chartRef.current) {
-      const lineSeries = lineSeriesRef.current;
+    setSelectedInterval(interval);
+    if (areaSeriesRef.current && chartRef.current) {
+      const areaSeries = areaSeriesRef.current;
       const chart = chartRef.current;
       const data = seriesesData.get(interval);
       if (data) {
-        lineSeries.setData(data);
-        lineSeries.applyOptions({
-          color: intervalColors[interval],
+        areaSeries.setData(data);
+        areaSeries.applyOptions({
+          topColor: intervalColors[interval],
+          bottomColor: intervalColors[interval] + "00", // transparent
+          lineColor: intervalColors[interval],
         });
         chart.timeScale().fitContent();
       }
@@ -119,14 +135,16 @@ const RangeSwitcherChart: React.FC<RangeSwitcherChartProps> = ({
 
   return (
     <div className="w-full h-full">
-      <div className="flex items-center justify-between pb-6">
+      <div className="flex flex-col pb-6 w-fit md:w-full md:flex-row md:items-center md:justify-between">
         <p className="text-2xl font-semibold">Performance</p>
-        <div className="flex flex-row gap-2 mt-2">
+        <div className="flex flex-row p-[1.85px] gap-1 mt-2 border-2 border-activeGray rounded-lg">
           {["1D", "1W", "1M", "1Y"].map((interval) => (
             <button
               key={interval}
               onClick={() => handleIntervalChange(interval)}
-              className="px-4 py-2 font-sans text-lg font-medium leading-6 tracking-tight text-gray-800 bg-gray-200 rounded-lg cursor-pointer hover:bg-gray-300 active:bg-gray-400 md:px-6 md:py-2"
+              className={`px-4 py-2 text-lg font-medium leading-6 tracking-tight rounded-lg cursor-pointer hover:bg-activeGray active:bg-gray-700 md:px-5 md:py-2 ${
+                selectedInterval === interval ? "bg-activeGray text-white" : ""
+              }`}
             >
               {interval}
             </button>
