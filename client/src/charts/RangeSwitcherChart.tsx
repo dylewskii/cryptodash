@@ -142,7 +142,7 @@ const RangeSwitcherChart: React.FC<RangeSwitcherChartProps> = ({
             <button
               key={interval}
               onClick={() => handleIntervalChange(interval)}
-              className={`px-4 py-2 text-lg font-medium leading-6 tracking-tight rounded-lg cursor-pointer hover:bg-activeGray active:bg-gray-700 md:px-5 md:py-2 ${
+              className={`px-[10px] py-[3px] font-medium leading-6 tracking-tight rounded-lg cursor-pointer hover:bg-activeGray hover:text-white active:bg-gray-700 md:px-4 md:py-1 ${
                 selectedInterval === interval ? "bg-activeGray text-white" : ""
               }`}
             >
