@@ -90,7 +90,7 @@ export const fetchPortfolioCoinData = async (
 export const sendAddCoinPostReq = async (
   coinData: CoinAdditionData
 ): Promise<CoinAdditionResponse> => {
-  const url = `http://localhost:8000/coins/add`;
+  const url = `http://localhost:8000/portfolio/add`;
 
   try {
     const res = await fetch(url, {
@@ -136,7 +136,7 @@ export const sendAddCoinPostReq = async (
  */
 export const fetchPortfolio = async (): Promise<CoinDB[]> => {
   try {
-    const url = `http://localhost:8000/coins/portfolio`;
+    const url = `http://localhost:8000/portfolio/all-coins`;
     const res = await fetch(url, {
       credentials: "include",
       headers: {

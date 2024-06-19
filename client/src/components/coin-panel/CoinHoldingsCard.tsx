@@ -45,7 +45,7 @@ export default function CoinHoldingsCard({
 
   const editHolding = async () => {
     const coinToEdit = coin.id;
-    const url = `http://localhost:8000/coins/edit`;
+    const url = `http://localhost:8000/portfolio/edit`;
     const options: RequestInit = {
       method: "PATCH",
       credentials: "include",
@@ -94,7 +94,7 @@ export default function CoinHoldingsCard({
 
   const deleteHolding = async () => {
     const coinToDelete = coin.id;
-    const url = `http://localhost:8000/coins/delete`;
+    const url = `http://localhost:8000/portfolio/delete`;
     const options: RequestInit = {
       method: "DELETE",
       credentials: "include",

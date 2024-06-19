@@ -62,7 +62,7 @@ export default function PortfolioCard() {
     }
 
     await handleRequest(
-      "http://localhost:8000/coins/add",
+      "http://localhost:8000/portfolio/add",
       "POST",
       { id: selectedCoin.id, amount: addedAmount },
       `${capitalizeFirstLetter(addedCoin)} has been added successfully`,
