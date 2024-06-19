@@ -1,34 +1,34 @@
 const express = require("express");
 const router = express.Router();
 const passport = require("passport");
-const coinsController = require("../controllers/coinsController");
+const portfolioController = require("../controllers/portfolioController");
 
 // GET -> all coins
 router.get(
-  "/portfolio",
+  "/all-coins",
   passport.authenticate("jwt", { session: false }),
-  coinsController.getPortfolio
+  portfolioController.getPortfolio
 );
 
 // POST -> add a coin
 router.post(
   "/add",
   passport.authenticate("jwt", { session: false }),
-  coinsController.addCoin
+  portfolioController.addCoin
 );
 
 // DELETE -> delete a coin
 router.delete(
   "/delete",
   passport.authenticate("jwt", { session: false }),
-  coinsController.deleteCoin
+  portfolioController.deleteCoin
 );
 
 // PATCH -> edit coin holding amount
 router.patch(
   "/edit",
   passport.authenticate("jwt", { session: false }),
-  coinsController.editCoin
+  portfolioController.editCoin
 );
 
 module.exports = router;

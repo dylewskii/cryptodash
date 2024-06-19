@@ -8,7 +8,7 @@ const mongoose = require("mongoose");
 
 // routers
 const authRouter = require("./routes/auth");
-const coinsRouter = require("./routes/coins");
+const portfolioRouter = require("./routes/portfolio");
 const dataRouter = require("./routes/data");
 const uploadRouter = require("./routes/upload");
 const passport = require("passport");
@@ -48,7 +48,7 @@ app.use(passport.initialize());
 
 // routes
 app.use("/auth", authRouter);
-app.use("/coins", coinsRouter);
+app.use("/portfolio", portfolioRouter);
 app.use("/data", dataRouter);
 app.use("/upload", uploadRouter);
 
