@@ -1,6 +1,11 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
+const portfolioValueSchema = new Schema({
+  timestamp: { type: Date, default: Date.now },
+  value: { type: Number },
+});
+
 const userSchema = new Schema(
   {
     username: {
@@ -30,6 +35,7 @@ const userSchema = new Schema(
         addedAt: { type: Date, default: Date.now },
       },
     ],
+    portfolioValues: [portfolioValueSchema],
   },
   {
     timestamps: true,
