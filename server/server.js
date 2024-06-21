@@ -1,4 +1,8 @@
-// app
+require("dotenv").config();
+require("./utils/portfolioUpdater");
+require("./strategies/passportJwt");
+
+// app / server / db
 const { createServer } = require("node:http");
 const { Server } = require("socket.io");
 const express = require("express");
@@ -12,9 +16,6 @@ const portfolioRouter = require("./routes/portfolio");
 const dataRouter = require("./routes/data");
 const uploadRouter = require("./routes/upload");
 const passport = require("passport");
-
-require("./strategies/passportJwt");
-require("dotenv").config();
 
 // create express app & http server
 const app = express();
@@ -60,5 +61,3 @@ const PORT = process.env.PORT || 8000;
 server.listen(PORT, () => {
   console.log(`Express listening on port: ${PORT}`);
 });
-
-require("./utils/portfolioUpdater");
