@@ -1,19 +1,46 @@
-// ------------------------------- TYPES -------------------------------
-interface imageData {
+// ------------------------------- INTERFACE / TYPES -------------------------------
+interface ImageData {
   thumb: string;
   sm: string;
   lg: string;
+}
+
+interface Links {
+  homepage: string[];
+  whitepaper: string;
+  blockchain_site: string[];
+  official_forum_url: string[];
+  chat_url: string[];
+  announcement_url: string[];
+  twitter_screen_name: string;
+  facebook_username: string;
+  bitcointalk_thread_identifier: null | string;
+  telegram_channel_identifier: string;
+  subreddit_url: string;
+  repos_url: {
+    github: string[];
+    bitbucket: string[];
+  };
 }
 
 interface Coin {
   id: string;
   name: string;
   symbol: string;
-  image: imageData;
+  image: ImageData;
   currentPrice: number;
   marketCap: number;
   ath: number;
   webSlug: string;
+  description: string;
+  links: Links;
+  genesis_date: string;
+  market_cap_rank: number;
+  fully_diluted_valuation: string;
+  price_change_percentage_24h: number;
+  total_supply: number;
+  max_supply: number;
+  circulating_supply: number;
 }
 
 interface CoinDB {
@@ -66,6 +93,17 @@ export const fetchPortfolioCoinData = async (
         marketCap: data.data.market_data.market_cap.usd,
         ath: data.data.market_data.ath.usd,
         webSlug: data.data.market_data.web_slug,
+        description: data.data.description.en,
+        links: data.data.links,
+        genesis_date: data.data.genesis_date,
+        market_cap_rank: data.data.market_data.market_cap_rank,
+        fully_diluted_valuation:
+          data.data.market_data.fully_diluted_valuation.usd,
+        price_change_percentage_24h:
+          data.data.market_data.price_change_percentage_24h,
+        total_supply: data.data.market_data.total_supply,
+        max_supply: data.data.market_data.max_supply,
+        circulating_supply: data.data.market_data.circulating_supply,
       };
     } catch (error) {
       console.error("Error fetching portfolio data for coin:", coin, error);
