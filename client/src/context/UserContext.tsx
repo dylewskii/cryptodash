@@ -11,7 +11,6 @@ import { fetchPortfolioCoinData, fetchPortfolio } from "@/lib/portfolioUtils";
 import fetchProfilePicUrl from "@/lib/fetchProfilePicUrl";
 import socket from "../socket/socket";
 // ------------------------------- TYPES -------------------------------
-// shape of user data
 interface UserType {
   userId: string;
   username: string;
@@ -19,7 +18,6 @@ interface UserType {
   isAuthenticated: boolean;
 }
 
-// default user object (used before user authentication is confirmed)
 const defaultUser: UserType = {
   userId: "",
   username: "",
@@ -27,11 +25,28 @@ const defaultUser: UserType = {
   isAuthenticated: false,
 };
 
-// shape of image data
-interface imageData {
+interface ImageData {
   thumb: string;
   sm: string;
   lg: string;
+}
+
+interface Links {
+  homepage: string[];
+  whitepaper: string;
+  blockchain_site: string[];
+  official_forum_url: string[];
+  chat_url: string[];
+  announcement_url: string[];
+  twitter_screen_name: string;
+  facebook_username: string;
+  bitcointalk_thread_identifier: null | string;
+  telegram_channel_identifier: string;
+  subreddit_url: string;
+  repos_url: {
+    github: string[];
+    bitbucket: string[];
+  };
 }
 
 // detailed information about each coin
@@ -42,21 +57,30 @@ export interface DetailedCoin {
   totalValue: number;
   info: {
     symbol: string;
-    image: imageData;
+    image: ImageData;
     currentPrice: number;
     marketCap: number;
     ath: number;
     webSlug: string;
+    description: string;
+    links: Links;
+    genesis_date: string;
+    market_cap_rank: number;
+    fully_diluted_valuation: string;
+    price_change_percentage_24h: number;
+    total_supply: number;
+    max_supply: number;
+    circulating_supply: number;
   };
 }
 
-// overall portfolio structure
+// portfolio structure
 interface Portfolio {
   list: string[];
   detailed: DetailedCoin[];
 }
 
-// default value for the portfolio
+// default values for the portfolio
 const defaultPortfolio: Portfolio = {
   list: [],
   detailed: [],
@@ -155,6 +179,15 @@ export function UserProvider({ children }: UserProviderProps) {
             marketCap: coin.marketCap,
             ath: coin.ath,
             webSlug: coin.webSlug,
+            description: coin.description,
+            links: coin.links,
+            genesis_date: coin.genesis_date,
+            market_cap_rank: coin.market_cap_rank,
+            fully_diluted_valuation: coin.fully_diluted_valuation,
+            price_change_percentage_24h: coin.price_change_percentage_24h,
+            total_supply: coin.total_supply,
+            max_supply: coin.max_supply,
+            circulating_supply: coin.circulating_supply,
           },
         };
       });
