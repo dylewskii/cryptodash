@@ -495,7 +495,7 @@ const yearData: LineData[] = [
 export default function PortfolioPerformance() {
   return (
     <>
-      <Card className="mt-4">
+      <Card>
         <CardContent className="py-4">
           <RangeSwitcherChart
             dayData={dayData}

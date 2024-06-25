@@ -6,8 +6,8 @@ import PortfolioPerformance from "./PortfolioPerformance";
 export default function AssetsPanel() {
   return (
     <>
-      <section>
-        <TotalBalance />
+      <section className="flex flex-col gap-4">
+        <TotalBalance className="my-4" />
         <PortfolioPerformance />
         <PortfolioCard />
         <HoldingBreakdown />

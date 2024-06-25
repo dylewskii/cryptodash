@@ -9,7 +9,7 @@ import {
 export default function HoldingBreakdown() {
   return (
     <>
-      <Card className="mt-4">
+      <Card>
         <CardHeader>
           <CardTitle>Holding Breakdown</CardTitle>
         </CardHeader>
