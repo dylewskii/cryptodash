@@ -3,7 +3,11 @@ import { useContext } from "react";
 import { Skeleton } from "../ui/skeleton";
 import formatCurrency from "@/lib/formatCurrency";
 
-export default function TotalBalance() {
+interface TotalBalanceProps {
+  className?: string;
+}
+
+export default function TotalBalance({ className }: TotalBalanceProps) {
   const { portfolio, loading } = useContext(UserContext);
   const totalValueArray = portfolio.detailed.map(
     (coinObject) => coinObject.totalValue
@@ -15,7 +19,7 @@ export default function TotalBalance() {
   );
 
   return (
-    <div className="flex flex-col mb-6">
+    <div className={`flex flex-col ${className}`}>
       Total Balance
       {loading ? (
         <Skeleton className="h-[50px] w-[210px]" />
