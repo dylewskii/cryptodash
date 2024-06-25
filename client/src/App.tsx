@@ -1,5 +1,6 @@
 // react router
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import ProtectedRoutes from "./lib/ProtectedRoutes.tsx";
 // layouts
 import AppLayout from "./components/layout/AppLayout.tsx";
 import ExternalLayout from "./components/layout/ExternalLayout.tsx";
@@ -13,22 +14,21 @@ import PrivacyPolicyPage from "./pages/PrivacyPolicyPage.tsx";
 import DisclaimerPage from "./pages/DisclaimerPage.tsx";
 import FAQPage from "./pages/FAQPage.tsx";
 // components
-import ProfilePanel from "./components/profile-panel/ProfilePanel.tsx";
-import SettingsPanel from "./components/settings-panel/SettingsPanel.tsx";
-import Dashboard from "./components/dashboard-panel/Dashboard.tsx";
-import AssetsPanel from "./components/assets-panel/AssetsPanel.tsx";
-import ExplorePanel from "./components/explore-panel/ExplorePanel.tsx";
-import InsightsPanel from "./components/insights-panel/InsightsPanel.tsx";
-import SwapPanel from "./components/swap-panel/SwapPanel.tsx";
-import SendPanel from "./components/send-panel/SendPanel.tsx";
-import CoinPanel from "./components/coin-panel/CoinPanel.tsx";
+import ProfilePanel from "./components/panels/profile-panel/ProfilePanel.tsx";
+import SettingsPanel from "./components/panels/settings-panel/SettingsPanel.tsx";
+import DashboardPanel from "./components/panels/dashboard-panel/DashboardPanel.tsx";
+import AssetsPanel from "./components/panels/assets-panel/AssetsPanel.tsx";
+import ExplorePanel from "./components/panels/explore-panel/ExplorePanel.tsx";
+import InsightsPanel from "./components/panels/insights-panel/InsightsPanel.tsx";
+import SwapPanel from "./components/panels/swap-panel/SwapPanel.tsx";
+import SendPanel from "./components/panels/send-panel/SendPanel.tsx";
+import CoinPanel from "./components/panels/coin-panel/CoinPanel.tsx";
 // context
 import { UserProvider } from "./context/UserContext";
 import { DataProvider } from "./context/DataContext";
 import { ThemeProvider } from "./context/ThemeContext.tsx";
 // css
 import "./globals.css";
-import ProtectedRoutes from "./lib/ProtectedRoutes.tsx";
 
 const router = createBrowserRouter([
   {
@@ -113,7 +113,7 @@ const router = createBrowserRouter([
     children: [
       { path: "profile", element: <ProfilePanel /> },
       { path: "settings", element: <SettingsPanel /> },
-      { path: "home", element: <Dashboard /> },
+      { path: "home", element: <DashboardPanel /> },
       { path: "assets", element: <AssetsPanel /> },
       { path: "explore", element: <ExplorePanel /> },
       { path: "insights", element: <InsightsPanel /> },
