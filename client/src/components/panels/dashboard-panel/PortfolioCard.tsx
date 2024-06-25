@@ -1,10 +1,16 @@
 // ------------------------------ IMPORTS ------------------------------
+// react
+import { useContext, useState } from "react";
+import { Link } from "react-router-dom";
+// context
+import DataContext from "@/context/DataContext";
+import UserContext from "@/context/UserContext";
 // ui
-import SelectorDropdown from "../ui/SelectorDropdown";
+import SelectorDropdown from "../../ui/SelectorDropdown";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Dialog,
@@ -16,18 +22,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Loader2 } from "lucide-react";
-// react
-import { useContext, useState } from "react";
-import { Link } from "react-router-dom";
 // utils
 import { useDialog } from "@/hooks/useDialog";
-import UserContext from "@/context/UserContext";
 import formatCurrency from "@/lib/formatCurrency";
 import capitalizeFirstLetter from "@/lib/capitalizeFirstLetter";
 // types
 import { DetailedCoin } from "@/context/UserContext";
-// context
-import DataContext from "@/context/DataContext";
 
 interface PortfolioEntryLineProps {
   coin: DetailedCoin;

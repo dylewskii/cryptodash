@@ -1,3 +1,4 @@
+// ui
 import {
   Table,
   TableBody,
@@ -6,7 +7,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Skeleton } from "../ui/skeleton";
+import { Skeleton } from "../../ui/skeleton";
+// utils
 import formatCurrency from "@/lib/formatCurrency";
 
 export interface CoinObject {

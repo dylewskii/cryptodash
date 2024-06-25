@@ -1,6 +1,9 @@
-import UserContext from "@/context/UserContext";
+// context
 import { useContext } from "react";
-import { Skeleton } from "../ui/skeleton";
+import UserContext from "@/context/UserContext";
+// ui
+import { Skeleton } from "../../ui/skeleton";
+// utils
 import formatCurrency from "@/lib/formatCurrency";
 
 interface TotalBalanceProps {

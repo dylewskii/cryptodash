@@ -1,8 +1,10 @@
+// react
 import UserContext from "@/context/UserContext";
 import { useContext, useRef, useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
+// ui
+import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
+import { Label } from "../../ui/label";
+import { Input } from "../../ui/input";
 import { Loader2 } from "lucide-react";
 
 export default function ProfilePanel() {

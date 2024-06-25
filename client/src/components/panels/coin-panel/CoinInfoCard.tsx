@@ -4,7 +4,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "../ui/card";
+} from "../../ui/card";
 import formatCurrency from "@/lib/formatCurrency";
 import { DetailedCoin } from "@/context/UserContext";
 

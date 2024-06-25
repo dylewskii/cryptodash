@@ -1,4 +1,6 @@
+// react
 import { useState } from "react";
+// ui
 import {
   Card,
   CardHeader,
@@ -6,7 +8,7 @@ import {
   CardDescription,
   CardContent,
   CardFooter,
-} from "../ui/card";
+} from "../../ui/card";
 import {
   Dialog,
   DialogHeader,
@@ -15,15 +17,17 @@ import {
   DialogContent,
   DialogFooter,
   DialogTrigger,
-} from "../ui/dialog";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
+} from "../../ui/dialog";
+import { Button } from "../../ui/button";
+import { Input } from "../../ui/input";
+import { Label } from "../../ui/label";
 import { Loader2 } from "lucide-react";
+import { useToast } from "../../ui/use-toast";
+// utils
 import formatCurrency from "@/lib/formatCurrency";
 import capitalizeFirstLetter from "@/lib/capitalizeFirstLetter";
+// types /interface
 import { DetailedCoin } from "@/context/UserContext";
-import { useToast } from "../ui/use-toast";
 
 interface CoinHoldingsCardProps {
   coin: DetailedCoin;

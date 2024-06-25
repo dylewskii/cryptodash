@@ -1,12 +1,14 @@
-import PasswordReset from "../misc/PasswordReset";
+// components
+import PasswordReset from "../../misc/PasswordReset";
+// ui
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../ui/card";
-import ModeToggle from "../../components/ui/mode-toggle";
+} from "../../ui/card";
+import ModeToggle from "../../ui/mode-toggle";
 
 export default function SettingsPanel() {
   return (

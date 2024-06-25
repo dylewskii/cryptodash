@@ -4,7 +4,7 @@ import DataContext from "@/context/DataContext";
 // components
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import SelectorDropdown from "../ui/SelectorDropdown";
+import SelectorDropdown from "../../ui/SelectorDropdown";
 import useCryptoFiatValues from "@/hooks/useCryptoFiatValues";
 // types
 import { DetailedCoin } from "@/context/UserContext";

@@ -1,4 +1,5 @@
-import { ScrollArea } from "../ui/scroll-area";
+// ui
+import { ScrollArea } from "../../ui/scroll-area";
 
 const cryptoList = [
   {

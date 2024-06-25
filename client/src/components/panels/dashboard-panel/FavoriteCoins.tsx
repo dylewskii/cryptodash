@@ -1,3 +1,7 @@
+// react
+import { useContext } from "react";
+import UserContext from "@/context/UserContext";
+// ui
 import {
   Card,
   CardContent,
@@ -5,10 +9,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import UserContext from "@/context/UserContext";
+import { Skeleton } from "../../ui/skeleton";
+// utils
 import formatCurrency from "@/lib/formatCurrency";
-import { useContext } from "react";
-import { Skeleton } from "../ui/skeleton";
 
 export default function FavoriteCoins() {
   const { portfolio, loading } = useContext(UserContext);

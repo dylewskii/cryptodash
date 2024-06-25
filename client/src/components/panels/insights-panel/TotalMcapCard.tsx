@@ -1,3 +1,6 @@
+// react
+import { useEffect, useState } from "react";
+// ui
 import {
   Card,
   CardContent,
@@ -11,7 +14,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useEffect, useState } from "react";
+// utils
 import formatCurrency from "@/lib/formatCurrency";
 
 interface TotalMcapCardProps {

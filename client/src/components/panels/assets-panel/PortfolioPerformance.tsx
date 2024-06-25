@@ -1,4 +1,4 @@
-import { Card, CardContent, CardFooter } from "../ui/card";
+import { Card, CardContent, CardFooter } from "../../ui/card";
 // import ChartComponent from "../../charts/ChartComponent";
 import RangeSwitcherChart from "@/charts/RangeSwitcherChart";
 import { LineData } from "lightweight-charts";

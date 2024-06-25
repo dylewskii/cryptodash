@@ -22,7 +22,7 @@ export default function ExplorePanel() {
   useEffect(() => {
     const fetchCryptoCoinsList = async () => {
       setLoading(true);
-      const url = `http://localhost:8000/data/coins-list-with-data`;
+      const url = `http://localhost:8000/data/all-coins-with-market-data`;
       try {
         const response = await fetch(url, {
           credentials: "include",
