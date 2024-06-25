@@ -66,9 +66,9 @@ export default function CryptoListTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {cryptoList.map((coinObject: CoinObject) => {
+            {cryptoList.map((coinObject: CoinObject, i) => {
               return (
-                <TableRow key={coinObject.name}>
+                <TableRow key={`${coinObject.name}${i}`}>
                   <TableCell className="font-medium flex items-center">
                     {coinObject.market_cap_rank}
                   </TableCell>
