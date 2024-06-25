@@ -9,7 +9,7 @@ export default function AppLayout() {
     <>
       <Navbar />
       <Toaster />
-      <div className="flex flex-col md:flex-row mx-2">
+      <div className="flex flex-col items-between md:flex-row">
         <Sidebar />
         <MainContent>
           <Outlet />
