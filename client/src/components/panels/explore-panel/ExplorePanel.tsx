@@ -1,41 +1,47 @@
 // components
 import CryptoListTable from "./CryptoListTable";
 // react
-import { useEffect, useMemo, useState } from "react";
-// interface
-import { CoinObject } from "./CryptoListTable";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import DataContext from "@/context/DataContext";
 // misc
 import { Input } from "@/components/ui/input";
 
 export default function ExplorePanel() {
-  const [cryptoList, setCryptoList] = useState<CoinObject[]>([]);
+  // const [cryptoList, setCryptoList] = useState<CoinObject[]>([]);
   const [searchActive, setSearchActive] = useState<boolean>(false);
   const [query, setQuery] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(1);
+  const { fetchCoins, cryptoList, loading } = useContext(DataContext);
 
+  // filtered list of coins based on the search query
   const filteredCryptoCoins = useMemo(() => {
     return cryptoList.filter((coin) =>
       coin.name.toLowerCase().includes(query.toLowerCase())
     );
   }, [query, cryptoList]);
 
+  // fetch new coins when the page changes (i.e reaches bottom of the page)
   useEffect(() => {
-    const fetchCryptoCoinsList = async () => {
-      setLoading(true);
-      const url = `http://localhost:8000/data/all-coins-with-market-data`;
-      try {
-        const response = await fetch(url, {
-          credentials: "include",
-        });
-        const data = await response.json();
-        setLoading(false);
-        setCryptoList(data.data);
-      } catch (err) {
-        console.error("Failed to fetch coins list from API:", err);
-      }
-    };
-    fetchCryptoCoinsList();
-  }, []);
+    fetchCoins(page);
+  }, [page, fetchCoins]);
+
+  const handleInfiniteScroll = useCallback(() => {
+    const scrollHeight = document.documentElement.scrollHeight; // total document height (including the part not visible on the screen)
+    const scrollTop = document.documentElement.scrollTop; // nr of pixels the document is currently scrolled from the top
+    const innerHeight = window.innerHeight; // inner height of the window (viewport)
+
+    // if user has scrolled to the bottom of the page, load the next page
+    if (innerHeight + scrollTop + 1 >= scrollHeight && !loading) {
+      setPage((prev) => prev + 1);
+    }
+  }, [loading]);
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleInfiniteScroll);
+
+    // cleanup
+    return () => window.removeEventListener("scroll", handleInfiniteScroll);
+  }, [handleInfiniteScroll]);
 
   return (
     <section className="my-4">
@@ -68,7 +74,6 @@ export default function ExplorePanel() {
           }}
         />
       </div>
-
       <CryptoListTable
         cryptoList={searchActive ? filteredCryptoCoins : cryptoList}
         loading={loading}
