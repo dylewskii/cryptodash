@@ -113,6 +113,7 @@ export default function PortfolioCard() {
                         Coin
                       </label>
                       <SelectorDropdown
+                        className="col-span-3"
                         label="Select a coin"
                         items={cryptoList}
                         value={addedCoin}
