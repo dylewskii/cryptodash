@@ -50,44 +50,40 @@ export default function CryptoListTable({
   loading,
 }: CryptoListTableProps) {
   return (
-    <>
-      {loading ? (
-        <Skeleton className="h-[300px] w-full md:h-[600px] rounded-xl mt-4" />
-      ) : (
-        <Table className="mt-4">
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[25px]">Rank</TableHead>
-              <TableHead className="w-[25px]">Icon</TableHead>
-
-              <TableHead>Name</TableHead>
-              <TableHead>Price</TableHead>
-              <TableHead className="text-right">Market Cap</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {cryptoList.map((coinObject: CoinObject, i) => {
-              return (
-                <TableRow key={`${coinObject.name}${i}`}>
-                  <TableCell className="font-medium flex items-center">
-                    {coinObject.market_cap_rank}
-                  </TableCell>
-                  <TableCell>
-                    <img src={coinObject.image} alt=""></img>
-                  </TableCell>
-                  <TableCell>{coinObject.name}</TableCell>
-                  <TableCell>
-                    {formatCurrency(coinObject.current_price)}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    {formatCurrency(coinObject.market_cap)}
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      )}
-    </>
+    <Table className="mt-4">
+      <TableHeader>
+        <TableRow>
+          <TableHead className="w-[25px]">Rank</TableHead>
+          <TableHead className="w-[25px]">Icon</TableHead>
+          <TableHead>Name</TableHead>
+          <TableHead>Price</TableHead>
+          <TableHead className="text-right">Market Cap</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {cryptoList.map((coinObject: CoinObject, i) => (
+          <TableRow key={`${coinObject.name}${i}`}>
+            <TableCell className="font-medium flex items-center">
+              {coinObject.market_cap_rank}
+            </TableCell>
+            <TableCell>
+              <img src={coinObject.image} alt="" />
+            </TableCell>
+            <TableCell>{coinObject.name}</TableCell>
+            <TableCell>{formatCurrency(coinObject.current_price)}</TableCell>
+            <TableCell className="text-right">
+              {formatCurrency(coinObject.market_cap)}
+            </TableCell>
+          </TableRow>
+        ))}
+        {loading && (
+          <TableRow>
+            <TableCell colSpan={5} className="text-center">
+              <Skeleton className="w-full h-10" />
+            </TableCell>
+          </TableRow>
+        )}
+      </TableBody>
+    </Table>
   );
 }
