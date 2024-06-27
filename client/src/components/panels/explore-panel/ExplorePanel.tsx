@@ -68,6 +68,7 @@ export default function ExplorePanel() {
           placeholder="Search the cryptocurrency market"
           type="text"
           value={query}
+          isFocusVisible={false}
           onChange={(e) => {
             setQuery(e.target.value);
             setSearchActive(e.target.value.trim().length > 0);
