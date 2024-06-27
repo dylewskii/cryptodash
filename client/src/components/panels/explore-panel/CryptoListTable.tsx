@@ -57,6 +57,7 @@ export default function CryptoListTable({
           <TableHead className="w-[25px]">Icon</TableHead>
           <TableHead>Name</TableHead>
           <TableHead>Price</TableHead>
+          <TableHead>% (24h)</TableHead>
           <TableHead className="text-right">Market Cap</TableHead>
         </TableRow>
       </TableHeader>
@@ -71,6 +72,31 @@ export default function CryptoListTable({
             </TableCell>
             <TableCell>{coinObject.name}</TableCell>
             <TableCell>{formatCurrency(coinObject.current_price)}</TableCell>
+            <TableCell
+              className={
+                coinObject.price_change_percentage_24h < 0
+                  ? "flex text-red-600"
+                  : "flex text-green-600"
+              }
+            >
+              {coinObject.price_change_percentage_24h}
+              {
+                <svg
+                  className="w-4 h-4 mt-[2px]"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M6 9L12 15L18 9"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              }
+            </TableCell>
             <TableCell className="text-right">
               {formatCurrency(coinObject.market_cap)}
             </TableCell>
