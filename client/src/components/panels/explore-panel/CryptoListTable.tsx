@@ -104,7 +104,7 @@ export default function CryptoListTable({
         ))}
         {loading && (
           <TableRow>
-            <TableCell colSpan={5} className="text-center">
+            <TableCell colSpan={6} className="text-center">
               <Skeleton className="w-full h-10" />
             </TableCell>
           </TableRow>
