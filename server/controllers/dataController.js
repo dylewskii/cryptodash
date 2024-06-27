@@ -2,14 +2,15 @@ require("dotenv").config();
 
 const fetchPortfolioCoinData = async (req, res) => {
   // extract the coin query param
-  const coinName = req.query.coin;
-  if (!coinName) {
+  const coinId = req.query.coin;
+  if (!coinId) {
     return res
       .status(400)
       .json({ success: false, message: "No coin specified" });
   }
 
-  const url = `https://api.coingecko.com/api/v3/coins/${coinName}`;
+  const url = `https://api.coingecko.com/api/v3/coins/${coinId}`;
+  const queryParams = `?sparkline=true`;
   const options = {
     method: "GET",
     headers: {
@@ -19,7 +20,7 @@ const fetchPortfolioCoinData = async (req, res) => {
   };
 
   try {
-    const response = await fetch(url, options);
+    const response = await fetch(`${url}${queryParams}`, options);
     const data = await response.json();
 
     res.status(200).json({
@@ -28,7 +29,7 @@ const fetchPortfolioCoinData = async (req, res) => {
     });
   } catch (error) {
     console.error(
-      `Error fetching coin data (for ${coinName}) from CoinGecko:`,
+      `Error fetching coin data (for ${coinId}) from CoinGecko:`,
       error
     );
   }
