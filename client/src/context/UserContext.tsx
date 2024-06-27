@@ -71,6 +71,7 @@ export interface DetailedCoin {
     total_supply: number;
     max_supply: number;
     circulating_supply: number;
+    sparkline: number[];
   };
 }
 
@@ -188,6 +189,7 @@ export function UserProvider({ children }: UserProviderProps) {
             total_supply: coin.total_supply,
             max_supply: coin.max_supply,
             circulating_supply: coin.circulating_supply,
+            sparkline: coin.sparkline,
           },
         };
       });
