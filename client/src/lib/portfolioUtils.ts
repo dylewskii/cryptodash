@@ -41,6 +41,7 @@ interface Coin {
   total_supply: number;
   max_supply: number;
   circulating_supply: number;
+  sparkline: number[];
 }
 
 interface CoinDB {
@@ -104,6 +105,7 @@ export const fetchPortfolioCoinData = async (
         total_supply: data.data.market_data.total_supply,
         max_supply: data.data.market_data.max_supply,
         circulating_supply: data.data.market_data.circulating_supply,
+        sparkline: data.data.market_data.sparkline_7d.price,
       };
     } catch (error) {
       console.error("Error fetching portfolio data for coin:", coin, error);
