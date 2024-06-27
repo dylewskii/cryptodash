@@ -86,7 +86,7 @@ const fetchAllCoinsWithMarketData = async (req, res) => {
   const { page = 1 } = req.query;
 
   const url = `https://api.coingecko.com/api/v3/coins/markets`;
-  const queryParams = `?vs_currency=usd&order=market_cap_desc&page=${page}`;
+  const queryParams = `?vs_currency=usd&order=market_cap_desc&sparkline=true&page=${page}`;
   const options = {
     method: "GET",
     headers: {

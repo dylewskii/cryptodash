@@ -1,6 +1,10 @@
 import { createContext, useState, useEffect, useCallback } from "react";
 
 // ------------------------------- TYPES -------------------------------
+interface Sparkline {
+  price: number[];
+}
+
 export interface CryptoCoin {
   ath: number;
   ath_change_percentage: number;
@@ -9,7 +13,7 @@ export interface CryptoCoin {
   atl_change_percentage: number;
   atl_date: string;
   circulating_supply: number;
-  current_price: 60907;
+  current_price: number;
   fully_diluted_valuation: number;
   high_24h: number;
   id: string;
@@ -28,6 +32,7 @@ export interface CryptoCoin {
   symbol: string;
   total_supply: number;
   total_volume: number;
+  sparkline_in_7d: Sparkline;
 }
 
 // shape of the context object provided by DataContext
@@ -107,6 +112,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
         symbol: coin.symbol,
         total_supply: coin.total_supply,
         total_volume: coin.total_volume,
+        sparkline_in_7d: coin.sparkline_in_7d.price,
       };
     });
 
