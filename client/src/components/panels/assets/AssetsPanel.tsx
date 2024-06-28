@@ -1,5 +1,5 @@
-import PortfolioCard from "../dashboard-panel/PortfolioCard";
-import TotalBalance from "../dashboard-panel/TotalBalance";
+import PortfolioCard from "../dashboard/PortfolioCard";
+import TotalBalance from "../dashboard/TotalBalance";
 import HoldingBreakdown from "./HoldingBreakdown";
 import PortfolioPerformance from "./PortfolioPerformance";
 

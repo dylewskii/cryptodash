@@ -14,15 +14,15 @@ import PrivacyPolicyPage from "./pages/PrivacyPolicyPage.tsx";
 import DisclaimerPage from "./pages/DisclaimerPage.tsx";
 import FAQPage from "./pages/FAQPage.tsx";
 // components
-import ProfilePanel from "./components/panels/profile-panel/ProfilePanel.tsx";
-import SettingsPanel from "./components/panels/settings-panel/SettingsPanel.tsx";
-import DashboardPanel from "./components/panels/dashboard-panel/DashboardPanel.tsx";
-import AssetsPanel from "./components/panels/assets-panel/AssetsPanel.tsx";
-import ExplorePanel from "./components/panels/explore-panel/ExplorePanel.tsx";
-import InsightsPanel from "./components/panels/insights-panel/InsightsPanel.tsx";
-import SwapPanel from "./components/panels/swap-panel/SwapPanel.tsx";
-import SendPanel from "./components/panels/send-panel/SendPanel.tsx";
-import CoinPanel from "./components/panels/coin-panel/CoinPanel.tsx";
+import ProfilePanel from "./components/panels/profile/ProfilePanel.tsx";
+import SettingsPanel from "./components/panels/settings/SettingsPanel.tsx";
+import DashboardPanel from "./components/panels/dashboard/DashboardPanel.tsx";
+import AssetsPanel from "./components/panels/assets/AssetsPanel.tsx";
+import ExplorePanel from "./components/panels/explore/ExplorePanel.tsx";
+import InsightsPanel from "./components/panels/insights/InsightsPanel.tsx";
+import SwapPanel from "./components/panels/swap/SwapPanel.tsx";
+import SendPanel from "./components/panels/send/SendPanel.tsx";
+import CoinPanel from "./components/panels/coin/CoinPanel.tsx";
 // context
 import { UserProvider } from "./context/UserContext";
 import { DataProvider } from "./context/DataContext";
