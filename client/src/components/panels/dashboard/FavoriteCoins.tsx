@@ -1,7 +1,8 @@
 // react
 import { useContext } from "react";
 import UserContext from "@/context/UserContext";
-// ui
+// components / ui
+import SparkLineChart from "@/charts/SparkLineChart";
 import {
   Card,
   CardContent,
@@ -13,7 +14,7 @@ import {
 import { Skeleton } from "../../ui/skeleton";
 // utils
 import formatCurrency from "@/lib/formatCurrency";
-import SparkLineChart from "@/charts/SparkLineChart";
+import { roundToTwoDecimalPlaces } from "@/lib/roundToTwoDecimalPlaces";
 
 export default function FavoriteCoins() {
   const { portfolio, loading } = useContext(UserContext);
@@ -57,12 +58,23 @@ export default function FavoriteCoins() {
                   {portfolioCoin.info.symbol.toUpperCase()}
                 </CardDescription>
               </CardHeader>
-              <CardContent className="py-0 px-6">
-                <p className="text-black text-3xl z-50">
+              <CardContent className="flex justify-between items-center py-0 px-6">
+                <p className="flex text-black text-3xl z-50">
                   {underTwoDecimals
                     ? formatCurrency(coinPrice, "USD", 6)
                     : formatCurrency(coinPrice, "USD", 2)}
                 </p>
+                <span
+                  className={
+                    portfolioCoin.info.price_change_percentage_7d < 0
+                      ? "flex justify-between text-red-600"
+                      : "flex justify-between text-green-600"
+                  }
+                >
+                  {roundToTwoDecimalPlaces(
+                    portfolioCoin.info.price_change_percentage_7d
+                  ) + "%"}
+                </span>
               </CardContent>
               <CardFooter className="flex justify-center p-0 overflow-hidden">
                 <SparkLineChart
