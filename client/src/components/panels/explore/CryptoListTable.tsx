@@ -19,7 +19,7 @@ export interface CoinObject {
   atl_change_percentage: number;
   atl_date: string;
   circulating_supply: number;
-  current_price: 60907;
+  current_price: number;
   fully_diluted_valuation: number;
   high_24h: number;
   id: string;
