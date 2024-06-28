@@ -10,6 +10,13 @@ router.get(
   portfolioController.getPortfolio
 );
 
+// GET -> portfolio values
+router.get(
+  "/portfolio-values",
+  passport.authenticate("jwt", { session: false }),
+  portfolioController.getPortfolioValues
+);
+
 // POST -> add a coin
 router.post(
   "/add",
