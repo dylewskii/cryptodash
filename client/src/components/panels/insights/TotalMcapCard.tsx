@@ -22,46 +22,55 @@ interface TotalMcapCardProps {
 }
 
 export default function TotalMcapCard({ className = "" }: TotalMcapCardProps) {
-  const [totalMcap, setTotalMcap] = useState("");
-  const [lastUpdated, setLastUpdated] = useState("");
+  const [totalMcap, setTotalMcap] = useState<string>("");
+  const [lastUpdated, setLastUpdated] = useState<string>("");
   const url = "http://localhost:8000/data/total-market-cap";
 
+  const fetchMcapData = async () => {
+    const cacheKey = "totalMcapData";
+    const cachedData = localStorage.getItem(cacheKey);
+    const now = new Date();
+
+    // use cached data if it's within 24hrs
+    if (cachedData) {
+      const { data, timestamp } = JSON.parse(cachedData);
+      const expiryTime = 24 * 60 * 60 * 1000; // 24hrs in millisecs
+      const lastUpdatedDate = new Date(timestamp);
+
+      setLastUpdated(lastUpdatedDate.toLocaleString());
+
+      if (now.getTime() - timestamp < expiryTime) {
+        const untruncatedTotalMcap = data.usd;
+        const truncatedTotalMcap = Math.trunc(Number(untruncatedTotalMcap));
+
+        setTotalMcap(formatCurrency(truncatedTotalMcap, "usd", 2, 0));
+        return;
+      }
+    }
+
+    // fetch new data if older than 24hrs
+    const res = await fetch(url, { credentials: "include" });
+    const jsonData = await res.json();
+
+    if (jsonData.success) {
+      const currentTimestamp = now.getTime();
+      localStorage.setItem(
+        cacheKey,
+        JSON.stringify({ data: jsonData.data, timestamp: currentTimestamp })
+      );
+
+      const untruncatedTotalMcap = jsonData.data.usd;
+      const truncatedTotalMcap = Math.trunc(Number(untruncatedTotalMcap));
+
+      setTotalMcap(formatCurrency(truncatedTotalMcap));
+      setLastUpdated(new Date(currentTimestamp).toLocaleString());
+    } else {
+      console.error("Failed to fetch total mcap data");
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      const cacheKey = "totalMcapData";
-      const cachedData = localStorage.getItem(cacheKey);
-      const now = new Date();
-
-      // use cached data if it's within 24hrs
-      if (cachedData) {
-        const { data, timestamp } = JSON.parse(cachedData);
-        const expiryTime = 24 * 60 * 60 * 1000; // 24hrs in millisecs
-        const lastUpdatedDate = new Date(timestamp);
-        setLastUpdated(lastUpdatedDate.toLocaleString());
-        if (now.getTime() - timestamp < expiryTime) {
-          setTotalMcap(formatCurrency(data.usd));
-          return;
-        }
-      }
-
-      // fetch new data if older than 24hrs
-      const res = await fetch(url, { credentials: "include" });
-      const jsonData = await res.json();
-
-      if (jsonData.success) {
-        const currentTimestamp = now.getTime();
-        localStorage.setItem(
-          cacheKey,
-          JSON.stringify({ data: jsonData.data, timestamp: currentTimestamp })
-        );
-        setTotalMcap(formatCurrency(jsonData.data.usd));
-        setLastUpdated(new Date(currentTimestamp).toLocaleString());
-      } else {
-        console.error("Failed to fetch total mcap data");
-      }
-    };
-
-    fetchData();
+    fetchMcapData();
   }, []);
 
   return (
@@ -105,10 +114,10 @@ export default function TotalMcapCard({ className = "" }: TotalMcapCardProps) {
             </TooltipProvider>
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="flex justify-end text-2xl font-bold text-orange-500 sm:font-bold sm:text-4xl md:text-5xl md:font-extrabold lg:md:text-6xl">
           {totalMcap === "" ? <p>Loading...</p> : <p>{totalMcap}</p>}
         </CardContent>
-        <CardFooter className="text-xs text-zinc-400">
+        <CardFooter className="flex justify-end text-xs text-zinc-400">
           Last updated: {lastUpdated}
         </CardFooter>
       </Card>
