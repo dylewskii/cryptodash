@@ -1,13 +1,15 @@
 const formatCurrency = (
   value: number,
   currency: string = "USD",
-  maxFractionDigits: number = 2
+  maximumFractionDigits: number = 2,
+  minimumFractionDigits: number = 2
 ) => {
+  const currencyFormatted = currency.toUpperCase();
   const currencyFormatter = new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: currency,
-    minimumFractionDigits: 2,
-    maximumFractionDigits: maxFractionDigits,
+    currency: currencyFormatted,
+    maximumFractionDigits,
+    minimumFractionDigits,
   });
 
   return currencyFormatter.format(value);
