@@ -10,6 +10,7 @@ import {
 import { Skeleton } from "../../ui/skeleton";
 // utils
 import formatCurrency from "@/lib/formatCurrency";
+import { roundToTwoDecimalPlaces } from "@/lib/roundToTwoDecimalPlaces";
 
 export interface CoinObject {
   ath: number;
@@ -64,8 +65,10 @@ export default function CryptoListTable({
       <TableBody>
         {cryptoList.map((coinObject: CoinObject, i) => (
           <TableRow key={`${coinObject.name}${i}`}>
-            <TableCell className="font-medium flex items-center">
-              {coinObject.market_cap_rank}
+            <TableCell>
+              <div className="font-medium flex items-center">
+                {coinObject.market_cap_rank}
+              </div>
             </TableCell>
             <TableCell>
               <img src={coinObject.image} alt="" />
@@ -75,27 +78,46 @@ export default function CryptoListTable({
             <TableCell
               className={
                 coinObject.price_change_percentage_24h < 0
-                  ? "flex text-red-600"
-                  : "flex text-green-600"
+                  ? "text-red-600"
+                  : "text-green-600"
               }
             >
-              {coinObject.price_change_percentage_24h}
-              {
-                <svg
-                  className="w-4 h-4 mt-[2px]"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M6 9L12 15L18 9"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              }
+              <div className="flex justify-end items-center">
+                {roundToTwoDecimalPlaces(
+                  coinObject.price_change_percentage_24h
+                ) + "%"}
+                {coinObject.price_change_percentage_24h < 0 ? (
+                  <svg
+                    className="w-4 h-4 mt-[2px]"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M6 9L12 15L18 9"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                ) : (
+                  <svg
+                    className="w-4 h-4 mt-[2px]"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M18 15L12 9L6 15"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                )}
+              </div>
             </TableCell>
             <TableCell className="text-right">
               {formatCurrency(coinObject.market_cap)}
