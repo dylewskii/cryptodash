@@ -24,6 +24,22 @@ const getPortfolio = async (req, res) => {
   }
 };
 
+const getPortfolioValues = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, msg: "User not found" });
+    }
+
+    res.json({ success: true, data: user.portfolioValues });
+  } catch (err) {
+    console.error("Failed to retrieve portfolio values:", err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
 const addCoin = async (req, res) => {
   const { id, amount } = req.body;
   const userId = req.user.id;
@@ -170,6 +186,7 @@ const editCoin = async (req, res) => {
 
 module.exports = {
   getPortfolio,
+  getPortfolioValues,
   addCoin,
   deleteCoin,
   editCoin,
