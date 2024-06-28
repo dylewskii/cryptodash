@@ -82,7 +82,6 @@ export const fetchPortfolioCoinData = async (
     try {
       const response = await fetch(url, { credentials: "include" });
       const data = await response.json();
-      console.log(data);
       return {
         id: data.data.id,
         name: data.data.name,
