@@ -12,7 +12,7 @@ interface ChartProps {
   };
 }
 
-function ChartComponent(props: ChartProps): React.ReactElement {
+function BasicChart(props: ChartProps): React.ReactElement {
   const {
     data,
     colors: {
@@ -71,4 +71,4 @@ function ChartComponent(props: ChartProps): React.ReactElement {
   return <div ref={chartContainerRef} />;
 }
 
-export default ChartComponent;
+export default BasicChart;
