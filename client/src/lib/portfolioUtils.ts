@@ -38,6 +38,7 @@ interface Coin {
   market_cap_rank: number;
   fully_diluted_valuation: string;
   price_change_percentage_24h: number;
+  price_change_percentage_7d: number;
   total_supply: number;
   max_supply: number;
   circulating_supply: number;
@@ -81,6 +82,7 @@ export const fetchPortfolioCoinData = async (
     try {
       const response = await fetch(url, { credentials: "include" });
       const data = await response.json();
+      console.log(data);
       return {
         id: data.data.id,
         name: data.data.name,
@@ -102,6 +104,8 @@ export const fetchPortfolioCoinData = async (
           data.data.market_data.fully_diluted_valuation.usd,
         price_change_percentage_24h:
           data.data.market_data.price_change_percentage_24h,
+        price_change_percentage_7d:
+          data.data.market_data.price_change_percentage_7d,
         total_supply: data.data.market_data.total_supply,
         max_supply: data.data.market_data.max_supply,
         circulating_supply: data.data.market_data.circulating_supply,

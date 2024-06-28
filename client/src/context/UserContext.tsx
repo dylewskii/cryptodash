@@ -68,6 +68,7 @@ export interface DetailedCoin {
     market_cap_rank: number;
     fully_diluted_valuation: string;
     price_change_percentage_24h: number;
+    price_change_percentage_7d: number;
     total_supply: number;
     max_supply: number;
     circulating_supply: number;
@@ -186,6 +187,7 @@ export function UserProvider({ children }: UserProviderProps) {
             market_cap_rank: coin.market_cap_rank,
             fully_diluted_valuation: coin.fully_diluted_valuation,
             price_change_percentage_24h: coin.price_change_percentage_24h,
+            price_change_percentage_7d: coin.price_change_percentage_7d,
             total_supply: coin.total_supply,
             max_supply: coin.max_supply,
             circulating_supply: coin.circulating_supply,
