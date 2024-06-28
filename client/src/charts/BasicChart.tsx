@@ -1,5 +1,6 @@
+import { ThemeProviderContext } from "@/context/ThemeContext";
 import { createChart, ColorType } from "lightweight-charts";
-import React, { useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 
 interface ChartProps {
   data: { time: string; value: number }[];
@@ -13,14 +14,15 @@ interface ChartProps {
 }
 
 function BasicChart(props: ChartProps): React.ReactElement {
+  const { theme } = useContext(ThemeProviderContext);
   const {
     data,
     colors: {
       backgroundColor = "white",
-      lineColor = "#2962FF",
+      lineColor = "#F28F3B",
       textColor = "black",
-      areaTopColor = "#2962FF",
-      areaBottomColor = "rgba(41, 98, 255, 0.28)",
+      areaTopColor = "#F28F3B",
+      areaBottomColor = "rgb(242,205,62)",
     } = {},
   } = props;
 
@@ -38,8 +40,19 @@ function BasicChart(props: ChartProps): React.ReactElement {
 
     const chart = createChart(chartContainerRef.current, {
       layout: {
-        background: { type: ColorType.Solid, color: backgroundColor },
-        textColor,
+        background: {
+          type: ColorType.Solid,
+          color: theme === "dark" ? "#000000" : "#ffffff",
+        },
+        textColor: theme === "dark" ? "white" : "black",
+      },
+      grid: {
+        vertLines: {
+          visible: false,
+        },
+        horzLines: {
+          visible: false,
+        },
       },
       width: chartContainerRef.current.clientWidth,
       height: 300,
@@ -66,6 +79,7 @@ function BasicChart(props: ChartProps): React.ReactElement {
     textColor,
     areaTopColor,
     areaBottomColor,
+    theme,
   ]);
 
   return <div ref={chartContainerRef} />;
