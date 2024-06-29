@@ -66,6 +66,42 @@ interface CoinAdditionResponse {
   };
 }
 
+interface DataItem {
+  timestamp: string;
+  value: number;
+}
+
+/** -----------------------------------------------------------------------------------------------
+ * Retrieves an array of coin objects found in the user's portfolio from the /portfolio endpoint.
+ * The coin name, amount, addedAt and _id are returned
+ *
+ * @returns Promise resolving to an array of objects containing the coin's name, amount, addedAt & _id
+ */
+export const fetchPortfolio = async (): Promise<CoinDB[]> => {
+  try {
+    const url = `http://localhost:8000/portfolio/all-coins`;
+    const res = await fetch(url, {
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    // const portfolioList = resData.data.map((coin: CoinDB) => coin.name);
+    const resData = await res.json();
+    if (!resData.success) {
+      throw new Error(
+        `Fetching portfolio from /portfolio failed: ${resData.msg}`
+      );
+    }
+
+    return resData.data;
+  } catch (error) {
+    console.error(`Failed to fetch portolio list`, error);
+    throw Error;
+  }
+};
+
 /** -----------------------------------------------------------------------------------------------
  * Sends GET request to API for each coin found in the provided array argument.
  * Handles API failures by returning null for failed requests and filtering out null values from the final result.
@@ -125,6 +161,51 @@ export const fetchPortfolioCoinData = async (
 };
 
 /** -----------------------------------------------------------------------------------------------
+ * Sends a GET request to /portfolio-values endpoint - returns Promise resolving to an array of
+ * objects which hold hourly information on the user's portfolio values.
+ *
+ * @returns Promise resolving to an array of objects which hold hourly information on the user's
+ * portfolio values.
+ */
+export const fetchPortfolioValues = async () => {
+  const url = `http://localhost:8000/portfolio/portfolio-values`;
+
+  try {
+    const res = await fetch(url, {
+      method: "GET",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (!res.ok) {
+      throw new Error(`HTTP error: ${res.status}`);
+    }
+
+    const data = await res.json();
+    if (!data.success) {
+      throw new Error(data.msg || "Unknown error");
+    }
+
+    return data.data;
+  } catch (err) {
+    throw new Error(`Failed to send GET portfolio values request: ${err}`);
+  }
+};
+
+/** -----------------------------------------------------------------------------------------------
+ * Sorts the data based on the date objects derived from timestamp.
+ *
+ * @returns timestamp sorted data
+ */
+export const sortDataByTimestamp = (data: DataItem[]): DataItem[] => {
+  const sortedData: DataItem[] = data.sort(
+    (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+  );
+
+  return sortedData;
+};
+
+/** -----------------------------------------------------------------------------------------------
  * Sends a POST request to /add endpoint - returns Promise confirming whether coin was added to DB
  *
  * @param coinData data of the coin to add (name and amount).
@@ -167,37 +248,6 @@ export const sendAddCoinPostReq = async (
 
     return data as CoinAdditionResponse;
   } catch (err) {
-    throw new Error(`Send add coin request failed ${err}`);
-  }
-};
-
-/** -----------------------------------------------------------------------------------------------
- * Retrieves an array of coin objects found in the user's portfolio from the /portfolio endpoint.
- * The coin name, amount, addedAt and _id are returned
- *
- * @returns Promise resolving to an array of objects containing the coin's name, amount, addedAt & _id
- */
-export const fetchPortfolio = async (): Promise<CoinDB[]> => {
-  try {
-    const url = `http://localhost:8000/portfolio/all-coins`;
-    const res = await fetch(url, {
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    // const portfolioList = resData.data.map((coin: CoinDB) => coin.name);
-    const resData = await res.json();
-    if (!resData.success) {
-      throw new Error(
-        `Fetching portfolio from /portfolio failed: ${resData.msg}`
-      );
-    }
-
-    return resData.data;
-  } catch (error) {
-    console.error(`Failed to fetch portolio list`, error);
-    throw Error;
+    throw new Error(`Send add coin request failed :${err}`);
   }
 };
