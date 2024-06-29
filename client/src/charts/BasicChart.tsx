@@ -1,9 +1,9 @@
 import { ThemeProviderContext } from "@/context/ThemeContext";
-import { createChart, ColorType } from "lightweight-charts";
+import { createChart, ColorType, AreaData } from "lightweight-charts";
 import React, { useContext, useEffect, useRef } from "react";
 
 interface ChartProps {
-  data: { time: string; value: number }[];
+  data: { timestamp: string; value: number }[];
   colors?: {
     backgroundColor?: string;
     lineColor?: string;
@@ -64,7 +64,13 @@ function BasicChart(props: ChartProps): React.ReactElement {
       topColor: areaTopColor,
       bottomColor: areaBottomColor,
     });
-    newSeries.setData(data);
+
+    const mappedData = data.map((item) => ({
+      time: new Date(item.timestamp).getTime() / 1000, // convert to UNIX timestamp in secs
+      value: item.value,
+    }));
+
+    newSeries.setData(mappedData);
 
     window.addEventListener("resize", handleResize);
 
