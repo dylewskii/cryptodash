@@ -132,9 +132,7 @@ export default function CoinHoldingsCard({
   };
 
   return (
-    <Card
-      className={`w-full md:w-[350px] flex justify-center flex-col ${className}`}
-    >
+    <Card className={`${className}`}>
       <CardHeader>
         <CardTitle className="flex gap-2">
           <img

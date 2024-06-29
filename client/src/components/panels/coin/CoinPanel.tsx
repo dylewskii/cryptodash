@@ -15,12 +15,20 @@ export default function CoinPanel() {
   };
 
   return (
-    <section className="lg:flex lg:flex-col gap-3">
-      <div className="lg:flex lg:gap-2">
-        <CoinHoldingsCard coin={coinData} updateCoinData={updateCoinData} />
-        <CoinInfoCard coin={coinData} />
-      </div>
-      <ConverterCard coin={coinData} />
+    <section className="grid gap-4 grid-cols-1 mb-6 md:grid-cols-2">
+      <CoinHoldingsCard
+        coin={coinData}
+        updateCoinData={updateCoinData}
+        className="w-full row-start-1"
+      />
+      <ConverterCard
+        coin={coinData}
+        className="w-full row-start-3 md:col-start-1 md:row-start-2"
+      />
+      <CoinInfoCard
+        coin={coinData}
+        className="w-full row-start-2 md:col-start-2 md:row-span-2"
+      />
     </section>
   );
 }

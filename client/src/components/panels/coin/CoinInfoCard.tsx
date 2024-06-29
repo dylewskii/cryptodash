@@ -15,7 +15,7 @@ interface CoinInfoCardProps {
 
 export default function CoinInfoCard({ coin, className }: CoinInfoCardProps) {
   return (
-    <Card className={`w-full lg:flex-grow ${className}`}>
+    <Card className={`${className}`}>
       <CardHeader>
         <CardTitle>Token Info</CardTitle>
       </CardHeader>
