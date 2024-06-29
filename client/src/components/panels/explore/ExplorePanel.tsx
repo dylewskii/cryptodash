@@ -11,7 +11,7 @@ export default function ExplorePanel() {
   const [searchActive, setSearchActive] = useState<boolean>(false);
   const [query, setQuery] = useState<string>("");
   const [page, setPage] = useState<number>(1);
-  const { fetchCoins, cryptoList, loading } = useContext(DataContext);
+  const { fetchAllCoins, cryptoList, loading } = useContext(DataContext);
 
   // filtered list of coins based on the search query
   const filteredCryptoCoins = useMemo(() => {
@@ -22,8 +22,8 @@ export default function ExplorePanel() {
 
   // fetch new coins when the page changes (i.e reaches bottom of the page)
   useEffect(() => {
-    fetchCoins(page);
-  }, [page, fetchCoins]);
+    fetchAllCoins(page);
+  }, [page, fetchAllCoins]);
 
   const handleInfiniteScroll = useCallback(() => {
     const scrollHeight = document.documentElement.scrollHeight; // total document height (including the part not visible on the screen)
