@@ -128,11 +128,11 @@ function App() {
   return (
     <div className="flex flex-col min-h-screen mx-auto max-w-screen-xl">
       <ThemeProvider defaultTheme="dark" storageKey="cryptodashe-ui-theme">
-        <DataProvider>
-          <UserProvider>
+        <UserProvider>
+          <DataProvider>
             <RouterProvider router={router} />
-          </UserProvider>
-        </DataProvider>
+          </DataProvider>
+        </UserProvider>
       </ThemeProvider>
     </div>
   );
