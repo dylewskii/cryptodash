@@ -120,7 +120,7 @@ export default function CryptoListTable({
               </div>
             </TableCell>
             <TableCell className="text-right">
-              {formatCurrency(coinObject.market_cap)}
+              {formatCurrency(coinObject.market_cap, "USD", 2, 0)}
             </TableCell>
           </TableRow>
         ))}
