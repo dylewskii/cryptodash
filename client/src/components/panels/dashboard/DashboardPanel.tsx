@@ -1,6 +1,6 @@
 import PortfolioCard from "./PortfolioCard";
-import FavoriteCoins from "./FavoriteCoins";
 import TotalBalance from "./TotalBalance";
+import FavoriteCoinsList from "./FavoriteCoinList";
 
 export default function DashboardPanel() {
   return (
@@ -11,7 +11,7 @@ export default function DashboardPanel() {
       </section>
 
       <section className="col-span-5 row-start-2">
-        <FavoriteCoins />
+        <FavoriteCoinsList />
       </section>
     </div>
   );
