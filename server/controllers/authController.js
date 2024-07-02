@@ -99,6 +99,8 @@ const loginUser = async (req, res) => {
       { expiresIn: "1h" }
     );
 
+    console.log("Token set in cookie:", token);
+
     // set token in a HTTP-only cookie
     res.cookie("token", token, {
       httpOnly: true,
@@ -207,11 +209,33 @@ const resetPassword = async (req, res) => {
   }
 };
 
-const checkAuth = (req, res) => {
-  if (req.isAuthenticated()) {
-    res.json({ success: true, user: req.user });
-  } else {
-    res.status(401).json({ success: false, msg: "Not authenticated" });
+// const checkAuth = (req, res) => {
+//   if (req.user) {
+//     res.json({ success: true, user: req.user });
+//   } else {
+//     res.status(401).json({ success: false, msg: "Not authenticated" });
+//   }
+// };
+
+const checkAuth = async (req, res) => {
+  const token = req.cookies.token;
+
+  if (!token) {
+    return res.status(401).json({ success: false, msg: "Not authenticated" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_KEY);
+    const user = await User.findById(decoded.id);
+
+    if (!user) {
+      return res.status(401).json({ success: false, msg: "User not found" });
+    }
+
+    // console.log(user);
+    res.json({ success: true, user });
+  } catch (err) {
+    return res.status(401).json({ success: false, msg: "Invalid token" });
   }
 };
 
