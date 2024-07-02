@@ -1,5 +1,6 @@
 require("dotenv").config();
 
+// fetches data for a given coin - coinId is supplied through a query param
 const fetchPortfolioCoinData = async (req, res) => {
   // extract the coin query param
   const coinId = req.query.coin;
@@ -35,6 +36,7 @@ const fetchPortfolioCoinData = async (req, res) => {
   }
 };
 
+// fetches the total crypto market cap data
 const fetchTotalMcapData = async (req, res) => {
   const url = "https://api.coingecko.com/api/v3/global";
 
@@ -60,6 +62,7 @@ const fetchTotalMcapData = async (req, res) => {
   }
 };
 
+// fetches all coins from CG - with no market data (name, id, symbol)
 const fetchAllCoins = async (req, res) => {
   const url = "https://api.coingecko.com/api/v3/coins/list";
 
@@ -83,7 +86,8 @@ const fetchAllCoins = async (req, res) => {
   }
 };
 
-const fetchAllCoinsWithMarketData = async (req, res) => {
+// paginated fetch - page nr is supplied through a query param
+const fetchAllCoinsWithMarketDataPaginated = async (req, res) => {
   const { page = 1 } = req.query;
 
   const url = `https://api.coingecko.com/api/v3/coins/markets`;
@@ -109,49 +113,50 @@ const fetchAllCoinsWithMarketData = async (req, res) => {
   }
 };
 
-// recursive paginated fetch
-// const fetchAllCoinsWithMarketData = async (req, res) => {
-//   const paginatedFetch = async (url, page = 1, previousResponse = []) => {
-//     try {
-//       const response = await fetch(`${url}&page=${page}`, {
-//         method: "GET",
-//         headers: {
-//           accept: "application/json",
-//           "x-cg-demo-api-key": process.env.COINGECKO_API_KEY,
-//         },
-//       });
-//       const newResponse = await response.json();
-//       const combinedResponse = [...previousResponse, ...newResponse];
+// recursive fetch - returns all coins from CG w/ market data
+const fetchAllCoinsWithMarketDataRecursive = async (req, res) => {
+  const paginatedFetch = async (url, page = 1, previousResponse = []) => {
+    try {
+      const response = await fetch(`${url}&page=${page}`, {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          "x-cg-demo-api-key": process.env.COINGECKO_API_KEY,
+        },
+      });
+      const newResponse = await response.json();
+      const combinedResponse = [...previousResponse, ...newResponse];
 
-//       if (newResponse.length !== 0) {
-//         return paginatedFetch(url, page + 1, combinedResponse);
-//       }
+      if (newResponse.length !== 0) {
+        return paginatedFetch(url, page + 1, combinedResponse);
+      }
 
-//       return combinedResponse;
-//     } catch (error) {
-//       console.error("Failed to fetch paginated data:", error);
-//       throw new Error("Failed to fetch paginated data");
-//     }
-//   };
+      return combinedResponse;
+    } catch (error) {
+      console.error("Failed to fetch paginated data:", error);
+      throw new Error("Failed to fetch paginated data");
+    }
+  };
 
-//   const baseUrl = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250`;
+  const baseUrl = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250`;
 
-//   try {
-//     const allCoins = await paginatedFetch(baseUrl);
+  try {
+    const allCoins = await paginatedFetch(baseUrl);
 
-//     res.status(200).json({
-//       success: true,
-//       data: allCoins,
-//     });
-//   } catch (err) {
-//     res.status(500).json({ success: false, msg: err.message });
-//     console.error("Failed to fetch coin list with market data from CG:", err);
-//   }
-// };
+    res.status(200).json({
+      success: true,
+      data: allCoins,
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, msg: err.message });
+    console.error("Failed to fetch coin list with market data from CG:", err);
+  }
+};
 
 module.exports = {
   fetchPortfolioCoinData,
   fetchTotalMcapData,
   fetchAllCoins,
-  fetchAllCoinsWithMarketData,
+  fetchAllCoinsWithMarketDataPaginated,
+  fetchAllCoinsWithMarketDataRecursive,
 };
