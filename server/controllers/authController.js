@@ -54,7 +54,12 @@ const registerUser = async (req, res) => {
     );
 
     // set token in a HTTP-only cookie
-    res.cookie("token", token, { httpOnly: true, maxAge: 3600000 });
+    res.cookie("token", token, {
+      httpOnly: true,
+      maxAge: 3600000,
+      sameSite: "Strict",
+      secure: process.env.NODE_ENV === "production",
+    });
 
     res.json({
       msg: "User Registered Successfully",
@@ -95,7 +100,12 @@ const loginUser = async (req, res) => {
     );
 
     // set token in a HTTP-only cookie
-    res.cookie("token", token, { httpOnly: true, maxAge: 3600000 });
+    res.cookie("token", token, {
+      httpOnly: true,
+      maxAge: 3600000,
+      sameSite: "Strict",
+      secure: process.env.NODE_ENV === "production",
+    });
 
     res.json({
       success: true,
@@ -197,10 +207,19 @@ const resetPassword = async (req, res) => {
   }
 };
 
+const checkAuth = (req, res) => {
+  if (req.isAuthenticated()) {
+    res.json({ success: true, user: req.user });
+  } else {
+    res.status(401).json({ success: false, msg: "Not authenticated" });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
   logoutUser,
   requestPasswordReset,
   resetPassword,
+  checkAuth,
 };
