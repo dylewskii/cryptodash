@@ -21,7 +21,14 @@ router.get(
 router.get(
   "/all-coins-with-market-data",
   passport.authenticate("jwt", { session: false }),
-  dataController.fetchAllCoinsWithMarketData
+  dataController.fetchAllCoinsWithMarketDataPaginated
+);
+
+// GET -> /all-coins-with-market-data-recursive
+router.get(
+  "/all-coins-with-market-data-recursive",
+  passport.authenticate("jwt", { session: false }),
+  dataController.fetchAllCoinsWithMarketDataRecursive
 );
 
 // GET -> /total-market-cap
