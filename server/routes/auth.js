@@ -1,14 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const authController = require("../controllers/authController");
-const passport = require("passport");
-
-// GET -> check if user is authenticated
-router.get(
-  "/check-auth",
-  passport.authenticate("jwt", { session: false }),
-  authController.checkAuth
-);
 
 // POST -> register new user
 router.post("/register", authController.registerUser);
