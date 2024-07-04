@@ -208,30 +208,8 @@ export function UserProvider({ children }: UserProviderProps) {
     }
   }, [user.userId]);
 
-  const checkAuth = useCallback(async () => {
-    try {
-      const response = await fetch("http://localhost:8000/auth/check-auth", {
-        credentials: "include",
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setUser({
-          userId: data.user._id,
-          username: data.user.username,
-          email: data.user.email,
-          isAuthenticated: true,
-        });
-      } else {
-        setUser(defaultUser);
-      }
-    } catch (error) {
-      setUser(defaultUser);
-    }
-  }, []);
-
   useEffect(() => {
     const fetchAndSetUserData = async () => {
-      await checkAuth();
       await fetchAndSetPortfolioData();
       await fetchAndSetProfilePicUrl();
     };
@@ -248,12 +226,7 @@ export function UserProvider({ children }: UserProviderProps) {
     return () => {
       socket.off("portfolioUpdated");
     };
-  }, [
-    user.userId,
-    fetchAndSetProfilePicUrl,
-    fetchAndSetPortfolioData,
-    checkAuth,
-  ]);
+  }, [user.userId, fetchAndSetProfilePicUrl, fetchAndSetPortfolioData]);
 
   return (
     <UserContext.Provider
