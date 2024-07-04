@@ -13,8 +13,7 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "../../ui/skeleton";
 // utils
-import formatCurrency from "@/lib/formatCurrency";
-import { roundToTwoDecimalPlaces } from "@/lib/roundToTwoDecimalPlaces";
+import { formatCurrency, roundToTwoDecimalPlaces } from "@/lib";
 
 export default function FavoriteCoins() {
   const { portfolio, loading } = useContext(UserContext);

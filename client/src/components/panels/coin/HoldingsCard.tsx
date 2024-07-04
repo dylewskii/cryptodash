@@ -23,8 +23,7 @@ import { Input } from "../../ui/input";
 import { Label } from "../../ui/label";
 import { Loader2 } from "lucide-react";
 // utils
-import formatCurrency from "@/lib/formatCurrency";
-import capitalizeFirstLetter from "@/lib/capitalizeFirstLetter";
+import { formatCurrency, capitalizeFirstLetter } from "@/lib";
 // types /interface
 import { DetailedCoin } from "@/context/UserContext";
 

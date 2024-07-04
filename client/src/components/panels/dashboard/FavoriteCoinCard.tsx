@@ -9,8 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 // utils
-import formatCurrency from "@/lib/formatCurrency";
-import { roundToTwoDecimalPlaces } from "@/lib/roundToTwoDecimalPlaces";
+import { formatCurrency, roundToTwoDecimalPlaces } from "@/lib";
 // types
 import { DetailedCoin } from "@/context/UserContext";
 

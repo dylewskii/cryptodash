@@ -9,8 +9,7 @@ import {
 } from "@/components/ui/table";
 import { Skeleton } from "../../ui/skeleton";
 // utils
-import formatCurrency from "@/lib/formatCurrency";
-import { roundToTwoDecimalPlaces } from "@/lib/roundToTwoDecimalPlaces";
+import { formatCurrency, roundToTwoDecimalPlaces } from "@/lib";
 
 export interface CoinObject {
   ath: number;

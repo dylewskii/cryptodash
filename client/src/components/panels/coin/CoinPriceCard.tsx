@@ -1,4 +1,4 @@
-import formatCurrency from "@/lib/formatCurrency";
+import { formatCurrency } from "@/lib";
 import { Card, CardHeader, CardTitle } from "../../ui/card";
 import { DetailedCoin } from "@/context/UserContext";
 

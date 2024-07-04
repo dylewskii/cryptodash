@@ -2,6 +2,7 @@
 // react
 import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
+import { useDialog } from "@/hooks/useDialog";
 // context
 import DataContext from "@/context/DataContext";
 import UserContext from "@/context/UserContext";
@@ -23,9 +24,7 @@ import {
 } from "@/components/ui/dialog";
 import { Loader2 } from "lucide-react";
 // utils
-import { useDialog } from "@/hooks/useDialog";
-import formatCurrency from "@/lib/formatCurrency";
-import capitalizeFirstLetter from "@/lib/capitalizeFirstLetter";
+import { formatCurrency, capitalizeFirstLetter } from "@/lib";
 // types
 import { DetailedCoin } from "@/context/UserContext";
 

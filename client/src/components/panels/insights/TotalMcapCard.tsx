@@ -15,7 +15,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 // utils
-import formatCurrency from "@/lib/formatCurrency";
+import { formatCurrency } from "@/lib";
 
 interface TotalMcapCardProps {
   className?: string;

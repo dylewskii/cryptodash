@@ -4,7 +4,7 @@ import UserContext from "@/context/UserContext";
 // ui
 import { Skeleton } from "../../ui/skeleton";
 // utils
-import formatCurrency from "@/lib/formatCurrency";
+import { formatCurrency } from "@/lib";
 
 interface TotalBalanceProps {
   className?: string;
