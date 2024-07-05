@@ -76,18 +76,6 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
       }
 
       setLoading(true);
-      // const cache = localStorage.getItem("allCryptoCoinsCache");
-
-      // if (cache) {
-      //   console.log("using cached data");
-      // const { data, timestamp } = JSON.parse(cache);
-      // const hoursElapsed = (Date.now() - timestamp) / 1000 / 3600;
-      // if (hoursElapsed < 24) {
-      //   setCryptoList(data);
-      //   setLoading(false);
-      //   return;
-      // }
-      // }
 
       const response = await fetch(
         `http://localhost:8000/data/all-coins-with-market-data?page=${page}`,
@@ -97,7 +85,6 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
         }
       );
       const { data } = await response.json();
-      //   return {
       //     ath: coin.ath,
       //     ath_change_percentage: coin.ath_change_percentage,
       //     ath_date: coin.ath_date,
@@ -139,11 +126,6 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
       } else {
         setCryptoList((prev) => [...prev, ...coins]);
       }
-
-      // localStorage.setItem(
-      //   "allCryptoCoinsCache",
-      //   JSON.stringify({ data, timestamp: Date.now() })
-      // );
 
       setLoading(false);
     },
