@@ -77,25 +77,26 @@ interface DataItem {
  *
  * @returns Promise resolving to an array of objects containing the coin's name, amount, addedAt & _id
  */
-export const fetchPortfolio = async (): Promise<CoinDB[]> => {
+export const fetchPortfolio = async (
+  accessToken: string
+): Promise<CoinDB[]> => {
   try {
     const url = `http://localhost:8000/portfolio/all-coins`;
     const res = await fetch(url, {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
       },
     });
 
     // const portfolioList = resData.data.map((coin: CoinDB) => coin.name);
-    const resData = await res.json();
-    if (!resData.success) {
-      throw new Error(
-        `Fetching portfolio from /portfolio failed: ${resData.msg}`
-      );
+    const data = await res.json();
+    if (!data.success) {
+      throw new Error(`Fetching portfolio from /portfolio failed: ${data.msg}`);
     }
 
-    return resData.data;
+    return data.data;
   } catch (error) {
     console.error(`Failed to fetch portolio list`, error);
     throw Error;
@@ -110,13 +111,22 @@ export const fetchPortfolio = async (): Promise<CoinDB[]> => {
  * @returns Promise resolving to an array of Coin objects with details from CoinGecko.
  */
 export const fetchPortfolioCoinData = async (
-  coins: string[]
+  coins: string[],
+  accessToken: string
 ): Promise<Coin[]> => {
   const fetchCoinData = async (coin: string): Promise<Coin | null> => {
     const url = `http://localhost:8000/data/portfolio-coin-data?coin=${coin}`;
 
+    const options: RequestInit = {
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    };
+
     try {
-      const response = await fetch(url, { credentials: "include" });
+      const response = await fetch(url, options);
       const data = await response.json();
       return {
         id: data.data.id,
@@ -152,7 +162,7 @@ export const fetchPortfolioCoinData = async (
     }
   };
 
-  const requests = coins.map(fetchCoinData);
+  const requests = coins.map((coin) => fetchCoinData(coin));
   const results = await Promise.all(requests);
   // filter out null results to handle failed requests
   // assert coin type
@@ -167,15 +177,19 @@ export const fetchPortfolioCoinData = async (
  * @returns Promise resolving to an array of objects which hold hourly information on the user's
  * portfolio values.
  */
-export const fetchPortfolioValues = async () => {
+export const fetchPortfolioValues = async (accessToken: string) => {
   const url = `http://localhost:8000/portfolio/portfolio-values`;
+  const options: RequestInit = {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
+  };
 
   try {
-    const res = await fetch(url, {
-      method: "GET",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-    });
+    const res = await fetch(url, options);
 
     if (!res.ok) {
       throw new Error(`HTTP error: ${res.status}`);
@@ -212,19 +226,22 @@ export const sortDataByTimestamp = (data: DataItem[]): DataItem[] => {
  * @returns Promise resolving to the response from the server confirming if successful.
  */
 export const sendAddCoinPostReq = async (
-  coinData: CoinAdditionData
+  coinData: CoinAdditionData,
+  accessToken: string
 ): Promise<CoinAdditionResponse> => {
   const url = `http://localhost:8000/portfolio/add`;
+  const options: RequestInit = {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify(coinData),
+  };
 
   try {
-    const res = await fetch(url, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(coinData),
-    });
+    const res = await fetch(url, options);
 
     if (res.status === 409) {
       return {
