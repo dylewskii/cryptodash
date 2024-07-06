@@ -17,4 +17,10 @@ router.post("/reset-password", authController.resetPassword);
 // POST -> request a password reset link
 router.post("/request-password-reset", authController.requestPasswordReset);
 
+// POST -
+router.post("/refresh-token", authController.refreshToken);
+
+// GET - grabs token from headers & checks if user exists
+router.get("/check-auth", authController.checkAuth);
+
 module.exports = router;
