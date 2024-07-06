@@ -2,29 +2,20 @@ const passport = require("passport");
 const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
 const User = require("../models/User");
-require("dotenv").config();
-
-const cookieExtractor = function (req) {
-  return req && req.cookies ? req.cookies["token"] : null;
-};
 
 const options = {
-  jwtFromRequest: ExtractJwt.fromExtractors([
-    cookieExtractor, // attempt to get token from cookie
-    ExtractJwt.fromAuthHeaderAsBearerToken(), // if no cookie, check the Authorization header
-  ]),
-  secretOrKey: process.env.JWT_KEY,
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: process.env.JWT_ACCESS_SECRET,
 };
 
 passport.use(
   new JwtStrategy(options, async (jwt_payload, done) => {
     try {
       const user = await User.findById(jwt_payload.id);
-
       if (user) {
         return done(null, user);
       } else {
-        return done(null, false, { message: "User not found" });
+        return done(null, false);
       }
     } catch (error) {
       return done(error, false);
@@ -32,4 +23,17 @@ passport.use(
   })
 );
 
-module.exports = passport;
+const authenticateJWT = (req, res, next) => {
+  passport.authenticate("jwt", { session: false }, (err, user) => {
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    req.user = user;
+    next();
+  })(req, res, next);
+};
+
+module.exports = { authenticateJWT };
