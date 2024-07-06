@@ -1,5 +1,5 @@
 // react
-import { useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 // ui
 import { Card, CardHeader, CardTitle, CardContent } from "../../ui/card";
 import BasicChart from "@/charts/BasicChart";
@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { sortDataByTimestamp } from "@/lib/portfolioUtils";
 // utils
 import { fetchPortfolioValues } from "@/lib/portfolioUtils";
+import UserContext from "@/context/UserContext";
 
 interface PortfolioValueEntry {
   timestamp: string;
@@ -489,9 +490,10 @@ interface PortfolioValueEntry {
 
 export default function PortfolioPerformance() {
   const [chartData, setChartData] = useState<PortfolioValueEntry[]>();
+  const { accessToken } = useContext(UserContext);
 
-  const fetchAndSetChartData = async () => {
-    const data = await fetchPortfolioValues();
+  const fetchAndSetChartData = useCallback(async () => {
+    const data = await fetchPortfolioValues(accessToken);
 
     if (data) {
       // ensures timestamps are kept in full ISO format & data is sorted
@@ -499,10 +501,11 @@ export default function PortfolioPerformance() {
 
       setChartData(sortedData);
     }
-  };
+  }, [accessToken]);
+
   useEffect(() => {
     fetchAndSetChartData();
-  }, []);
+  }, [fetchAndSetChartData]);
 
   return (
     <>

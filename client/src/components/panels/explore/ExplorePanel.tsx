@@ -5,6 +5,7 @@ import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import DataContext from "@/context/DataContext";
 // misc
 import { Input } from "@/components/ui/input";
+import UserContext from "@/context/UserContext";
 
 export default function ExplorePanel() {
   // const [cryptoList, setCryptoList] = useState<CoinObject[]>([]);
@@ -12,6 +13,7 @@ export default function ExplorePanel() {
   const [query, setQuery] = useState<string>("");
   const [page, setPage] = useState<number>(1);
   const { fetchAllCoins, cryptoList, loading } = useContext(DataContext);
+  const { accessToken, user } = useContext(UserContext);
 
   // filtered list of coins based on the search query
   const filteredCryptoCoins = useMemo(() => {
@@ -20,10 +22,17 @@ export default function ExplorePanel() {
     );
   }, [query, cryptoList]);
 
+  // on mount - load crypto names from the 1st page
+  useEffect(() => {
+    if (user.isAuthenticated) {
+      fetchAllCoins(1, accessToken);
+    }
+  }, [fetchAllCoins, user.isAuthenticated, accessToken]);
+
   // fetch new coins when the page changes (i.e reaches bottom of the page)
   useEffect(() => {
-    fetchAllCoins(page);
-  }, [page, fetchAllCoins]);
+    fetchAllCoins(page, accessToken);
+  }, [page, fetchAllCoins, accessToken]);
 
   const handleInfiniteScroll = useCallback(() => {
     const scrollHeight = document.documentElement.scrollHeight; // total document height (including the part not visible on the screen)
