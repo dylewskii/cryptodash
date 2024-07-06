@@ -1,9 +1,9 @@
-const cron = require("node-cron");
-const User = require("../models/User");
-const {
+import cron from "node-cron";
+import { User } from "../models/User";
+import {
   fetchPortfolioValue,
   addPortfolioValue,
-} = require("../services/portfolioServices");
+} from "../services/portfolioServices";
 
 cron.schedule("0 * * * *", async () => {
   try {

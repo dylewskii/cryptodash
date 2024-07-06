@@ -1,11 +1,30 @@
-const User = require("../models/User");
-const { validateCoinId } = require("../services/coinServices");
+import { Request, Response } from "express";
+import { User } from "../models/User";
+import { isCoinIdValid } from "../services/coinServices";
 
-const getPortfolio = async (req, res) => {
+interface RequestUser {
+  id?: string; // mongoose.Types.ObjectId ?
+}
+
+interface AuthenticatedRequest extends Request {
+  user?: RequestUser;
+}
+
+export const getPortfolio = async (
+  req: AuthenticatedRequest,
+  res: Response
+) => {
   try {
-    const userId = req.user.id;
+    if (!req.user) {
+      return res.status(400).json({
+        success: false,
+        msg: "User ID could not be extracted from req.user",
+      });
+    }
 
+    const userId = req.user.id;
     const user = await User.findById(userId);
+
     if (!user) {
       return res.status(404).json({ success: false, msg: "User not found" });
     }
@@ -18,34 +37,52 @@ const getPortfolio = async (req, res) => {
           : "Portfolio is empty",
       data: user.portfolio,
     });
-  } catch (err) {
+  } catch (err: any) {
     console.error("Failed to retrieve portfolio:", err);
     res.status(500).json({ success: false, message: err.message });
   }
 };
 
-const getPortfolioValues = async (req, res) => {
+export const getPortfolioValues = async (
+  req: AuthenticatedRequest,
+  res: Response
+) => {
   try {
-    const userId = req.user.id;
+    if (!req.user) {
+      return res.status(400).json({
+        success: false,
+        msg: "User ID could not be extracted from req.user",
+      });
+    }
 
+    const userId = req.user.id;
     const user = await User.findById(userId);
+
     if (!user) {
       return res.status(404).json({ success: false, msg: "User not found" });
     }
 
     res.json({ success: true, data: user.portfolioValues });
-  } catch (err) {
+  } catch (err: any) {
     console.error("Failed to retrieve portfolio values:", err);
     res.status(500).json({ success: false, message: err.message });
   }
 };
 
-const addCoin = async (req, res) => {
+export const addCoin = async (req: AuthenticatedRequest, res: Response) => {
   const { id, amount } = req.body;
+
+  if (!req.user) {
+    return res.status(400).json({
+      success: false,
+      msg: "User ID could not be extracted from req.user",
+    });
+  }
+
   const userId = req.user.id;
 
   // check if coin id is valid (i.e exists within API)
-  const isValidCoinId = await validateCoinId(id);
+  const isValidCoinId = await isCoinIdValid(id);
   if (!isValidCoinId) {
     return res.status(400).json({ success: false, msg: "Invalid coin ID" });
   }
@@ -61,6 +98,10 @@ const addCoin = async (req, res) => {
   try {
     const user = await User.findById(userId);
 
+    if (!user) {
+      return res.status(404).json({ success: false, msg: "User not found" });
+    }
+
     const coinAlreadyAddedToPortfolio = user.portfolio.some((coin) => {
       return id === coin.id;
     });
@@ -71,10 +112,6 @@ const addCoin = async (req, res) => {
         success: false,
         msg: "Coin already exists within portfolio.",
       });
-    }
-
-    if (!user) {
-      return res.status(404).json({ success: false, msg: "User not found" });
     }
 
     // add coin to user's portfolio array
@@ -91,14 +128,21 @@ const addCoin = async (req, res) => {
       message: "Coin added to portfolio successfully",
       coinData: newCoin,
     });
-  } catch (err) {
+  } catch (err: any) {
     console.error("Failed to add coin:", err);
     res.status(500).json({ success: false, message: err.message });
   }
 };
 
-const deleteCoin = async (req, res) => {
+export const deleteCoin = async (req: AuthenticatedRequest, res: Response) => {
   const { coinId } = req.body;
+  if (!req.user) {
+    return res.status(400).json({
+      success: false,
+      msg: "User ID could not be extracted from req.user",
+    });
+  }
+
   const userId = req.user.id;
 
   try {
@@ -131,6 +175,9 @@ const deleteCoin = async (req, res) => {
 
     // check if the portfolio is now empty and handle appropriately
     const updatedUser = await User.findById(userId);
+    if (!updatedUser) {
+      throw new Error("Unable to find updated user in mongodb");
+    }
     if (updatedUser.portfolio.length === 0) {
       // reset the portfolio to empty array
       await User.updateOne({ _id: userId }, { $set: { portfolio: [] } });
@@ -143,14 +190,20 @@ const deleteCoin = async (req, res) => {
       success: true,
       msg: `Coin deletion completed - ${coinId} removed from portfolio`,
     });
-  } catch (err) {
+  } catch (err: any) {
     console.error("Failed to delete coin:", err);
     res.status(500).json({ success: false, message: err.message });
   }
 };
 
-const editCoin = async (req, res) => {
+export const editCoin = async (req: AuthenticatedRequest, res: Response) => {
   const { coinId, editedAmount } = req.body;
+  if (!req.user) {
+    return res.status(400).json({
+      success: false,
+      msg: "User ID could not be extracted from req.user",
+    });
+  }
   const userId = req.user.id;
 
   try {
@@ -178,16 +231,8 @@ const editCoin = async (req, res) => {
       msg: "Coin amount updated successfully",
       portfolio: user.portfolio,
     });
-  } catch (err) {
+  } catch (err: any) {
     console.error("Failed to edit coin:", err);
     res.status(500).json({ success: false, message: err.message });
   }
-};
-
-module.exports = {
-  getPortfolio,
-  getPortfolioValues,
-  addCoin,
-  deleteCoin,
-  editCoin,
 };

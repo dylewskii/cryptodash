@@ -1,5 +1,14 @@
-const User = require("../models/User");
-require("dotenv").config();
+import { User } from "../models/User";
+import dotenv from "dotenv";
+dotenv.config();
+
+const { COINGECKO_API_KEY } = process.env;
+
+if (!COINGECKO_API_KEY) {
+  throw new Error(
+    "COINGECKO_API_KEY is not defined in the environment variables"
+  );
+}
 
 /** -----------------------------------------------------------------------------------------------
  * Fetches the current dollar (USD) price of a crypto coin from the CoinGecko API.
@@ -7,14 +16,14 @@ require("dotenv").config();
  * @param {string} coinId string coin id of which to fetch the price for.
  * @returns {Promise<number|null>} coin's dollar (USD) value or null if an error occurs
  */
-const fetchCoinPrice = async (coinId) => {
+export const fetchCoinPrice = async (coinId: string) => {
   const url = `https://api.coingecko.com/api/v3/coins/${coinId}`;
-  const options = {
+  const options: RequestInit = {
     method: "GET",
     headers: {
       accept: "application/json",
-      "x-cg-demo-api-key": process.env.COINGECKO_API_KEY,
-    },
+      "x-cg-demo-api-key": COINGECKO_API_KEY,
+    } as HeadersInit,
   };
 
   try {
@@ -38,7 +47,7 @@ const fetchCoinPrice = async (coinId) => {
  * @param userId string user id of which user to fetch details for.
  * @returns {Promise<number>} the total value of the user's portfolio at that current time.
  */
-const fetchPortfolioValue = async (userId) => {
+export const fetchPortfolioValue = async (userId: any) => {
   // check if user exists
   const user = await User.findById(userId);
   if (!user) {
@@ -70,7 +79,7 @@ const fetchPortfolioValue = async (userId) => {
  * @param totalValue the total value of the user's portfolio.
  * @returns {Promise<void>} A promise that resolves when the value is added.
  */
-const addPortfolioValue = async (userId, totalValue) => {
+export const addPortfolioValue = async (userId: any, totalValue: number) => {
   // check if user exists
   const user = await User.findById(userId);
   if (!user) {
@@ -85,5 +94,3 @@ const addPortfolioValue = async (userId, totalValue) => {
     console.error("Failed to save portfolio value to db", err);
   }
 };
-
-module.exports = { fetchCoinPrice, fetchPortfolioValue, addPortfolioValue };

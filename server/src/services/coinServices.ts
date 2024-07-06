@@ -1,16 +1,22 @@
+interface CGCoin {
+  symbol: string;
+  id: string;
+  name: string;
+}
+
 /**
  * Validates if a coin exists within the CoinGecko API - returns true or false
  * @param {string} coinName string name of coin to validate
  * @returns {Promise<boolean>} a promise that resolves to true if coin exists or false otherwise
  */
-const validateCoinName = async (coinName) => {
+export const isCoinNameValid = async (coinName: string): Promise<boolean> => {
   const url = "https://api.coingecko.com/api/v3/coins/list";
-  const options = {
+  const options: RequestInit = {
     method: "GET",
     headers: {
       accept: "application/json",
       "x-cg-demo-api-key": process.env.COINGECKO_API_KEY,
-    },
+    } as HeadersInit,
   };
 
   try {
@@ -18,21 +24,21 @@ const validateCoinName = async (coinName) => {
     const validCoins = await response.json();
 
     return validCoins.some(
-      (coin) => coin.name.toLowerCase() === coinName.toLowerCase()
+      (coin: CGCoin) => coin.name.toLowerCase() === coinName.toLowerCase()
     );
   } catch (error) {
     throw new Error("Failed to validate coin name");
   }
 };
 
-const validateCoinId = async (coinId) => {
+export const isCoinIdValid = async (coinId: string) => {
   const url = `https://api.coingecko.com/api/v3/coins/${coinId}`;
-  const options = {
+  const options: RequestInit = {
     method: "GET",
     headers: {
       accept: "application/json",
       "x-cg-demo-api-key": process.env.COINGECKO_API_KEY,
-    },
+    } as HeadersInit,
   };
 
   try {
@@ -46,5 +52,3 @@ const validateCoinId = async (coinId) => {
     throw new Error("Failed to validate coin name");
   }
 };
-
-module.exports = { validateCoinName, validateCoinId };

@@ -1,12 +1,20 @@
-const bcryptjs = require("bcryptjs");
-const User = require("../models/User");
-const jwt = require("jsonwebtoken");
-const sendResetEmail = require("../utils/sendResetEmail");
-const { generateTokens } = require("../services/jwtServices");
-require("dotenv").config();
+import bcryptjs from "bcryptjs";
+import jwt from "jsonwebtoken";
+import { Request, Response } from "express";
+import { User } from "../models/User";
+import { sendResetEmail } from "../utils/sendResetEmail";
+import { generateTokens } from "../services/jwtServices";
+import dotenv from "dotenv";
+dotenv.config();
+
+const { JWT_ACCESS_SECRET, JWT_REFRESH_SECRET } = process.env;
+
+if (!JWT_ACCESS_SECRET || !JWT_REFRESH_SECRET) {
+  throw new Error("JWT secrets are not defined in the environment variables");
+}
 
 // POST /register
-const registerUser = async (req, res) => {
+export const registerUser = async (req: Request, res: Response) => {
   const { username, email, password, passwordConfirm } = req.body;
 
   try {
@@ -50,7 +58,7 @@ const registerUser = async (req, res) => {
         username: newUser.username,
         email: newUser.email,
       },
-      process.env.JWT_KEY,
+      JWT_ACCESS_SECRET,
       { expiresIn: "1h" }
     );
 
@@ -58,7 +66,7 @@ const registerUser = async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       maxAge: 3600000,
-      sameSite: "Strict",
+      sameSite: "strict",
       secure: process.env.NODE_ENV === "production",
     });
 
@@ -78,7 +86,7 @@ const registerUser = async (req, res) => {
 };
 
 // POST /login
-const loginUser = async (req, res) => {
+export const loginUser = async (req: Request, res: Response) => {
   const { username, password } = req.body;
   try {
     // check if user exists
@@ -114,7 +122,7 @@ const loginUser = async (req, res) => {
 };
 
 // GET /logout
-const logoutUser = (req, res) => {
+export const logoutUser = (req: Request, res: Response) => {
   // check if token cookie exists - i.e user logged in
   if (!req.cookies["token"]) {
     return res.status(403).json({ msg: "User not logged in." });
@@ -126,7 +134,7 @@ const logoutUser = (req, res) => {
 };
 
 // POST /request-password-reset
-const requestPasswordReset = async (req, res) => {
+export const requestPasswordReset = async (req: Request, res: Response) => {
   const { email } = req.body;
 
   try {
@@ -139,7 +147,7 @@ const requestPasswordReset = async (req, res) => {
     // gen a reset token
     const resetToken = jwt.sign(
       { id: user._id.toString() },
-      process.env.JWT_KEY,
+      JWT_ACCESS_SECRET,
       { expiresIn: "1h" }
     );
 
@@ -160,13 +168,19 @@ const requestPasswordReset = async (req, res) => {
 };
 
 // POST /reset-password
-const resetPassword = async (req, res) => {
+export const resetPassword = async (req: Request, res: Response) => {
   const { newPassword, newPasswordConfirmation, resetToken } = req.body;
 
   try {
     // verify token
-    const decoded = jwt.verify(resetToken, process.env.JWT_KEY);
+    const decoded = jwt.verify(resetToken, JWT_ACCESS_SECRET);
+
+    if (typeof decoded === "string") {
+      throw new Error("Invalid token");
+    }
+
     const user = await User.findById(decoded.id);
+
     if (!user) {
       return res
         .status(404)
@@ -203,7 +217,7 @@ const resetPassword = async (req, res) => {
 };
 
 // POST /refresh-token
-const refreshToken = async (req, res) => {
+export const refreshToken = async (req: Request, res: Response) => {
   const { refreshToken } = req.cookies;
 
   if (!refreshToken) {
@@ -213,7 +227,12 @@ const refreshToken = async (req, res) => {
   }
 
   try {
-    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+    const decoded = jwt.verify(refreshToken, JWT_REFRESH_SECRET);
+
+    if (typeof decoded === "string") {
+      throw new Error("Invalid token");
+    }
+
     const user = await User.findById(decoded.id);
 
     if (!user) {
@@ -240,10 +259,21 @@ const refreshToken = async (req, res) => {
 };
 
 // GET - /check-auth
-const checkAuth = async (req, res) => {
+export const checkAuth = async (req: Request, res: Response) => {
   try {
-    const token = req.headers.authorization.split(" ")[1];
-    const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
+
+    if (!token) {
+      return res.status(401).json({ message: "Access token is required" });
+    }
+
+    const decoded = jwt.verify(token, JWT_ACCESS_SECRET);
+
+    if (typeof decoded === "string") {
+      throw new Error("Invalid token");
+    }
+
     const user = await User.findById(decoded.id);
     if (!user) {
       return res
@@ -256,14 +286,4 @@ const checkAuth = async (req, res) => {
   } catch (error) {
     res.status(401).json({ message: "Invalid token" });
   }
-};
-
-module.exports = {
-  registerUser,
-  loginUser,
-  logoutUser,
-  requestPasswordReset,
-  resetPassword,
-  refreshToken,
-  checkAuth,
 };

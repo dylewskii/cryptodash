@@ -1,17 +1,27 @@
-const {
+import {
   S3Client,
   GetObjectCommand,
   PutObjectCommand,
   DeleteObjectCommand,
-} = require("@aws-sdk/client-s3");
-const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
+} from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import dotenv from "dotenv";
+dotenv.config();
+
+const { BUCKET_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } = process.env;
+
+if (!BUCKET_REGION || !AWS_ACCESS_KEY_ID || !AWS_SECRET_ACCESS_KEY) {
+  throw new Error(
+    "Missing AWS configuration (access, secret, bucket region) in environment variables"
+  );
+}
 
 // s3 client
 const s3 = new S3Client({
-  region: process.env.BUCKET_REGION,
+  region: BUCKET_REGION,
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    accessKeyId: AWS_ACCESS_KEY_ID,
+    secretAccessKey: AWS_SECRET_ACCESS_KEY,
   },
 });
 
@@ -20,7 +30,7 @@ const s3 = new S3Client({
  * @param {string} key - The key of the S3 object
  * @returns {Promise<string>} - A presigned URL to access the bucket object (image)
  */
-const generatePresignedUrl = async (key) => {
+export const generatePresignedUrl = async (key: string): Promise<string> => {
   const command = new GetObjectCommand({
     Bucket: process.env.BUCKET_NAME,
     Key: key,
@@ -31,7 +41,7 @@ const generatePresignedUrl = async (key) => {
   return url;
 };
 
-const uploadFileToS3 = async (params) => {
+export const uploadFileToS3 = async (params: any) => {
   const command = new PutObjectCommand(params);
   await s3.send(command);
 };
@@ -41,7 +51,7 @@ const uploadFileToS3 = async (params) => {
  * @param {string} key - key of the file to delete.
  * @returns {Promise} - a promise that resolves if the file is successfully deleted.
  */
-const deleteFileFromS3 = async (key) => {
+export const deleteFileFromS3 = async (key: string): Promise<any> => {
   const params = {
     Bucket: process.env.BUCKET_NAME,
     Key: key,
@@ -55,11 +65,4 @@ const deleteFileFromS3 = async (key) => {
     console.error(`error deleting s3 file: ${key}`, err);
     throw err;
   }
-};
-
-module.exports = {
-  generatePresignedUrl,
-  uploadFileToS3,
-  deleteFileFromS3,
-  s3,
 };

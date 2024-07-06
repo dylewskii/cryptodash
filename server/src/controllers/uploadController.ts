@@ -1,19 +1,37 @@
-require("dotenv").config();
-const sharp = require("sharp");
-const User = require("../models/User");
-const generateRandomFileName = require("../utils/generateRandomFileName");
-const {
+import dotenv from "dotenv";
+import sharp from "sharp";
+import { Request, Response } from "express";
+import { User } from "../models/User";
+import { generateRandomFileName } from "../utils/generateRandomFileName";
+import {
   generatePresignedUrl,
   uploadFileToS3,
   deleteFileFromS3,
-} = require("../services/s3Services");
+} from "../services/s3Services";
+dotenv.config();
+
+interface RequestUser {
+  id?: string; // mongoose.Types.ObjectId ?
+}
+
+interface AuthenticatedRequest extends Request {
+  user?: RequestUser;
+}
 
 // 3MB in bytes
 const MAX_FILE_SIZE = 3 * 1024 * 1024;
 
 // handles a profile picture upload
-const uploadProfilePic = async (req, res) => {
+export const uploadProfilePic = async (
+  req: AuthenticatedRequest,
+  res: Response
+) => {
   const file = req.file;
+
+  if (!req.user) {
+    return res.status(401).json({ success: false, msg: "No user found" });
+  }
+
   const userId = req.user.id;
 
   // check if a file was uploaded / posted
@@ -86,7 +104,16 @@ const uploadProfilePic = async (req, res) => {
 };
 
 // fetches the presigned URL for the user's profile picture
-const getProfilePicUrl = async (req, res) => {
+export const getProfilePicUrl = async (
+  req: AuthenticatedRequest,
+  res: Response
+) => {
+  if (!req.user) {
+    return res
+      .status(401)
+      .json({ success: false, message: "User not authenticated" });
+  }
+
   const userId = req.user.id;
 
   try {
@@ -110,9 +137,4 @@ const getProfilePicUrl = async (req, res) => {
       .status(500)
       .json({ success: false, msg: "Error generating presigned URL" });
   }
-};
-
-module.exports = {
-  uploadProfilePic,
-  getProfilePicUrl,
 };

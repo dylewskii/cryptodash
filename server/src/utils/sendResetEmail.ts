@@ -1,6 +1,6 @@
-const transporter = require("./mailer");
+import { transporter } from "./mailer";
 
-const sendResetEmail = async (email, token) => {
+export const sendResetEmail = async (email: string, token: string) => {
   const resetLink = `http://localhost:5173/reset-password?token=${token}`;
 
   const mailOptions = {
@@ -16,5 +16,3 @@ const sendResetEmail = async (email, token) => {
     console.error("Error sending password reset email:", error);
   }
 };
-
-module.exports = sendResetEmail;
