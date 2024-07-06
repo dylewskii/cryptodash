@@ -8,7 +8,7 @@ import UserContext from "@/context/UserContext";
 import PasswordInput from "@/components/misc/PasswordInput";
 
 export default function LoginPage() {
-  const { setUser } = useContext(UserContext);
+  const { setUser, setAccessToken } = useContext(UserContext);
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -59,6 +59,8 @@ export default function LoginPage() {
         email: data.user.email,
         isAuthenticated: true,
       });
+
+      setAccessToken(data.accessToken);
 
       navigate("/app/home");
     } catch (error) {
