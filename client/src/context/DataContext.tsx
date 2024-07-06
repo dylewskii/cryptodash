@@ -1,10 +1,4 @@
-import {
-  createContext,
-  useState,
-  useEffect,
-  useCallback,
-  useContext,
-} from "react";
+import { createContext, useState, useCallback, useContext } from "react";
 import UserContext from "./UserContext";
 
 // ------------------------------- TYPES -------------------------------
@@ -46,7 +40,7 @@ export interface CryptoCoin {
 interface DataContextType {
   cryptoList: CryptoCoin[];
   loading: boolean;
-  fetchAllCoins: (page: number) => void;
+  fetchAllCoins: (page: number, accessToken: string) => void;
 }
 
 // default values for DataContext when it's first created
@@ -69,7 +63,15 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
   const [loading, setLoading] = useState<boolean>(true);
 
   const fetchAllCoins = useCallback(
-    async (page: number) => {
+    async (page: number, accessToken: string) => {
+      const url = `http://localhost:8000/data/all-coins-with-market-data?page=${page}`;
+      const options: RequestInit = {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      };
       if (!user.isAuthenticated) {
         setLoading(false);
         return;
@@ -77,43 +79,8 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
 
       setLoading(true);
 
-      const response = await fetch(
-        `http://localhost:8000/data/all-coins-with-market-data?page=${page}`,
-        {
-          method: "GET",
-          credentials: "include",
-        }
-      );
+      const response = await fetch(url, options);
       const { data } = await response.json();
-      //     ath: coin.ath,
-      //     ath_change_percentage: coin.ath_change_percentage,
-      //     ath_date: coin.ath_date,
-      //     atl: coin.atl,
-      //     atl_change_percentage: coin.atl_change_percentage,
-      //     atl_date: coin.atl_date,
-      //     circulating_supply: coin.circulating_supply,
-      //     current_price: coin.current_price,
-      //     fully_diluted_valuation: coin.fully_diluted_valuation,
-      //     high_24h: coin.high_24h,
-      //     id: coin.id,
-      //     image: coin.image,
-      //     last_updated: coin.last_updated,
-      //     low_24h: coin.low_24h,
-      //     market_cap: coin.market_cap,
-      //     market_cap_change_24h: coin.market_cap_change_24h,
-      //     market_cap_change_percentage_24h: coin.market_cap_change_percentage_24h,
-      //     market_cap_rank: coin.market_cap_rank,
-      //     max_supply: coin.max_supply,
-      //     name: coin.name,
-      //     price_change_24h: coin.price_change_24h,
-      //     price_change_percentage_24h: coin.price_change_percentage_24h,
-      //     roi: coin.roi,
-      //     symbol: coin.symbol,
-      //     total_supply: coin.total_supply,
-      //     total_volume: coin.total_volume,
-      //     sparkline_in_7d: coin.sparkline_in_7d.price,
-      //   };
-      // });
 
       const coins = data.map((coin: CryptoCoin) => ({
         ...coin,
@@ -131,13 +98,6 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
     },
     [user.isAuthenticated]
   );
-
-  // on mount - load crypto names from the 1st page & cache if necessary
-  useEffect(() => {
-    if (user.isAuthenticated) {
-      fetchAllCoins(1);
-    }
-  }, [fetchAllCoins, user.isAuthenticated]);
 
   return (
     <DataContext.Provider value={{ cryptoList, loading, fetchAllCoins }}>

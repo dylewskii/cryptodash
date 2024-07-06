@@ -7,8 +7,12 @@ import {
   SetStateAction,
   useCallback,
 } from "react";
-import { fetchPortfolioCoinData, fetchPortfolio } from "@/lib/portfolioUtils";
-import fetchProfilePicUrl from "@/lib/fetchProfilePicUrl";
+import {
+  refreshAccessToken,
+  fetchPortfolio,
+  fetchPortfolioCoinData,
+  fetchProfilePicUrl,
+} from "@/lib";
 import socket from "../socket/socket";
 // ------------------------------- TYPES -------------------------------
 interface UserType {
@@ -101,6 +105,9 @@ interface UserContextType {
   setLoading: Dispatch<SetStateAction<boolean>>;
   profilePicUrl: string;
   setProfilePicUrl: Dispatch<SetStateAction<string>>;
+  checkAuth: () => Promise<void>;
+  accessToken: string;
+  setAccessToken: Dispatch<SetStateAction<string>>;
 }
 
 const defaultContextValue: UserContextType = {
@@ -112,6 +119,9 @@ const defaultContextValue: UserContextType = {
   setLoading: () => {},
   profilePicUrl: "",
   setProfilePicUrl: () => {},
+  checkAuth: async () => {},
+  accessToken: "",
+  setAccessToken: () => {},
 };
 
 const UserContext = createContext<UserContextType>(defaultContextValue);
@@ -122,14 +132,96 @@ export function UserProvider({ children }: UserProviderProps) {
   const [portfolio, setPortfolio] = useState<Portfolio>(defaultPortfolio);
   const [loading, setLoading] = useState<boolean>(false);
   const [profilePicUrl, setProfilePicUrl] = useState<string>("");
+  const [accessToken, setAccessToken] = useState<string>("");
+
+  const checkAuth = useCallback(async () => {
+    try {
+      let token = accessToken;
+
+      // if no access token in state, try to refresh
+      if (!token) {
+        try {
+          token = await refreshAccessToken();
+          if (token) {
+            setAccessToken(token);
+          }
+        } catch (error) {
+          console.log("Failed to refreshAccessToken():", error);
+        }
+      }
+
+      // if token exists, verify it
+      if (token) {
+        const response = await fetch("http://localhost:8000/auth/check-auth", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          credentials: "include",
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setUser({
+            userId: data.user._id,
+            username: data.user.username,
+            email: data.user.email,
+            isAuthenticated: true,
+          });
+        } else {
+          // if verification fails, try refreshing once more
+          try {
+            token = await refreshAccessToken();
+            if (token) {
+              setAccessToken(token);
+              // retry verification with new token
+              const retryResponse = await fetch(
+                "http://localhost:8000/auth/check-auth",
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                  credentials: "include",
+                }
+              );
+
+              if (retryResponse.ok) {
+                const retryData = await retryResponse.json();
+                setUser({
+                  userId: retryData.user._id,
+                  username: retryData.user.username,
+                  email: retryData.user.email,
+                  isAuthenticated: true,
+                });
+              } else {
+                setUser(defaultUser);
+              }
+            } else {
+              setUser(defaultUser);
+            }
+          } catch (refreshError) {
+            console.log(
+              "Failed to refreshAccessToken() during retry:",
+              refreshError
+            );
+            setUser(defaultUser);
+          }
+        }
+      } else {
+        setUser(defaultUser);
+      }
+    } catch (error) {
+      console.error("Error checking auth:", error);
+      setUser(defaultUser);
+    }
+  }, [accessToken, refreshAccessToken, setAccessToken, setUser]);
 
   const fetchAndSetProfilePicUrl = useCallback(async () => {
     if (!user.isAuthenticated) {
-      return 0;
+      return;
     }
 
     try {
-      const url = await fetchProfilePicUrl();
+      const url = await fetchProfilePicUrl(refreshAccessToken);
       if (url) {
         setProfilePicUrl(url);
       }
@@ -147,14 +239,15 @@ export function UserProvider({ children }: UserProviderProps) {
 
     try {
       // fetch array of coin objects from user's portfolio
-      const portfolioObjects = await fetchPortfolio();
+      const portfolioObjects = await fetchPortfolio(accessToken);
 
       // extract coin names into a string array
       const portfolioCoinNameList = portfolioObjects.map((coin) => coin.id);
 
       // fetch detailed data for each coin (price, ath, marketCap etc)
       const detailedCoinsArray = await fetchPortfolioCoinData(
-        portfolioCoinNameList
+        portfolioCoinNameList,
+        accessToken
       );
 
       // combine amount data w/ detailed coin data
@@ -209,12 +302,15 @@ export function UserProvider({ children }: UserProviderProps) {
   }, [user.userId]);
 
   useEffect(() => {
-    const fetchAndSetUserData = async () => {
-      await fetchAndSetPortfolioData();
-      await fetchAndSetProfilePicUrl();
+    const initializeUserData = async () => {
+      await checkAuth();
+      if (user.isAuthenticated) {
+        await fetchAndSetPortfolioData();
+        await fetchAndSetProfilePicUrl();
+      }
     };
 
-    fetchAndSetUserData();
+    initializeUserData();
 
     socket.on("portfolioUpdated", ({ userId, portfolio }) => {
       if (user.userId === userId) {
@@ -226,7 +322,13 @@ export function UserProvider({ children }: UserProviderProps) {
     return () => {
       socket.off("portfolioUpdated");
     };
-  }, [user.userId, fetchAndSetProfilePicUrl, fetchAndSetPortfolioData]);
+  }, [
+    checkAuth,
+    user.isAuthenticated,
+    user.userId,
+    fetchAndSetPortfolioData,
+    fetchAndSetProfilePicUrl,
+  ]);
 
   return (
     <UserContext.Provider
@@ -239,6 +341,9 @@ export function UserProvider({ children }: UserProviderProps) {
         setLoading,
         profilePicUrl,
         setProfilePicUrl,
+        checkAuth,
+        accessToken,
+        setAccessToken,
       }}
     >
       {children}
