@@ -1,6 +1,6 @@
 // react router
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import ProtectedRoutes from "./lib/ProtectedRoutes.tsx";
+import { ProtectedRoutes } from "./components/misc/ProtectedRoutes.tsx";
 // layouts
 import AppLayout from "./components/layout/AppLayout.tsx";
 import ExternalLayout from "./components/layout/ExternalLayout.tsx";
