@@ -2,6 +2,7 @@ const bcryptjs = require("bcryptjs");
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const sendResetEmail = require("../utils/sendResetEmail");
+const { generateTokens } = require("../services/jwtServices");
 require("dotenv").config();
 
 // POST /register
@@ -92,31 +93,23 @@ const loginUser = async (req, res) => {
       return res.status(401).json({ msg: "Incorrect Credentials" });
     }
 
-    // gen jwt token
-    const token = jwt.sign(
-      { id: user._id.toString(), username: user.username, email: user.email },
-      process.env.JWT_KEY,
-      { expiresIn: "1h" }
-    );
+    const { accessToken, refreshToken } = generateTokens(user);
 
-    console.log("Token set in cookie:", token);
-
-    // set token in a HTTP-only cookie
-    res.cookie("token", token, {
+    res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      maxAge: 3600000,
-      sameSite: "Strict",
       secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
     res.json({
       success: true,
       msg: "login successful",
-      token: "Bearer " + token,
+      accessToken,
       user: { id: user._id, username: user.username, email: user.email },
     });
   } catch (error) {
-    return res.status(500).json({ msg: "Internal server error" });
+    return res.status(500).json({ msg: "Internal server error", err: error });
   }
 };
 
@@ -209,10 +202,68 @@ const resetPassword = async (req, res) => {
   }
 };
 
+// POST /refresh-token
+const refreshToken = async (req, res) => {
+  const { refreshToken } = req.cookies;
+
+  if (!refreshToken) {
+    return res
+      .status(401)
+      .json({ success: false, message: "Refresh token not found" });
+  }
+
+  try {
+    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+    const user = await User.findById(decoded.id);
+
+    if (!user) {
+      return res
+        .status(401)
+        .json({ success: false, message: "User not found" });
+    }
+
+    const { accessToken, refreshToken: newRefreshToken } = generateTokens(user);
+
+    res.cookie("refreshToken", newRefreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
+    res.json({ success: true, accessToken });
+  } catch (error) {
+    return res
+      .status(401)
+      .json({ success: false, message: "Invalid refresh token" });
+  }
+};
+
+// GET - /check-auth
+const checkAuth = async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
+    const user = await User.findById(decoded.id);
+    if (!user) {
+      return res
+        .status(401)
+        .json({ success: false, message: "User not found" });
+    }
+    res.json({
+      user: { _id: user._id, username: user.username, email: user.email },
+    });
+  } catch (error) {
+    res.status(401).json({ message: "Invalid token" });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
   logoutUser,
   requestPasswordReset,
   resetPassword,
+  refreshToken,
+  checkAuth,
 };
