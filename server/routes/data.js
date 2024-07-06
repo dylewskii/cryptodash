@@ -1,40 +1,36 @@
 const express = require("express");
 const router = express.Router();
-const passport = require("passport");
 const dataController = require("../controllers/dataController");
+const { authenticateJWT } = require("../strategies/passportJwt");
 
 // GET -> /portfolio-coin-data
 router.get(
   "/portfolio-coin-data",
-  passport.authenticate("jwt", { session: false }),
+  authenticateJWT,
   dataController.fetchPortfolioCoinData
 );
 
 // GET -> /all-coins
-router.get(
-  "/all-coins",
-  passport.authenticate("jwt", { session: false }),
-  dataController.fetchAllCoins
-);
+router.get("/all-coins", authenticateJWT, dataController.fetchAllCoins);
 
 // GET -> /all-coins-with-market-data
 router.get(
   "/all-coins-with-market-data",
-  passport.authenticate("jwt", { session: false }),
+  authenticateJWT,
   dataController.fetchAllCoinsWithMarketDataPaginated
 );
 
 // GET -> /all-coins-with-market-data-recursive
 router.get(
   "/all-coins-with-market-data-recursive",
-  passport.authenticate("jwt", { session: false }),
+  authenticateJWT,
   dataController.fetchAllCoinsWithMarketDataRecursive
 );
 
 // GET -> /total-market-cap
 router.get(
   "/total-market-cap",
-  passport.authenticate("jwt", { session: false }),
+  authenticateJWT,
   dataController.fetchTotalMcapData
 );
 
