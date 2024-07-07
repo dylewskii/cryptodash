@@ -8,7 +8,8 @@ import { Input } from "../../ui/input";
 import { Loader2 } from "lucide-react";
 
 export default function ProfilePanel() {
-  const { user, profilePicUrl, setProfilePicUrl } = useContext(UserContext);
+  const { user, profilePicUrl, setProfilePicUrl, accessToken } =
+    useContext(UserContext);
   const hiddenFileUpload = useRef<HTMLInputElement | null>(null);
   const [uploading, setUploading] = useState<boolean>(false);
   const [errorStatus, setErrorStatus] = useState({
@@ -31,15 +32,19 @@ export default function ProfilePanel() {
       formData.append("avatar", selectedFile);
 
       const url = `http://localhost:8000/upload/profile-picture`;
+      const options: RequestInit = {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: formData,
+      };
 
       setUploading(true);
 
       try {
-        const response = await fetch(url, {
-          method: "POST",
-          credentials: "include",
-          body: formData,
-        });
+        const response = await fetch(url, options);
 
         if (response.ok) {
           const data = await response.json();
