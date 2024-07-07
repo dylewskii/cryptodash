@@ -1,5 +1,5 @@
 // react
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 // ui
 import {
   Card,
@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/tooltip";
 // utils
 import { formatCurrency } from "@/lib";
+import UserContext from "@/context/UserContext";
 
 interface TotalMcapCardProps {
   className?: string;
@@ -24,7 +25,7 @@ interface TotalMcapCardProps {
 export default function TotalMcapCard({ className = "" }: TotalMcapCardProps) {
   const [totalMcap, setTotalMcap] = useState<string>("");
   const [lastUpdated, setLastUpdated] = useState<string>("");
-  const url = "http://localhost:8000/data/total-market-cap";
+  const { accessToken } = useContext(UserContext);
 
   const fetchMcapData = async () => {
     const cacheKey = "totalMcapData";
@@ -48,8 +49,15 @@ export default function TotalMcapCard({ className = "" }: TotalMcapCardProps) {
       }
     }
 
+    const url = `http://localhost:8000/data/total-market-cap`;
+    const options: RequestInit = {
+      credentials: "include",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    };
     // fetch new data if older than 24hrs
-    const res = await fetch(url, { credentials: "include" });
+    const res = await fetch(url, options);
     const jsonData = await res.json();
 
     if (jsonData.success) {
