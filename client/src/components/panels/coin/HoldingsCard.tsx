@@ -1,5 +1,5 @@
 // react
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useDialog } from "@/hooks/useDialog";
 // ui
 import {
@@ -25,7 +25,7 @@ import { Loader2 } from "lucide-react";
 // utils
 import { formatCurrency, capitalizeFirstLetter } from "@/lib";
 // types /interface
-import { DetailedCoin } from "@/context/UserContext";
+import UserContext, { DetailedCoin } from "@/context/UserContext";
 
 interface HoldingsCardProps {
   coin: DetailedCoin;
@@ -45,6 +45,7 @@ export default function HoldingsCard({
     handleDialogToggle,
     handleRequest,
   } = useDialog();
+  const { accessToken } = useContext(UserContext);
   const [editedHolding, setEditedHolding] = useState<string>("");
   const isLargeBalance = coin.amount.length > 9;
 
@@ -58,7 +59,8 @@ export default function HoldingsCard({
         editedAmount: editedHolding,
       },
       `Edited ${capitalizeFirstLetter(coin.name)} position: ${editedHolding}`,
-      "Failed to edit holding amount"
+      "Failed to edit holding amount",
+      accessToken
     );
     const newTotalValue =
       Number(editedHolding) * Number(coin.info.currentPrice);
@@ -78,7 +80,8 @@ export default function HoldingsCard({
       "DELETE",
       { coinId: coinToDelete },
       `${coinToDelete} has been deleted`,
-      "An error occurred while deleting the coin."
+      "An error occurred while deleting the coin.",
+      accessToken
     );
   };
 

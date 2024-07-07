@@ -1,6 +1,6 @@
 // react
-import { useContext, useState } from "react";
-import DataContext from "@/context/DataContext";
+import { useState } from "react";
+// import DataContext from "@/context/DataContext";
 // components
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -40,7 +40,7 @@ export default function ConverterCard({
   coin,
   className = "",
 }: ConverterCardProps) {
-  const { loading } = useContext(DataContext);
+  // const { loading } = useContext(DataContext);
   const { getCryptoFiatValues } = useCryptoFiatValues();
 
   const [cryptoAmount, setCryptoAmount] = useState<string>("");
@@ -152,8 +152,6 @@ export default function ConverterCard({
       setFiatAmount("");
     }
   };
-
-  if (loading) return <div>Loading...</div>;
 
   return (
     <div className={`flex flex-col items-center min-w-min ${className}`}>
