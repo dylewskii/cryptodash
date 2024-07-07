@@ -17,13 +17,15 @@ export function useDialog(initialState: boolean = false) {
     method: string,
     body: object,
     successMessage: string,
-    errorMessage: string
+    errorMessage: string,
+    accessToken: string
   ) => {
     const options: RequestInit = {
       method,
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify(body),
     };
