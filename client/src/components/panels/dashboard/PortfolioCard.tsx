@@ -33,7 +33,7 @@ interface PortfolioEntryLineProps {
 }
 
 export default function PortfolioCard() {
-  const { portfolio, loading } = useContext(UserContext);
+  const { portfolio, loading, accessToken } = useContext(UserContext);
   const { cryptoList } = useContext(DataContext);
   const [addedCoin, setAddedCoin] = useState<string>("");
   const [addedAmount, setAddedAmount] = useState<string>("");
@@ -65,7 +65,8 @@ export default function PortfolioCard() {
       "POST",
       { id: selectedCoin.id, amount: addedAmount },
       `${capitalizeFirstLetter(addedCoin)} has been added successfully`,
-      "Failed to add coin"
+      "Failed to add coin",
+      accessToken
     );
 
     setAddedCoin("");
