@@ -1,14 +1,18 @@
-import { SyntheticEvent, useContext, useState } from "react";
+// react
+import { SyntheticEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+// ui
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import { Loader2 } from "lucide-react";
-import UserContext from "@/context/UserContext";
 import PasswordInput from "@/components/misc/PasswordInput";
+// stores
+import { useUserStore } from "@/stores/useUserStore";
 
 export default function LoginPage() {
-  const { setUser, setAccessToken } = useContext(UserContext);
+  const setAccessToken = useUserStore((state) => state.setAccessToken);
+  const setUser = useUserStore((state) => state.setUser);
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");

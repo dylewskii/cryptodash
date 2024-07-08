@@ -1,14 +1,18 @@
-import { SyntheticEvent, useContext, useState } from "react";
+// react
+import { SyntheticEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+// ui
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
-import UserContext from "@/context/UserContext";
 import PasswordInput from "@/components/misc/PasswordInput";
 import { Label } from "@/components/ui/label";
+// stores
+import { useUserStore } from "@/stores/useUserStore";
 
 export default function RegisterPage() {
   const navigate = useNavigate();
-  const { setUser } = useContext(UserContext);
+  const setAccessToken = useUserStore((state) => state.setAccessToken);
+  const setUser = useUserStore((state) => state.setUser);
   const [details, setDetails] = useState({
     email: "",
     username: "",
@@ -82,14 +86,15 @@ export default function RegisterPage() {
       }
 
       const data = await response.json();
+      const token = data.token.split(" ")[1];
 
+      setAccessToken(token);
       setUser({
         userId: data.user.id,
         username: data.user.username,
         email: data.user.email,
         isAuthenticated: true,
       });
-
       navigate("/app/home");
     } catch (error) {
       console.error("Failed to register:", error);
