@@ -1,56 +1,5 @@
 // ------------------------------- INTERFACE / TYPES -------------------------------
-interface ImageData {
-  thumb: string;
-  sm: string;
-  lg: string;
-}
-
-interface Links {
-  homepage: string[];
-  whitepaper: string;
-  blockchain_site: string[];
-  official_forum_url: string[];
-  chat_url: string[];
-  announcement_url: string[];
-  twitter_screen_name: string;
-  facebook_username: string;
-  bitcointalk_thread_identifier: null | string;
-  telegram_channel_identifier: string;
-  subreddit_url: string;
-  repos_url: {
-    github: string[];
-    bitbucket: string[];
-  };
-}
-
-interface Coin {
-  id: string;
-  name: string;
-  symbol: string;
-  image: ImageData;
-  currentPrice: number;
-  marketCap: number;
-  ath: number;
-  webSlug: string;
-  description: string;
-  links: Links;
-  genesis_date: string;
-  market_cap_rank: number;
-  fully_diluted_valuation: string;
-  price_change_percentage_24h: number;
-  price_change_percentage_7d: number;
-  total_supply: number;
-  max_supply: number;
-  circulating_supply: number;
-  sparkline: number[];
-}
-
-interface CoinDB {
-  id: string;
-  amount: number;
-  _id: string;
-  addedAt: string;
-}
+import { DetailedCoin, UndetailedCoin, CoinDB, PortfolioType } from "@/types";
 
 interface CoinAdditionData {
   id: string;
@@ -113,8 +62,10 @@ export const fetchPortfolio = async (
 export const fetchPortfolioCoinData = async (
   coins: string[],
   accessToken: string
-): Promise<Coin[]> => {
-  const fetchCoinData = async (coin: string): Promise<Coin | null> => {
+): Promise<UndetailedCoin[]> => {
+  const fetchCoinData = async (
+    coin: string
+  ): Promise<UndetailedCoin | null> => {
     const url = `http://localhost:8000/data/portfolio-coin-data?coin=${coin}`;
 
     const options: RequestInit = {
@@ -166,8 +117,82 @@ export const fetchPortfolioCoinData = async (
   const results = await Promise.all(requests);
   // filter out null results to handle failed requests
   // assert coin type
-  const filteredResults = results.filter((coin): coin is Coin => coin !== null);
+  const filteredResults = results.filter(
+    (coin): coin is UndetailedCoin => coin !== null
+  );
   return filteredResults;
+};
+
+export const fetchAndCombinePortfolioData = async (
+  userId: string,
+  accessToken: string
+): Promise<PortfolioType> => {
+  if (!userId || !accessToken) {
+    throw new Error("User ID and access token are required");
+  }
+
+  try {
+    // fetch array of coin objects from user's portfolio
+    const portfolioObjects = await fetchPortfolio(accessToken);
+
+    // extract coin names into a string array
+    const portfolioCoinNameList = portfolioObjects.map((coin) => coin.id);
+
+    // fetch detailed data for each coin (price, ath, marketCap etc)
+    const detailedCoinsArray = await fetchPortfolioCoinData(
+      portfolioCoinNameList,
+      accessToken
+    );
+
+    // combine amount data w/ detailed coin data
+    const combinedDetailedCoins: DetailedCoin[] = detailedCoinsArray.map(
+      (coin) => {
+        // find the corresponding coin object from the user's portfolio based on the coin id
+        const foundCoin = portfolioObjects.find(
+          (item) => item.id.toLowerCase() === coin.id.toLowerCase()
+        );
+
+        const amount = foundCoin ? foundCoin.amount : 0;
+        const currentPrice = coin.currentPrice || 0;
+        const totalValue = amount * currentPrice;
+
+        // return a new object for each coin combining the detailed API data with the amount from the user's portfolio
+        return {
+          id: coin.id,
+          name: coin.name,
+          amount: foundCoin ? foundCoin.amount.toString() : "0",
+          totalValue,
+          info: {
+            symbol: coin.symbol,
+            image: coin.image,
+            currentPrice: coin.currentPrice,
+            marketCap: coin.marketCap,
+            ath: coin.ath,
+            webSlug: coin.webSlug,
+            description: coin.description,
+            links: coin.links,
+            genesis_date: coin.genesis_date,
+            market_cap_rank: coin.market_cap_rank,
+            fully_diluted_valuation: coin.fully_diluted_valuation,
+            price_change_percentage_24h: coin.price_change_percentage_24h,
+            price_change_percentage_7d: coin.price_change_percentage_7d,
+            total_supply: coin.total_supply,
+            max_supply: coin.max_supply,
+            circulating_supply: coin.circulating_supply,
+            sparkline: coin.sparkline,
+          },
+        };
+      }
+    );
+
+    return {
+      list: portfolioCoinNameList,
+      detailed: combinedDetailedCoins,
+    };
+  } catch (error) {
+    console.error("Error fetching portfolio data:", error);
+    throw error;
+  }
 };
 
 /** -----------------------------------------------------------------------------------------------
