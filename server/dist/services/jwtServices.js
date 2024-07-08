@@ -9,7 +9,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const { JWT_ACCESS_SECRET, JWT_REFRESH_SECRET } = process.env;
 if (!JWT_ACCESS_SECRET || !JWT_REFRESH_SECRET) {
-    throw new Error("JWT secrets are not defined in the environment variables");
+    throw new Error("JWT access/refresh secrets are not defined in the environment variables");
 }
 const generateTokens = (user) => {
     const accessToken = jsonwebtoken_1.default.sign({ id: user._id, username: user.username, email: user.email }, JWT_ACCESS_SECRET, { expiresIn: "15m" });

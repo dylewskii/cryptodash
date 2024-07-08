@@ -14,6 +14,12 @@ const User_1 = require("../models/User");
 const coinServices_1 = require("../services/coinServices");
 const getPortfolio = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        if (!req.user) {
+            return res.status(400).json({
+                success: false,
+                msg: "User ID could not be extracted from req.user",
+            });
+        }
         const userId = req.user.id;
         const user = yield User_1.User.findById(userId);
         if (!user) {
@@ -35,6 +41,12 @@ const getPortfolio = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 exports.getPortfolio = getPortfolio;
 const getPortfolioValues = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        if (!req.user) {
+            return res.status(400).json({
+                success: false,
+                msg: "User ID could not be extracted from req.user",
+            });
+        }
         const userId = req.user.id;
         const user = yield User_1.User.findById(userId);
         if (!user) {
@@ -50,6 +62,12 @@ const getPortfolioValues = (req, res) => __awaiter(void 0, void 0, void 0, funct
 exports.getPortfolioValues = getPortfolioValues;
 const addCoin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id, amount } = req.body;
+    if (!req.user) {
+        return res.status(400).json({
+            success: false,
+            msg: "User ID could not be extracted from req.user",
+        });
+    }
     const userId = req.user.id;
     // check if coin id is valid (i.e exists within API)
     const isValidCoinId = yield (0, coinServices_1.isCoinIdValid)(id);
@@ -98,6 +116,12 @@ const addCoin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.addCoin = addCoin;
 const deleteCoin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { coinId } = req.body;
+    if (!req.user) {
+        return res.status(400).json({
+            success: false,
+            msg: "User ID could not be extracted from req.user",
+        });
+    }
     const userId = req.user.id;
     try {
         const user = yield User_1.User.findById(userId);
@@ -144,6 +168,12 @@ const deleteCoin = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 exports.deleteCoin = deleteCoin;
 const editCoin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { coinId, editedAmount } = req.body;
+    if (!req.user) {
+        return res.status(400).json({
+            success: false,
+            msg: "User ID could not be extracted from req.user",
+        });
+    }
     const userId = req.user.id;
     try {
         const user = yield User_1.User.findById(userId);

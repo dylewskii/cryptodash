@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const router = (0, express_1.Router)();
 const portfolioController_1 = require("../controllers/portfolioController");
 const passportJwt_1 = require("../strategies/passportJwt");
+const router = (0, express_1.Router)();
 // GET -> all coins
 router.get("/all-coins", passportJwt_1.authenticateJWT, portfolioController_1.getPortfolio);
 // GET -> portfolio values
