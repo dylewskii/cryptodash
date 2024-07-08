@@ -1,5 +1,7 @@
-import UserContext from "@/context/UserContext";
-import { useContext, useEffect, useState } from "react";
+// import UserContext from "@/context/UserContext";
+import { checkAuth } from "@/lib";
+import { useUserStore } from "@/stores/useUserStore";
+import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 
 interface ProtectedRoutesProps {
@@ -9,12 +11,15 @@ interface ProtectedRoutesProps {
 export const ProtectedRoutes = ({
   children,
 }: ProtectedRoutesProps): JSX.Element => {
-  const { user, checkAuth } = useContext(UserContext);
+  const user = useUserStore((state) => state.user);
+  const accessToken = useUserStore((state) => state.accessToken);
+  const setAccessToken = useUserStore((state) => state.setAccessToken);
+  const setUser = useUserStore((state) => state.setUser);
   const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
     const verifyAuth = async () => {
-      await checkAuth();
+      await checkAuth(accessToken, setAccessToken, setUser);
       setIsChecking(false);
     };
     verifyAuth();

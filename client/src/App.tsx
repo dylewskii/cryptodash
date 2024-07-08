@@ -24,11 +24,10 @@ import SwapPanel from "./components/panels/swap/SwapPanel.tsx";
 import SendPanel from "./components/panels/send/SendPanel.tsx";
 import CoinPanel from "./components/panels/coin/CoinPanel.tsx";
 // context
-import { UserProvider } from "./context/UserContext";
-import { DataProvider } from "./context/DataContext";
 import { ThemeProvider } from "./context/ThemeContext.tsx";
 // css
 import "./globals.css";
+import { useUserInitialization } from "./hooks/useUserInitialization.ts";
 
 const router = createBrowserRouter([
   {
@@ -125,14 +124,12 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
+  useUserInitialization();
+
   return (
     <div className="flex flex-col min-h-screen mx-auto max-w-screen-xl">
       <ThemeProvider defaultTheme="dark" storageKey="cryptodashe-ui-theme">
-        <UserProvider>
-          <DataProvider>
-            <RouterProvider router={router} />
-          </DataProvider>
-        </UserProvider>
+        <RouterProvider router={router} />
       </ThemeProvider>
     </div>
   );
