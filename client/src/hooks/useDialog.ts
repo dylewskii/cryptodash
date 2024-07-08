@@ -4,7 +4,9 @@ import { useToast } from "../components/ui/use-toast";
 export function useDialog(initialState: boolean = false) {
   const [dialogOpen, setDialogOpen] = useState<boolean>(initialState);
   const [dialogErrorMsg, setDialogErrorMsg] = useState<string>("");
-  const [dialogReqPending, setDialogReqPending] = useState(false);
+  const [pendingRequests, setPendingRequests] = useState<
+    Record<string, boolean>
+  >({});
   const { toast } = useToast();
 
   const handleDialogToggle = () => {
@@ -18,7 +20,8 @@ export function useDialog(initialState: boolean = false) {
     body: object,
     successMessage: string,
     errorMessage: string,
-    accessToken: string
+    accessToken: string,
+    requestId: string
   ) => {
     const options: RequestInit = {
       method,
@@ -30,14 +33,20 @@ export function useDialog(initialState: boolean = false) {
       body: JSON.stringify(body),
     };
 
-    setDialogReqPending(true);
+    setPendingRequests((prev) => ({ ...prev, [requestId]: true }));
     try {
-      const res = await fetch(url, options);
-      const data = await res.json();
+      const response = await fetch(url, options);
+
+      if (!response.ok) {
+        setDialogErrorMsg(errorMessage);
+        return false;
+      }
+
+      const data = await response.json();
 
       if (!data.success) {
         setDialogErrorMsg(errorMessage);
-        return;
+        return false;
       }
 
       toast({
@@ -45,11 +54,13 @@ export function useDialog(initialState: boolean = false) {
         duration: 3000,
       });
       setDialogOpen(false);
+      return true;
     } catch (err) {
       console.error(err);
       setDialogErrorMsg("An error occurred while processing your request.");
+      return false;
     } finally {
-      setDialogReqPending(false);
+      setPendingRequests((prev) => ({ ...prev, [requestId]: false }));
     }
   };
 
@@ -57,7 +68,7 @@ export function useDialog(initialState: boolean = false) {
     dialogOpen,
     dialogErrorMsg,
     setDialogErrorMsg,
-    dialogReqPending,
+    pendingRequests,
     handleDialogToggle,
     handleRequest,
   };
