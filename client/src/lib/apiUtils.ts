@@ -1,3 +1,5 @@
+import { UserType, defaultUser } from "@/types";
+
 export const refreshAccessToken = async () => {
   try {
     const response = await fetch("http://localhost:8000/auth/refresh-token", {
@@ -17,66 +19,72 @@ export const refreshAccessToken = async () => {
   }
 };
 
-export const fetchProfilePicUrl = async (
-  refreshAccessToken: () => Promise<string | null>
-) => {
+export const fetchWithAuth = async (url: string, token: string) => {
+  const response = await fetch(url, {
+    headers: { Authorization: `Bearer ${token}` },
+    credentials: "include",
+  });
+  if (!response.ok) throw new Error("Authentication failed");
+  return response.json();
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const getUserFromData = (data: any): UserType => ({
+  userId: data.user._id,
+  username: data.user.username,
+  email: data.user.email,
+  isAuthenticated: true,
+});
+
+const verifyToken = async (token: string): Promise<UserType> => {
+  const url = `http://localhost:8000/auth/check-auth`;
+  const data = await fetchWithAuth(url, token);
+  return getUserFromData(data);
+};
+
+export const checkAuth = async (
+  accessToken: string,
+  setAccessToken: (token: string) => void,
+  setUser: (user: UserType) => void
+): Promise<void> => {
   try {
-    let accessToken = await refreshAccessToken();
-    if (!accessToken) {
-      throw new Error("Failed to refresh access token");
+    let token = accessToken;
+
+    // if token is invalid, try to refresh
+    if (!token) {
+      token = await refreshAccessToken();
+      if (token) setAccessToken(token);
     }
 
-    const response = await fetch(
-      `http://localhost:8000/upload/profile-picture-url`,
-      {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
-
-    if (response.status === 401) {
-      // access token might be expired, try to refresh it
-      accessToken = await refreshAccessToken();
-      if (!accessToken) {
-        throw new Error("Failed to refresh access token after 401");
-      }
-
-      // retry request with new access token
-      const retryResponse = await fetch(
-        `http://localhost:8000/upload/profile-picture-url`,
-        {
-          method: "GET",
-          credentials: "include",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
-
-      if (!retryResponse.ok) {
-        throw new Error(`HTTP error: ${retryResponse.status}`);
-      }
-
-      const retryData = await retryResponse.json();
-      if (!retryData.success) {
-        return null;
-      }
-
-      return retryData.presignedUrl;
-    } else if (!response.ok) {
-      throw new Error(`HTTP error: ${response.status}`);
+    // if still invalid, reset user
+    if (!token) {
+      setUser(defaultUser);
+      return;
     }
 
-    const data = await response.json();
-    if (!data.success) {
-      return null;
+    try {
+      const user = await verifyToken(token);
+      setUser(user);
+    } catch (error) {
+      // if verification fails, try refreshing once more
+      token = await refreshAccessToken();
+      if (!token) {
+        setUser(defaultUser);
+        return;
+      }
+
+      setAccessToken(token);
+
+      try {
+        const user = await verifyToken(token);
+        setUser(user);
+      } catch (retryError) {
+        console.error("Authentication failed after token refresh:", retryError);
+        setUser(defaultUser);
+      }
     }
-    return data.presignedUrl;
-  } catch (err) {
-    console.error("Could not fetch profile picture URL", err);
-    return null;
+  } catch (error) {
+    console.error("Error during authentication check:", error);
+    setUser(defaultUser);
   }
 };
