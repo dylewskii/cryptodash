@@ -12,7 +12,6 @@ export default function ProfilePanel() {
   const user = useUserStore((state) => state.user);
   const profilePicUrl = useUserStore((state) => state.profilePicUrl);
   const setProfilePicUrl = useUserStore((state) => state.setProfilePicUrl);
-  // const { user, profilePicUrl, setProfilePicUrl } = useContext(UserContext);
   const hiddenFileUpload = useRef<HTMLInputElement | null>(null);
   const [uploading, setUploading] = useState<boolean>(false);
   const [errorStatus, setErrorStatus] = useState({
