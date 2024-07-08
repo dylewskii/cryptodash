@@ -7,12 +7,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useContext } from "react";
-import UserContext from "@/context/UserContext";
 import { useNavigate } from "react-router-dom";
+import { useUserStore } from "@/stores/useUserStore";
 
 export default function Navbar() {
-  const { user, setUser, profilePicUrl } = useContext(UserContext);
+  const user = useUserStore((state) => state.user);
+  const setUser = useUserStore((state) => state.setUser);
+  const profilePicUrl = useUserStore((state) => state.profilePicUrl);
   const navigate = useNavigate();
 
   const logoutUser = async () => {

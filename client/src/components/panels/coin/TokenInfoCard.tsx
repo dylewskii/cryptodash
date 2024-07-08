@@ -6,7 +6,7 @@ import {
   CardTitle,
 } from "../../ui/card";
 import { formatCurrency } from "@/lib";
-import { DetailedCoin } from "@/context/UserContext";
+import { DetailedCoin } from "@/types";
 
 interface TokenInfoCardProps {
   coin: DetailedCoin;

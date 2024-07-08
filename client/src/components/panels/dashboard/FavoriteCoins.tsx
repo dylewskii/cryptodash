@@ -1,6 +1,3 @@
-// react
-import { useContext } from "react";
-import UserContext from "@/context/UserContext";
 // components / ui
 import SparkLineChart from "@/charts/SparkLineChart";
 import {
@@ -14,13 +11,16 @@ import {
 import { Skeleton } from "../../ui/skeleton";
 // utils
 import { formatCurrency, roundToTwoDecimalPlaces } from "@/lib";
+// store
+import { useUserStore } from "@/stores/useUserStore";
 
 export default function FavoriteCoins() {
-  const { portfolio, loading } = useContext(UserContext);
+  const portfolio = useUserStore((state) => state.portfolio);
+  const portfolioLoading = useUserStore((state) => state.portfolioLoading);
 
   return (
     <div className="custom-grid-1 my-4">
-      {loading ? (
+      {portfolioLoading ? (
         <>
           <Card>
             <Skeleton className="h-[100px] w-[320px] rounded-xl" />

@@ -1,15 +1,18 @@
 // react
-import UserContext from "@/context/UserContext";
-import { useContext, useRef, useState } from "react";
+import { useRef, useState } from "react";
 // ui
 import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
 import { Label } from "../../ui/label";
 import { Input } from "../../ui/input";
 import { Loader2 } from "lucide-react";
+import { useUserStore } from "@/stores/useUserStore";
 
 export default function ProfilePanel() {
-  const { user, profilePicUrl, setProfilePicUrl, accessToken } =
-    useContext(UserContext);
+  const accessToken = useUserStore((state) => state.accessToken);
+  const user = useUserStore((state) => state.user);
+  const profilePicUrl = useUserStore((state) => state.profilePicUrl);
+  const setProfilePicUrl = useUserStore((state) => state.setProfilePicUrl);
+  // const { user, profilePicUrl, setProfilePicUrl } = useContext(UserContext);
   const hiddenFileUpload = useRef<HTMLInputElement | null>(null);
   const [uploading, setUploading] = useState<boolean>(false);
   const [errorStatus, setErrorStatus] = useState({

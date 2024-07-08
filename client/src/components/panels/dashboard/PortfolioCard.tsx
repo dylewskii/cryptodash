@@ -1,11 +1,7 @@
-// ------------------------------ IMPORTS ------------------------------
 // react
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useDialog } from "@/hooks/useDialog";
-// context
-import DataContext from "@/context/DataContext";
-import UserContext from "@/context/UserContext";
 // ui
 import SelectorDropdown from "../../ui/SelectorDropdown";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -26,15 +22,20 @@ import { Loader2 } from "lucide-react";
 // utils
 import { formatCurrency, capitalizeFirstLetter } from "@/lib";
 // types
-import { DetailedCoin } from "@/context/UserContext";
+import { DetailedCoin } from "@/types";
+import { useUserStore } from "@/stores/useUserStore";
+import { useCoinStore } from "@/stores/useCoinStore";
 
 interface PortfolioEntryLineProps {
   coin: DetailedCoin;
 }
 
 export default function PortfolioCard() {
-  const { portfolio, loading, accessToken } = useContext(UserContext);
-  const { cryptoList } = useContext(DataContext);
+  const accessToken = useUserStore((state) => state.accessToken);
+  const portfolio = useUserStore((state) => state.portfolio);
+  const portfolioLoading = useUserStore((state) => state.portfolioLoading);
+  const cryptoList = useCoinStore((state) => state.cryptoList);
+
   const [addedCoin, setAddedCoin] = useState<string>("");
   const [addedAmount, setAddedAmount] = useState<string>("");
   const {
@@ -76,7 +77,7 @@ export default function PortfolioCard() {
   return (
     <ScrollArea className="rounded-md border">
       <div className="p-4">
-        {loading ? (
+        {portfolioLoading ? (
           <Skeleton className="h-[150px] w-full rounded-xl mb-2" />
         ) : (
           <>

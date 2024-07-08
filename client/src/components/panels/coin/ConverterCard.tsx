@@ -1,13 +1,12 @@
 // react
 import { useState } from "react";
-// import DataContext from "@/context/DataContext";
 // components
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import SelectorDropdown from "../../ui/SelectorDropdown";
 import useCryptoFiatValues from "@/hooks/useCryptoFiatValues";
 // types
-import { DetailedCoin } from "@/context/UserContext";
+import { DetailedCoin } from "@/types";
 
 interface ConverterCardProps {
   coin: DetailedCoin;
@@ -40,7 +39,6 @@ export default function ConverterCard({
   coin,
   className = "",
 }: ConverterCardProps) {
-  // const { loading } = useContext(DataContext);
   const { getCryptoFiatValues } = useCryptoFiatValues();
 
   const [cryptoAmount, setCryptoAmount] = useState<string>("");

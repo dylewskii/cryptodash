@@ -1,5 +1,7 @@
 // react
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+// store
+import { useUserStore } from "@/stores/useUserStore";
 // ui
 import {
   Card,
@@ -16,7 +18,6 @@ import {
 } from "@/components/ui/tooltip";
 // utils
 import { formatCurrency } from "@/lib";
-import UserContext from "@/context/UserContext";
 
 interface TotalMcapCardProps {
   className?: string;
@@ -25,9 +26,9 @@ interface TotalMcapCardProps {
 export default function TotalMcapCard({ className = "" }: TotalMcapCardProps) {
   const [totalMcap, setTotalMcap] = useState<string>("");
   const [lastUpdated, setLastUpdated] = useState<string>("");
-  const { accessToken } = useContext(UserContext);
+  const accessToken = useUserStore((state) => state.accessToken);
 
-  const fetchMcapData = async () => {
+  const fetchMcapData = useCallback(async () => {
     const cacheKey = "totalMcapData";
     const cachedData = localStorage.getItem(cacheKey);
     const now = new Date();
@@ -75,11 +76,11 @@ export default function TotalMcapCard({ className = "" }: TotalMcapCardProps) {
     } else {
       console.error("Failed to fetch total mcap data");
     }
-  };
+  }, [accessToken]);
 
   useEffect(() => {
     fetchMcapData();
-  }, []);
+  }, [fetchMcapData]);
 
   return (
     <div className={`${className}`}>

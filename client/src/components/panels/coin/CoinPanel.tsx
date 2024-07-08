@@ -1,9 +1,9 @@
 import { useLocation } from "react-router-dom";
 import { useState } from "react";
+import { DetailedCoin } from "@/types";
 import TokenInfoCard from "./TokenInfoCard";
 import HoldingsCard from "./HoldingsCard";
 import ConverterCard from "./ConverterCard";
-import { DetailedCoin } from "@/context/UserContext";
 import CoinPriceCard from "./CoinPriceCard";
 
 export default function CoinPanel() {

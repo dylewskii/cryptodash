@@ -1,19 +1,24 @@
 // components
 import CryptoListTable from "./CryptoListTable";
 // react
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
-import DataContext from "@/context/DataContext";
+import { useCallback, useEffect, useMemo, useState } from "react";
 // misc
 import { Input } from "@/components/ui/input";
-import UserContext from "@/context/UserContext";
+import { useUserStore } from "@/stores/useUserStore";
+import { useCoinStore } from "@/stores/useCoinStore";
 
 export default function ExplorePanel() {
-  // const [cryptoList, setCryptoList] = useState<CoinObject[]>([]);
   const [searchActive, setSearchActive] = useState<boolean>(false);
   const [query, setQuery] = useState<string>("");
   const [page, setPage] = useState<number>(1);
-  const { fetchAllCoins, cryptoList, loading } = useContext(DataContext);
-  const { accessToken, user } = useContext(UserContext);
+
+  const accessToken = useUserStore((state) => state.accessToken);
+  const user = useUserStore((state) => state.user);
+  const cryptoList = useCoinStore((state) => state.cryptoList);
+  const fetchAllCoins = useCoinStore((state) => state.fetchAllCoins);
+  const fetchAllCoinsPending = useCoinStore(
+    (state) => state.fetchAllCoinsPending
+  );
 
   // filtered list of coins based on the search query
   const filteredCryptoCoins = useMemo(() => {
@@ -25,13 +30,13 @@ export default function ExplorePanel() {
   // on mount - load crypto names from the 1st page
   useEffect(() => {
     if (user.isAuthenticated) {
-      fetchAllCoins(1, accessToken);
+      fetchAllCoins(1);
     }
   }, [fetchAllCoins, user.isAuthenticated, accessToken]);
 
   // fetch new coins when the page changes (i.e reaches bottom of the page)
   useEffect(() => {
-    fetchAllCoins(page, accessToken);
+    fetchAllCoins(page);
   }, [page, fetchAllCoins, accessToken]);
 
   const handleInfiniteScroll = useCallback(() => {
@@ -40,10 +45,10 @@ export default function ExplorePanel() {
     const innerHeight = window.innerHeight; // inner height of the window (viewport)
 
     // if user has scrolled to the bottom of the page, load the next page
-    if (innerHeight + scrollTop + 1 >= scrollHeight && !loading) {
+    if (innerHeight + scrollTop + 1 >= scrollHeight && !fetchAllCoinsPending) {
       setPage((prev) => prev + 1);
     }
-  }, [loading]);
+  }, [fetchAllCoinsPending]);
 
   useEffect(() => {
     window.addEventListener("scroll", handleInfiniteScroll);
@@ -86,7 +91,7 @@ export default function ExplorePanel() {
       </div>
       <CryptoListTable
         cryptoList={searchActive ? filteredCryptoCoins : cryptoList}
-        loading={loading}
+        loading={fetchAllCoinsPending}
       />
     </section>
   );

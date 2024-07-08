@@ -1,4 +1,3 @@
-// import UserContext from "@/context/UserContext";
 import { checkAuth } from "@/lib";
 import { useUserStore } from "@/stores/useUserStore";
 import { useEffect, useState } from "react";
@@ -23,7 +22,7 @@ export const ProtectedRoutes = ({
       setIsChecking(false);
     };
     verifyAuth();
-  }, [checkAuth]);
+  }, [accessToken, setAccessToken, setUser]);
 
   if (isChecking) {
     // TODO: replace with loading spinner

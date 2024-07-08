@@ -1,17 +1,17 @@
-// react
-import { useContext } from "react";
-import UserContext from "@/context/UserContext";
 // ui
 import { Skeleton } from "../../ui/skeleton";
 import { Card } from "@/components/ui/card";
 import FavoriteCoinCard from "./FavoriteCoinCard";
+// store
+import { useUserStore } from "@/stores/useUserStore";
 
 export default function FavoriteCoinsList() {
-  const { portfolio, loading } = useContext(UserContext);
+  const portfolio = useUserStore((state) => state.portfolio);
+  const portfolioLoading = useUserStore((state) => state.portfolioLoading);
 
   return (
     <div className="custom-grid-1 my-4">
-      {loading ? (
+      {portfolioLoading ? (
         <>
           <Card>
             <Skeleton className="h-[100px] w-[320px] rounded-xl" />

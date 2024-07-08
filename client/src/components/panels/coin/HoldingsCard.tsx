@@ -1,6 +1,8 @@
 // react
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { useDialog } from "@/hooks/useDialog";
+// store
+import { useUserStore } from "@/stores/useUserStore";
 // ui
 import {
   Card,
@@ -25,7 +27,7 @@ import { Loader2 } from "lucide-react";
 // utils
 import { formatCurrency, capitalizeFirstLetter } from "@/lib";
 // types /interface
-import UserContext, { DetailedCoin } from "@/context/UserContext";
+import { DetailedCoin } from "@/types";
 
 interface HoldingsCardProps {
   coin: DetailedCoin;
@@ -45,7 +47,7 @@ export default function HoldingsCard({
     handleDialogToggle,
     handleRequest,
   } = useDialog();
-  const { accessToken } = useContext(UserContext);
+  const accessToken = useUserStore((state) => state.accessToken);
   const [editedHolding, setEditedHolding] = useState<string>("");
   const isLargeBalance = coin.amount.length > 9;
 

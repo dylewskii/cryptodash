@@ -11,7 +11,7 @@ import {
 // utils
 import { formatCurrency, roundToTwoDecimalPlaces } from "@/lib";
 // types
-import { DetailedCoin } from "@/context/UserContext";
+import { DetailedCoin } from "@/types";
 
 interface FavoriteCoinCardProps {
   portfolioCoin: DetailedCoin;

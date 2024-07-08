@@ -1,7 +1,5 @@
-// context
-import { useContext } from "react";
-import UserContext from "@/context/UserContext";
 // ui
+import { useUserStore } from "@/stores/useUserStore";
 import { Skeleton } from "../../ui/skeleton";
 // utils
 import { formatCurrency } from "@/lib";
@@ -11,7 +9,9 @@ interface TotalBalanceProps {
 }
 
 export default function TotalBalance({ className }: TotalBalanceProps) {
-  const { portfolio, loading } = useContext(UserContext);
+  const portfolio = useUserStore((state) => state.portfolio);
+  const portfolioLoading = useUserStore((state) => state.portfolioLoading);
+
   const totalValueArray = portfolio.detailed.map(
     (coinObject) => coinObject.totalValue
   );
@@ -24,7 +24,7 @@ export default function TotalBalance({ className }: TotalBalanceProps) {
   return (
     <div className={`flex flex-col ${className}`}>
       Total Balance
-      {loading ? (
+      {portfolioLoading ? (
         <Skeleton className="h-[50px] w-[210px]" />
       ) : (
         <div className="flex gap-3">

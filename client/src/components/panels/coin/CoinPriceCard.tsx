@@ -1,6 +1,6 @@
 import { formatCurrency } from "@/lib";
 import { Card, CardHeader, CardTitle } from "../../ui/card";
-import { DetailedCoin } from "@/context/UserContext";
+import { DetailedCoin } from "@/types";
 
 interface CoinPriceCardProps {
   coin: DetailedCoin;
