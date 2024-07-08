@@ -26,65 +26,79 @@ import { Label } from "../../ui/label";
 import { Loader2 } from "lucide-react";
 // utils
 import { formatCurrency, capitalizeFirstLetter } from "@/lib";
-// types /interface
+import { useToast } from "@/components/ui/use-toast";
+// types
 import { DetailedCoin } from "@/types";
 
 interface HoldingsCardProps {
   coin: DetailedCoin;
-  updateCoinData: (updatedCoin: DetailedCoin) => void;
   className?: string;
 }
 
-export default function HoldingsCard({
-  coin,
-  updateCoinData,
-  className,
-}: HoldingsCardProps) {
+export default function HoldingsCard({ coin, className }: HoldingsCardProps) {
   const {
     dialogOpen,
     dialogErrorMsg,
-    dialogReqPending,
+    pendingRequests,
     handleDialogToggle,
     handleRequest,
   } = useDialog();
   const accessToken = useUserStore((state) => state.accessToken);
   const [editedHolding, setEditedHolding] = useState<string>("");
+  const { toast } = useToast();
   const isLargeBalance = coin.amount.length > 9;
 
   const editHolding = async () => {
-    const coinToEdit = coin.id;
-    handleRequest(
-      `http://localhost:8000/portfolio/edit`,
-      "PATCH",
-      {
-        coinId: coinToEdit,
-        editedAmount: editedHolding,
-      },
-      `Edited ${capitalizeFirstLetter(coin.name)} position: ${editedHolding}`,
-      "Failed to edit holding amount",
-      accessToken
-    );
-    const newTotalValue =
-      Number(editedHolding) * Number(coin.info.currentPrice);
+    try {
+      const coinToEdit = coin.id;
+      const response = await handleRequest(
+        `http://localhost:8000/portfolio/edit`,
+        "PATCH",
+        {
+          coinId: coinToEdit,
+          editedAmount: editedHolding,
+        },
+        `Edited ${capitalizeFirstLetter(coin.name)} position: ${editedHolding}`,
+        "Failed to edit holding amount",
+        accessToken,
+        "editHolding"
+      );
 
-    const updatedCoin = {
-      ...coin,
-      amount: editedHolding,
-      totalValue: newTotalValue,
-    };
-    updateCoinData(updatedCoin);
+      if (!response) {
+        throw new Error("Failed to edit holding");
+      }
+    } catch (err) {
+      console.error("Error editing holding:", err);
+      toast({
+        title: "Failed to edit holding. Please try again.",
+        duration: 3000,
+      });
+    }
   };
 
   const deleteHolding = async () => {
-    const coinToDelete = coin.id;
-    handleRequest(
-      `http://localhost:8000/portfolio/delete`,
-      "DELETE",
-      { coinId: coinToDelete },
-      `${coinToDelete} has been deleted`,
-      "An error occurred while deleting the coin.",
-      accessToken
-    );
+    try {
+      const coinToDelete = coin.id;
+      const response = await handleRequest(
+        `http://localhost:8000/portfolio/delete`,
+        "DELETE",
+        { coinId: coinToDelete },
+        `${coinToDelete} has been deleted`,
+        "An error occurred while deleting the coin.",
+        accessToken,
+        "deleteHolding"
+      );
+
+      if (!response) {
+        throw new Error("Failed to delete holding");
+      }
+    } catch (err) {
+      console.error("Error deleting holding:", err);
+      toast({
+        title: "Failed to delete holding. Please try again.",
+        duration: 3000,
+      });
+    }
   };
 
   return (
@@ -167,12 +181,13 @@ export default function HoldingsCard({
             <div className="text-red-600">{dialogErrorMsg}</div>
             <DialogFooter className="flex flex-row justify-between sm:justify-between">
               <Button
+                disabled={pendingRequests["deleteHolding"]}
                 variant="destructive"
                 type="submit"
                 onClick={deleteHolding}
                 className="max-w-[50%]"
               >
-                {dialogReqPending ? (
+                {pendingRequests["deleteHolding"] ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     <p>Deleting...</p>
@@ -198,11 +213,12 @@ export default function HoldingsCard({
                 )}
               </Button>
               <Button
+                disabled={pendingRequests["editHolding"]}
                 type="submit"
                 onClick={editHolding}
                 className="max-w-[50%]"
               >
-                {dialogReqPending ? (
+                {pendingRequests["editHolding"] ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     <p>Editing...</p>
