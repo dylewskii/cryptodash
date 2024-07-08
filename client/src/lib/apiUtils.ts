@@ -19,9 +19,17 @@ export const refreshAccessToken = async () => {
   }
 };
 
-export const fetchWithAuth = async (url: string, token: string) => {
+export const fetchWithAuth = async (
+  url: string,
+  token: string,
+  method: string = "GET"
+) => {
   const response = await fetch(url, {
-    headers: { Authorization: `Bearer ${token}` },
+    method: method.toUpperCase(),
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
     credentials: "include",
   });
   if (!response.ok) throw new Error("Authentication failed");
