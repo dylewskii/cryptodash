@@ -42,7 +42,7 @@ export default function PortfolioCard() {
     dialogOpen,
     setDialogErrorMsg,
     dialogErrorMsg,
-    dialogReqPending,
+    pendingRequests,
     handleDialogToggle,
     handleRequest,
   } = useDialog();
@@ -67,7 +67,8 @@ export default function PortfolioCard() {
       { id: selectedCoin.id, amount: addedAmount },
       `${capitalizeFirstLetter(addedCoin)} has been added successfully`,
       "Failed to add coin",
-      accessToken
+      accessToken,
+      "addCoin"
     );
 
     setAddedCoin("");
@@ -138,7 +139,7 @@ export default function PortfolioCard() {
                   <div className="text-red-600">{dialogErrorMsg}</div>
                   <DialogFooter>
                     <Button type="submit" onClick={addCoin}>
-                      {dialogReqPending ? (
+                      {pendingRequests["addCoin"] ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                           <p>Adding Coin...</p>
@@ -198,34 +199,6 @@ function PortfolioEntryLine({ coin }: PortfolioEntryLineProps) {
           <p className="text-sm">
             {coin.amount} <span>{coin.info.symbol.toUpperCase()}</span>
           </p>
-          {/* <svg
-            className="w-5 h-5"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13Z"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <path
-              d="M12 6C12.5523 6 13 5.55228 13 5C13 4.44772 12.5523 4 12 4C11.4477 4 11 4.44772 11 5C11 5.55228 11.4477 6 12 6Z"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <path
-              d="M12 20C12.5523 20 13 19.5523 13 19C13 18.4477 12.5523 18 12 18C11.4477 18 11 18.4477 11 19C11 19.5523 11.4477 20 12 20Z"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg> */}
         </div>
       </div>
       <Separator className="my-2 col-span-2" />
