@@ -13,11 +13,10 @@ export default function ExplorePanel() {
   const [page, setPage] = useState<number>(1);
 
   const accessToken = useUserStore((state) => state.accessToken);
-  const user = useUserStore((state) => state.user);
   const cryptoList = useCoinStore((state) => state.cryptoList);
-  const fetchAllCoins = useCoinStore((state) => state.fetchAllCoins);
-  const fetchAllCoinsPending = useCoinStore(
-    (state) => state.fetchAllCoinsPending
+  const fetchCoinsByPage = useCoinStore((state) => state.fetchCoinsByPage);
+  const fetchCoinsByPagePending = useCoinStore(
+    (state) => state.fetchCoinsByPagePending
   );
 
   // filtered list of coins based on the search query
@@ -27,17 +26,10 @@ export default function ExplorePanel() {
     );
   }, [query, cryptoList]);
 
-  // on mount - load crypto names from the 1st page
+  // fetch new coins when the page changes (i.e user reaches bottom of the page)
   useEffect(() => {
-    if (user.isAuthenticated) {
-      fetchAllCoins(1);
-    }
-  }, [fetchAllCoins, user.isAuthenticated, accessToken]);
-
-  // fetch new coins when the page changes (i.e reaches bottom of the page)
-  useEffect(() => {
-    fetchAllCoins(page);
-  }, [page, fetchAllCoins, accessToken]);
+    fetchCoinsByPage(page);
+  }, [page, fetchCoinsByPage, accessToken]);
 
   const handleInfiniteScroll = useCallback(() => {
     const scrollHeight = document.documentElement.scrollHeight; // total document height (including the part not visible on the screen)
@@ -45,15 +37,18 @@ export default function ExplorePanel() {
     const innerHeight = window.innerHeight; // inner height of the window (viewport)
 
     // if user has scrolled to the bottom of the page, load the next page
-    if (innerHeight + scrollTop + 1 >= scrollHeight && !fetchAllCoinsPending) {
+    if (
+      innerHeight + scrollTop + 1 >= scrollHeight &&
+      !fetchCoinsByPagePending
+    ) {
       setPage((prev) => prev + 1);
     }
-  }, [fetchAllCoinsPending]);
+  }, [fetchCoinsByPagePending]);
 
   useEffect(() => {
     window.addEventListener("scroll", handleInfiniteScroll);
 
-    // cleanup
+    // cleanup the event listener
     return () => window.removeEventListener("scroll", handleInfiniteScroll);
   }, [handleInfiniteScroll]);
 
@@ -91,7 +86,7 @@ export default function ExplorePanel() {
       </div>
       <CryptoListTable
         cryptoList={searchActive ? filteredCryptoCoins : cryptoList}
-        loading={fetchAllCoinsPending}
+        loading={fetchCoinsByPagePending}
       />
     </section>
   );
