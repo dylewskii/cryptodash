@@ -2,8 +2,9 @@ import { useEffect } from "react";
 import { useUserStore } from "@/stores/useUserStore";
 import { checkAuth, fetchAndSetProfilePicUrl } from "@/lib";
 import socket from "@/socket/socket";
+import { useCoinStore } from "@/stores/useCoinStore";
 
-export const useUserInitialization = () => {
+export const useInitialization = () => {
   const {
     accessToken,
     setAccessToken,
@@ -12,17 +13,19 @@ export const useUserInitialization = () => {
     fetchAndSetPortfolioData,
     setProfilePicUrl,
   } = useUserStore();
+  const { fetchCoinsByPage } = useCoinStore();
 
   useEffect(() => {
-    const initializeUserData = async () => {
+    const initializeData = async () => {
       await checkAuth(accessToken, setAccessToken, setUser);
       if (user.isAuthenticated) {
         await fetchAndSetPortfolioData();
         await fetchAndSetProfilePicUrl(setProfilePicUrl);
+        await fetchCoinsByPage(1);
       }
     };
 
-    initializeUserData();
+    initializeData();
 
     socket.on("portfolioUpdated", ({ userId, portfolio }) => {
       if (user.userId === userId) {
@@ -42,5 +45,6 @@ export const useUserInitialization = () => {
     setAccessToken,
     setUser,
     setProfilePicUrl,
+    fetchCoinsByPage,
   ]);
 };
