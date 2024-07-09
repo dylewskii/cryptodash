@@ -5,6 +5,7 @@ import {
   fetchAllCoinsWithMarketDataPaginated,
   fetchAllCoinsWithMarketDataRecursive,
   fetchTotalMcapData,
+  fetchSearchResults,
 } from "../controllers/dataController";
 import { authenticateJWT } from "../strategies/passportJwt";
 const router = Router();
@@ -31,5 +32,8 @@ router.get(
 
 // GET -> /total-market-cap
 router.get("/total-market-cap", authenticateJWT, fetchTotalMcapData);
+
+// GET -> /search?query=
+router.get("/search", authenticateJWT, fetchSearchResults);
 
 export default router;
