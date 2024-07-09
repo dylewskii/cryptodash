@@ -25,9 +25,10 @@ import SendPanel from "./components/panels/send/SendPanel.tsx";
 import CoinPanel from "./components/panels/coin/CoinPanel.tsx";
 // context
 import { ThemeProvider } from "./context/ThemeContext.tsx";
+// hooks
+import { useInitialization } from "./hooks/useInitialization.ts";
 // css
 import "./globals.css";
-import { useUserInitialization } from "./hooks/useUserInitialization.ts";
 
 const router = createBrowserRouter([
   {
@@ -124,7 +125,7 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  useUserInitialization();
+  useInitialization();
 
   return (
     <div className="flex flex-col min-h-screen mx-auto max-w-screen-xl">
