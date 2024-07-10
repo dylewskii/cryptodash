@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { CoinData } from "../types";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -124,35 +125,6 @@ export const fetchAllCoinsWithMarketDataPaginated = async (
   }
 };
 
-interface CoinData {
-  id: "bitcoin";
-  symbol: "btc";
-  name: "Bitcoin";
-  image: "https://assets.coingecko.com/coins/images/1/large/bitcoin.png?1696501400";
-  current_price: 70187;
-  market_cap: 1381651251183;
-  market_cap_rank: 1;
-  fully_diluted_valuation: 1474623675796;
-  total_volume: 20154184933;
-  high_24h: 70215;
-  low_24h: 68060;
-  price_change_24h: 2126.88;
-  price_change_percentage_24h: 3.12502;
-  market_cap_change_24h: 44287678051;
-  market_cap_change_percentage_24h: 3.31157;
-  circulating_supply: 19675987;
-  total_supply: 21000000;
-  max_supply: 21000000;
-  ath: 73738;
-  ath_change_percentage: -4.77063;
-  ath_date: "2024-03-14T07:10:36.635Z";
-  atl: 67.81;
-  atl_change_percentage: 103455.83335;
-  atl_date: "2013-07-06T00:00:00.000Z";
-  roi: null;
-  last_updated: "2024-04-07T16:49:31.736Z";
-}
-
 // recursive fetch - returns all coins from CG w/ market data
 export const fetchAllCoinsWithMarketDataRecursive = async (
   req: Request,
@@ -197,5 +169,39 @@ export const fetchAllCoinsWithMarketDataRecursive = async (
   } catch (err: any) {
     res.status(500).json({ success: false, msg: err.message });
     console.error("Failed to fetch coin list with market data from CG:", err);
+  }
+};
+
+// fetches all coins under the provided search term - supplied through a query param
+export const fetchSearchResults = async (req: Request, res: Response) => {
+  const searchTerm = req.query.searchTerm;
+  if (!searchTerm) {
+    return res
+      .status(400)
+      .json({ success: false, msg: "Search query param is missing" });
+  }
+  const url = `https://api.coingecko.com/api/v3/search?query=${searchTerm}`;
+  const options: RequestInit = {
+    method: "GET",
+    headers: {
+      accept: "application/json",
+      "x-cg-demo-api-key": COINGECKO_API_KEY,
+    },
+  };
+
+  try {
+    const response = await fetch(url, options);
+
+    if (!response.ok) {
+      throw new Error(`Http Error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return res.json({ data });
+  } catch (err) {
+    console.error("Error fetching results for provided search query :", err);
+    return res
+      .status(500)
+      .json({ success: false, msg: "Failed to run search" });
   }
 };
