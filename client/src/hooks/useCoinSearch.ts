@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-// react
 import { useState, useEffect } from "react";
 // stores
 import { useCoinStore } from "@/stores/useCoinStore";
@@ -7,8 +5,18 @@ import { useUserStore } from "@/stores/useUserStore";
 // utils
 import { useDebounce } from "use-debounce";
 
+export interface AddedCoin {
+  id: string;
+  name: string;
+  api_symbol?: string;
+  symbol?: string;
+  market_cap_rank?: string | number;
+  thumb?: string;
+  large?: string;
+}
+
 export const useCoinSearch = (searchTerm: string) => {
-  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [searchResults, setSearchResults] = useState<AddedCoin[]>([]);
   const [isSearchLoading, setIsSearchLoading] = useState(false);
   const [debouncedSearchTerm] = useDebounce(searchTerm, 300);
   const accessToken = useUserStore((state) => state.accessToken);
@@ -20,12 +28,14 @@ export const useCoinSearch = (searchTerm: string) => {
       const initialCoins = cryptoList.slice(0, 100).map((coin) => ({
         id: coin.id,
         name: coin.name,
+        symbol: coin.symbol,
+        market_cap_rank: coin.market_cap_rank,
+        thumb: coin.image,
       }));
       setSearchResults(initialCoins);
     }
   }, [cryptoList, debouncedSearchTerm]);
 
-  //
   useEffect(() => {
     const runSearch = async () => {
       if (!accessToken) {
@@ -37,6 +47,9 @@ export const useCoinSearch = (searchTerm: string) => {
         const initialCoins = cryptoList.slice(0, 100).map((coin) => ({
           id: coin.id,
           name: coin.name,
+          symbol: coin.symbol,
+          market_cap_rank: coin.market_cap_rank,
+          thumb: coin.image,
         }));
         setSearchResults(initialCoins);
         return;
