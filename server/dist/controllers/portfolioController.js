@@ -116,6 +116,11 @@ const addCoin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.addCoin = addCoin;
 const deleteCoin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { coinId } = req.body;
+    if (!coinId) {
+        return res
+            .status(400)
+            .json({ success: false, msg: "Coin ID is required." });
+    }
     if (!req.user) {
         return res.status(400).json({
             success: false,
@@ -168,6 +173,17 @@ const deleteCoin = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 exports.deleteCoin = deleteCoin;
 const editCoin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { coinId, editedAmount } = req.body;
+    if (!coinId || !editedAmount) {
+        return res
+            .status(400)
+            .json({ success: false, msg: "Coin ID and Edited Amount are required." });
+    }
+    if (isNaN(Number(editedAmount)) || Number(editedAmount) < 0) {
+        return res.status(400).json({
+            success: false,
+            msg: "Invalid amount. Please provide a non-negative number.",
+        });
+    }
     if (!req.user) {
         return res.status(400).json({
             success: false,
