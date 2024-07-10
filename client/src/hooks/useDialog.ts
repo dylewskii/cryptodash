@@ -39,13 +39,18 @@ export function useDialog(initialState: boolean = false) {
       const data = await response.json();
 
       if (!data.success) {
-        setDialogErrorMsg(data.msg || errorMessage);
+        setDialogErrorMsg(errorMessage);
+        toast({
+          title: data.msg,
+          duration: 4000,
+          variant: "destructive",
+        });
         return false;
       }
 
       toast({
         title: successMessage,
-        duration: 3000,
+        duration: 4000,
       });
       setDialogOpen(false);
       return true;
