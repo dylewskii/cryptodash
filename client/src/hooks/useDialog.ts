@@ -36,16 +36,10 @@ export function useDialog(initialState: boolean = false) {
     setPendingRequests((prev) => ({ ...prev, [requestId]: true }));
     try {
       const response = await fetch(url, options);
-
-      if (!response.ok) {
-        setDialogErrorMsg(errorMessage);
-        return false;
-      }
-
       const data = await response.json();
 
       if (!data.success) {
-        setDialogErrorMsg(errorMessage);
+        setDialogErrorMsg(data.msg || errorMessage);
         return false;
       }
 
