@@ -29,6 +29,7 @@ import { formatCurrency, capitalizeFirstLetter } from "@/lib";
 import { useToast } from "@/components/ui/use-toast";
 // types
 import { DetailedCoin } from "@/types";
+import { useNavigate } from "react-router-dom";
 
 interface HoldingsCardProps {
   coin: DetailedCoin;
@@ -46,9 +47,22 @@ export default function HoldingsCard({ coin, className }: HoldingsCardProps) {
   const accessToken = useUserStore((state) => state.accessToken);
   const [editedHolding, setEditedHolding] = useState<string>("");
   const { toast } = useToast();
-  const isLargeBalance = coin.amount.length > 9;
+  const navigate = useNavigate();
+  const isLongBalance = coin.amount.length > 9;
 
   const editHolding = async () => {
+    if (
+      !editedHolding ||
+      isNaN(Number(editedHolding)) ||
+      Number(editedHolding) < 0
+    ) {
+      toast({
+        title: "Invalid amount. Please enter a valid number.",
+        duration: 3000,
+        variant: "destructive",
+      });
+      return;
+    }
     try {
       const coinToEdit = coin.id;
       const response = await handleRequest(
@@ -59,7 +73,7 @@ export default function HoldingsCard({ coin, className }: HoldingsCardProps) {
           editedAmount: editedHolding,
         },
         `Edited ${capitalizeFirstLetter(coin.name)} position: ${editedHolding}`,
-        "Failed to edit holding amount",
+        "Failed to edit holding amount.",
         accessToken,
         "editHolding"
       );
@@ -72,6 +86,7 @@ export default function HoldingsCard({ coin, className }: HoldingsCardProps) {
       toast({
         title: "Failed to edit holding. Please try again.",
         duration: 3000,
+        variant: "destructive",
       });
     }
   };
@@ -83,20 +98,23 @@ export default function HoldingsCard({ coin, className }: HoldingsCardProps) {
         `http://localhost:8000/portfolio/delete`,
         "DELETE",
         { coinId: coinToDelete },
-        `${coinToDelete} has been deleted`,
-        "An error occurred while deleting the coin.",
+        `${capitalizeFirstLetter(coinToDelete)} holding has been deleted.`,
+        `Failed to delete ${coin.name}.`,
         accessToken,
         "deleteHolding"
       );
 
       if (!response) {
-        throw new Error("Failed to delete holding");
+        throw new Error("Failed to delete holding.");
       }
+
+      navigate("/app/home");
     } catch (err) {
       console.error("Error deleting holding:", err);
       toast({
         title: "Failed to delete holding. Please try again.",
         duration: 3000,
+        variant: "destructive",
       });
     }
   };
@@ -108,14 +126,14 @@ export default function HoldingsCard({ coin, className }: HoldingsCardProps) {
         <CardTitle className="flex pb-4">
           <span
             className={`${
-              isLargeBalance ? "text-2xl" : "text-3xl"
+              isLongBalance ? "text-2xl" : "text-3xl"
             } pr-2 md:text-5xl lg:text-4xl`}
           >
             {coin.amount}
           </span>
           <span
             className={`${
-              isLargeBalance ? "text-2xl" : "text-3xl"
+              isLongBalance ? "text-2xl" : "text-3xl"
             } md:text-5xl lg:text-4xl`}
           >
             {coin.info.symbol.toUpperCase()}
