@@ -14,4 +14,6 @@ router.get("/all-coins-with-market-data", passportJwt_1.authenticateJWT, dataCon
 router.get("/all-coins-with-market-data-recursive", passportJwt_1.authenticateJWT, dataController_1.fetchAllCoinsWithMarketDataRecursive);
 // GET -> /total-market-cap
 router.get("/total-market-cap", passportJwt_1.authenticateJWT, dataController_1.fetchTotalMcapData);
+// GET -> /search?query=
+router.get("/search", passportJwt_1.authenticateJWT, dataController_1.fetchSearchResults);
 exports.default = router;

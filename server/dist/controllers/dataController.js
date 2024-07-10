@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fetchAllCoinsWithMarketDataRecursive = exports.fetchAllCoinsWithMarketDataPaginated = exports.fetchAllCoins = exports.fetchTotalMcapData = exports.fetchPortfolioCoinData = void 0;
+exports.fetchSearchResults = exports.fetchAllCoinsWithMarketDataRecursive = exports.fetchAllCoinsWithMarketDataPaginated = exports.fetchAllCoins = exports.fetchTotalMcapData = exports.fetchPortfolioCoinData = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const { COINGECKO_API_KEY } = process.env;
@@ -160,3 +160,35 @@ const fetchAllCoinsWithMarketDataRecursive = (req, res) => __awaiter(void 0, voi
     }
 });
 exports.fetchAllCoinsWithMarketDataRecursive = fetchAllCoinsWithMarketDataRecursive;
+// fetches all coins under the provided search term - supplied through a query param
+const fetchSearchResults = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const searchTerm = req.query.searchTerm;
+    if (!searchTerm) {
+        return res
+            .status(400)
+            .json({ success: false, msg: "Search query param is missing" });
+    }
+    const url = `https://api.coingecko.com/api/v3/search?query=${searchTerm}`;
+    const options = {
+        method: "GET",
+        headers: {
+            accept: "application/json",
+            "x-cg-demo-api-key": COINGECKO_API_KEY,
+        },
+    };
+    try {
+        const response = yield fetch(url, options);
+        if (!response.ok) {
+            throw new Error(`Http Error: ${response.status}`);
+        }
+        const data = yield response.json();
+        return res.json({ data });
+    }
+    catch (err) {
+        console.error("Error fetching results for provided search query :", err);
+        return res
+            .status(500)
+            .json({ success: false, msg: "Failed to run search" });
+    }
+});
+exports.fetchSearchResults = fetchSearchResults;
