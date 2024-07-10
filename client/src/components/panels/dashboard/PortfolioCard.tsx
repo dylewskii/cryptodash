@@ -23,8 +23,9 @@ import { Loader2 } from "lucide-react";
 import { formatCurrency, capitalizeFirstLetter } from "@/lib";
 // types
 import { DetailedCoin } from "@/types";
+import { AddedCoin } from "@/hooks/useCoinSearch";
+// stores
 import { useUserStore } from "@/stores/useUserStore";
-import { useCoinStore } from "@/stores/useCoinStore";
 
 interface PortfolioEntryLineProps {
   coin: DetailedCoin;
@@ -34,9 +35,7 @@ export default function PortfolioCard() {
   const accessToken = useUserStore((state) => state.accessToken);
   const portfolio = useUserStore((state) => state.portfolio);
   const portfolioLoading = useUserStore((state) => state.portfolioLoading);
-  const cryptoList = useCoinStore((state) => state.cryptoList);
-
-  const [addedCoin, setAddedCoin] = useState<string>("");
+  const [addedCoin, setAddedCoin] = useState<AddedCoin | null>(null);
   const [addedAmount, setAddedAmount] = useState<string>("");
   const {
     dialogOpen,
@@ -54,24 +53,17 @@ export default function PortfolioCard() {
       return;
     }
 
-    // check if coin name is found within the CG crypto list
-    const selectedCoin = cryptoList.find((coin) => coin.name === addedCoin);
-    if (!selectedCoin) {
-      setDialogErrorMsg("Selected coin is invalid");
-      return;
-    }
-
     await handleRequest(
       "http://localhost:8000/portfolio/add",
       "POST",
-      { id: selectedCoin.id, amount: addedAmount },
-      `${capitalizeFirstLetter(addedCoin)} has been added successfully`,
+      { id: addedCoin.id, amount: addedAmount },
+      `${capitalizeFirstLetter(addedCoin.name)} has been added successfully`,
       "Failed to add coin",
       accessToken,
       "addCoin"
     );
 
-    setAddedCoin("");
+    setAddedCoin(null);
     setAddedAmount("");
   };
 
@@ -101,7 +93,7 @@ export default function PortfolioCard() {
                     />
                   </svg>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-[425px]">
+                <DialogContent className="sm:max-w-[525px]">
                   <DialogHeader>
                     <DialogTitle>Add a Coin</DialogTitle>
                     <DialogDescription>
@@ -117,9 +109,8 @@ export default function PortfolioCard() {
                       <SelectorDropdown
                         className="col-span-3"
                         label="Select a coin"
-                        items={cryptoList}
-                        value={addedCoin}
-                        onChange={setAddedCoin}
+                        value={addedCoin ? addedCoin.id : ""}
+                        onChange={(coin) => setAddedCoin(coin)}
                       />
                     </div>
                     <div className="grid grid-cols-4 items-center gap-4">
