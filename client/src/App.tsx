@@ -20,8 +20,6 @@ import DashboardPanel from "./components/panels/dashboard/DashboardPanel.tsx";
 import AssetsPanel from "./components/panels/assets/AssetsPanel.tsx";
 import ExplorePanel from "./components/panels/explore/ExplorePanel.tsx";
 import InsightsPanel from "./components/panels/insights/InsightsPanel.tsx";
-import SwapPanel from "./components/panels/swap/SwapPanel.tsx";
-import SendPanel from "./components/panels/send/SendPanel.tsx";
 import CoinPanel from "./components/panels/coin/CoinPanel.tsx";
 // context
 import { ThemeProvider } from "./context/ThemeContext.tsx";
@@ -117,8 +115,6 @@ const router = createBrowserRouter([
       { path: "assets", element: <AssetsPanel /> },
       { path: "explore", element: <ExplorePanel /> },
       { path: "insights", element: <InsightsPanel /> },
-      { path: "swap", element: <SwapPanel /> },
-      { path: "send", element: <SendPanel /> },
       { path: "coin/:coinName", element: <CoinPanel /> },
     ],
   },
