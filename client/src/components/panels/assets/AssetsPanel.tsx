@@ -9,8 +9,8 @@ export default function AssetsPanel() {
       <section className="flex flex-col gap-4">
         <TotalBalance className="my-4" />
         <PortfolioPerformance />
-        <PortfolioCard />
         <HoldingBreakdown />
+        <PortfolioCard />
       </section>
     </>
   );
