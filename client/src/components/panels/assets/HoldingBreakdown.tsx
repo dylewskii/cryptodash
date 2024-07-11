@@ -1,21 +1,9 @@
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "../../ui/card";
+import { CustomPieChart } from "@/charts/CustomPieChart";
 
 export default function HoldingBreakdown() {
   return (
     <>
-      <Card>
-        <CardHeader>
-          <CardTitle>Holding Breakdown</CardTitle>
-        </CardHeader>
-        <CardContent></CardContent>
-        <CardFooter></CardFooter>
-      </Card>
+      <CustomPieChart />
     </>
   );
 }
