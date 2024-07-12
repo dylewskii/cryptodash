@@ -34,7 +34,7 @@ export default function TotalBalance({ className }: TotalBalanceProps) {
       ) : (
         <div className="flex gap-3">
           {balanceHidden ? (
-            <BlurredSkeleton className="w-[50%] h-12 mt-2" />
+            <BlurredSkeleton className="w-[50%] h-12 mt-2 bg-[#262626]" />
           ) : (
             <p className="text-5xl mt-2">
               {formatCurrency(totalUsdPortfolioValue)}
