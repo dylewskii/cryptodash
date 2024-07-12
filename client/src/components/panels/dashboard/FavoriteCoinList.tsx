@@ -14,10 +14,10 @@ export default function FavoriteCoinsList() {
       {portfolioLoading ? (
         <>
           <Card>
-            <Skeleton className="h-[100px] w-[320px] rounded-xl" />
+            <Skeleton className="h-[100px] w-full rounded-xl dark:bg-zinc-400" />
           </Card>
           <Card>
-            <Skeleton className="h-[100px] w-[320px] rounded-xl" />
+            <Skeleton className="h-[100px] w-full rounded-xl dark:bg-zinc-400" />
           </Card>
         </>
       ) : (
