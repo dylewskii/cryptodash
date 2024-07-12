@@ -1,5 +1,5 @@
 import { ThemeProviderContext } from "@/context/ThemeContext";
-import { createChart, ColorType, AreaData } from "lightweight-charts";
+import { createChart, ColorType } from "lightweight-charts";
 import React, { useContext, useEffect, useRef } from "react";
 
 interface ChartProps {
@@ -42,7 +42,7 @@ function BasicChart(props: ChartProps): React.ReactElement {
       layout: {
         background: {
           type: ColorType.Solid,
-          color: theme === "dark" ? "#000000" : "#ffffff",
+          color: theme === "dark" ? "#272727" : "#ffffff",
         },
         textColor: theme === "dark" ? "white" : "black",
       },

@@ -44,7 +44,7 @@ const SparkLineChart = ({
         textColor: theme === "dark" ? "white" : "black",
         background: {
           type: ColorType.Solid,
-          color: theme === "dark" ? "#000000" : "#ffffff",
+          color: theme === "dark" ? "#272727" : "#ffffff",
         },
       },
       grid: {
