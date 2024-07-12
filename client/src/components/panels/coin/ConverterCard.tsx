@@ -3,7 +3,7 @@ import { useState } from "react";
 // components
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import SelectorDropdown from "../../ui/SelectorDropdown";
+import FiatSelectorDropdown from "@/components/ui/FiatSelectorDropdown";
 import useCryptoFiatValues from "@/hooks/useCryptoFiatValues";
 // types
 import { DetailedCoin } from "@/types";
@@ -225,7 +225,7 @@ export default function ConverterCard({
             autoComplete="off"
           />
           {/* FIAT SELECTOR */}
-          <SelectorDropdown
+          <FiatSelectorDropdown
             label="Select a currency"
             items={fiatList}
             value={fiatSelection}
