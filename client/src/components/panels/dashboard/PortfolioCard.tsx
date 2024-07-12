@@ -49,7 +49,12 @@ export default function PortfolioCard() {
   const addCoin = async () => {
     // check if coin name & amount have been added
     if (!addedCoin || !addedAmount) {
-      setDialogErrorMsg("Please enter a valid coin name and amount");
+      setDialogErrorMsg("Please enter a valid coin name and amount.");
+      return;
+    }
+
+    if (Number(addedAmount) < 0) {
+      setDialogErrorMsg("Please enter a positive holding amount.");
       return;
     }
 
