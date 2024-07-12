@@ -5,3 +5,7 @@ export const capitalizeFirstLetter = (str: string) => {
 export const genRandomHexColor = () => {
   return "#" + ((Math.random() * 0xffffff) << 0).toString(16).padStart(6, "0");
 };
+
+export const stripHtml = (html: string) => {
+  return html.replace(/<[^>]*>?/gm, "");
+};
