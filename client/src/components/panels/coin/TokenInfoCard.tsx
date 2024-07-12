@@ -1,16 +1,14 @@
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "../../ui/card";
-import { formatCurrency } from "@/lib";
+import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
+import { formatCurrency, stripHtml } from "@/lib";
 import { DetailedCoin } from "@/types";
 
 interface TokenInfoCardProps {
   coin: DetailedCoin;
   className?: string;
+}
+
+interface CoinDescriptionProps {
+  description: string;
 }
 
 export default function TokenInfoCard({ coin, className }: TokenInfoCardProps) {
@@ -19,11 +17,12 @@ export default function TokenInfoCard({ coin, className }: TokenInfoCardProps) {
       <CardHeader>
         <CardTitle>Token Info</CardTitle>
       </CardHeader>
-
       <CardContent>
-        <p className="border-b-2 border-black">{coin.info.description}</p>
-
-        <div className="grid grid-cols-2 gap-y-4 pt-4">
+        <div
+          className={`grid grid-cols-2 gap-y-4 ${
+            !coin.info.description ? "" : "pb-6"
+          }`}
+        >
           <p className="font-semibold text-left">All-Time High:</p>
           <p className="font-normal text-right">
             {coin.info.ath ? formatCurrency(coin.info.ath, "USD", 8) : "N/A"}
@@ -72,8 +71,17 @@ export default function TokenInfoCard({ coin, className }: TokenInfoCardProps) {
             {coin.info.genesis_date ? coin.info.genesis_date : "N/A"}
           </p>
         </div>
+        {!coin.info.description ? null : (
+          <CoinDescription description={coin.info.description} />
+        )}
       </CardContent>
-      <CardFooter></CardFooter>
     </Card>
+  );
+}
+
+function CoinDescription({ description }: CoinDescriptionProps) {
+  const cleanDescription = stripHtml(description);
+  return (
+    <div className="border-t-2 border-black pt-6 pb-4">{cleanDescription}</div>
   );
 }
