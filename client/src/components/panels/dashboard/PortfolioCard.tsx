@@ -5,7 +5,6 @@ import { useDialog } from "@/hooks/useDialog";
 // ui
 import SelectorDropdown from "../../ui/SelectorDropdown";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Button } from "../../ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -73,7 +72,7 @@ export default function PortfolioCard() {
   };
 
   return (
-    <ScrollArea className="rounded-md border">
+    <ScrollArea className="rounded-md border dark:bg-[#272727]">
       <div className="p-4">
         {portfolioLoading ? (
           <Skeleton className="h-[150px] w-full rounded-xl mb-2" />
@@ -85,6 +84,7 @@ export default function PortfolioCard() {
                 <DialogTrigger>
                   <svg
                     className="w-6 h-6"
+                    role="button"
                     viewBox="0 0 24 24"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
@@ -182,22 +182,23 @@ function PortfolioEntryLine({ coin }: PortfolioEntryLineProps) {
   }
 
   return (
-    <div className="grid grid-cols-[50px_3fr] gap-2">
-      <span className="grid place-items-center grid-col-1 max-w-6">
-        <img src={coin.info.image.sm} alt={coin?.name} />
-      </span>
-      <div className="grid-col-2 flex justify-between">
-        <div className="flex flex-col">
-          <p>{coin.name}</p>
-          <p className="text-zinc-500">{formatCurrency(coin.totalValue)}</p>
-        </div>
-        <div className="flex items-center">
-          <p className="text-sm">
-            {coin.amount} <span>{coin.info.symbol.toUpperCase()}</span>
-          </p>
+    <>
+      <div className="grid grid-cols-[50px_3fr] py-4 px-4 transition ease-in-out duration-400 hover:bg-[#121212] hover:text-white rounded-xl motion-reduce:transition-non">
+        <span className="grid place-items-center grid-col-1 max-w-6">
+          <img src={coin.info.image.sm} alt={coin?.name} />
+        </span>
+        <div className="grid-col-2 flex justify-between">
+          <div className="flex flex-col">
+            <p>{coin.name}</p>
+            <p className="text-zinc-500">{formatCurrency(coin.totalValue)}</p>
+          </div>
+          <div className="flex items-center">
+            <p className="text-sm">
+              {coin.amount} <span>{coin.info.symbol.toUpperCase()}</span>
+            </p>
+          </div>
         </div>
       </div>
-      <Separator className="my-2 col-span-2" />
-    </div>
+    </>
   );
 }
