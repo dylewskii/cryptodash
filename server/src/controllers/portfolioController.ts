@@ -87,12 +87,25 @@ export const addCoin = async (req: AuthenticatedRequest, res: Response) => {
     return res.status(400).json({ success: false, msg: "Invalid coin ID" });
   }
 
+  if (!amount || !id) {
+    return res.status(400).json({
+      success: false,
+      msg: "Please enter a valid coin and amount.",
+    });
+  }
+
+  if (Number(amount) < 0) {
+    return res
+      .status(400)
+      .json({ success: false, msg: "Please enter a positive holding amount." });
+  }
+
   // convert amount to float num
   const numericAmount = parseFloat(amount);
   if (isNaN(numericAmount)) {
     return res
       .status(400)
-      .json({ success: false, msg: "Amount must be a number." });
+      .json({ success: false, msg: "Please enter a valid holding amount." });
   }
 
   try {
