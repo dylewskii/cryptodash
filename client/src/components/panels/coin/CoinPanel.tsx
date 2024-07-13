@@ -2,17 +2,18 @@
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 // ui
-import TokenInfoCard from "./TokenInfoCard";
-import HoldingsCard from "./HoldingsCard";
-import ConverterCard from "./ConverterCard";
 import CoinPriceCard from "./CoinPriceCard";
+import ConverterCard from "./ConverterCard";
+import HoldingsCard from "./HoldingsCard";
+import TokenInfoCard from "./TokenInfoCard";
+import { Skeleton } from "@/components/ui/skeleton";
 // store
 import { useUserStore } from "@/stores/useUserStore";
-// socket
+// utils
+import { adaptToPortfolioCoinType, fetchPortfolioCoinData } from "@/lib";
+// types
+import { CoinDB, DetailedCoin } from "@/types";
 import socket from "@/socket/socket";
-/// types
-import { CoinDB } from "@/types";
-import { DetailedCoin } from "@/types";
 
 interface PortfolioUpdateEvent {
   userId: string;
@@ -20,25 +21,68 @@ interface PortfolioUpdateEvent {
 }
 
 export default function CoinPanel() {
-  const location = useLocation();
-  const initialCoinData = location.state.coin as DetailedCoin;
-  const [coinData, setCoinData] = useState<DetailedCoin>(initialCoinData);
+  const [isLoading, setIsLoading] = useState(false);
+  const [coinData, setCoinData] = useState<DetailedCoin | null>(null);
   const user = useUserStore((state) => state.user);
+  const portfolio = useUserStore((state) => state.portfolio);
+  const accessToken = useUserStore((state) => state.accessToken);
+  const location = useLocation();
+  const locationPath = location.pathname.split("/");
+  const coinId = locationPath[locationPath.length - 1];
+
+  useEffect(() => {
+    const initializeCoinData = async () => {
+      // check if coin is within portfolio
+      // if it is - use location.state.coin to set coinData
+      // if not - run fetchCoinData() and set result to coinData
+
+      setIsLoading(true);
+      try {
+        const coinInPortfolio = portfolio.detailed.find(
+          ({ id }) => id === coinId
+        );
+
+        if (coinInPortfolio) {
+          setCoinData(coinInPortfolio);
+          return;
+        }
+
+        const fetchedData = await fetchPortfolioCoinData([coinId], accessToken);
+
+        if (!fetchedData || fetchedData.length === 0) {
+          throw new Error(`Failed to fetch coin data for ${coinId}`);
+        }
+
+        const fetchedCoin = fetchedData[0];
+
+        setCoinData(adaptToPortfolioCoinType(fetchedCoin));
+        return;
+      } catch (err) {
+        console.error(`Error fetching coin data for ${coinId}: ${err}`);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    initializeCoinData();
+  }, [portfolio.detailed, accessToken, coinId]);
 
   useEffect(() => {
     const handlePortfolioUpdate = ({
       userId,
       portfolio,
     }: PortfolioUpdateEvent) => {
-      if (user.userId === userId) {
-        // find the updated coin data in the new portfolio
+      if (user.userId === userId && coinData) {
         const updatedCoin = portfolio.find((coin) => coin.id === coinData.id);
         if (updatedCoin) {
-          setCoinData((prevCoin) => ({
-            ...prevCoin,
-            amount: updatedCoin.amount.toString(), // keeps same type (string)
-            totalValue: updatedCoin.amount * prevCoin.info.currentPrice,
-          }));
+          setCoinData((prevCoin) => {
+            if (!prevCoin) return null;
+            return {
+              ...prevCoin,
+              amount: updatedCoin.amount.toString(),
+              totalValue: updatedCoin.amount * prevCoin.info.currentPrice,
+            };
+          });
         }
       }
     };
@@ -48,26 +92,39 @@ export default function CoinPanel() {
     return () => {
       socket.off("portfolioUpdated", handlePortfolioUpdate);
     };
-  }, [user.userId, coinData.id]);
+  }, [user.userId, coinData]);
+
+  if (isLoading || !coinData) {
+    return (
+      <section className="grid gap-4 mb-6 grid-cols-1 lg:grid-cols-2">
+        <div className="row-start-1 gap-4">
+          <Skeleton className="w-full h-[150px] rounded-xl dark:bg-zinc-400 mb-4" />
+          <Skeleton className="row-start-2 lg:row-start-2 mt-4 w-full h-[150px] rounded-xl dark:bg-zinc-400" />
+        </div>
+        <Skeleton className="row-start-4 md:col-start-1 lg:row-start-3 w-full h-[300px] rounded-xl dark:bg-zinc-400" />
+        <Skeleton className="row-start-3 lg:row-span-3 w-full h-[200px] rounded-xl dark:bg-zinc-400" />
+      </section>
+    );
+  }
 
   return (
-    <section className="grid gap-4 mb-6 grid-cols-1 lg:grid-cols-2">
+    <section className="grid mb-6 grid-cols-1 lg:grid-cols-2">
       <div className="row-start-1">
-        <CoinPriceCard coin={coinData} className="w-full" />
+        <CoinPriceCard coin={coinData} className="w-full mb-4" />
 
         <HoldingsCard
           coin={coinData}
-          className="w-full row-start-2 mt-6 lg:row-start-2 mt-4"
+          className="w-full row-start-2 lg:row-start-2 mb-4"
         />
       </div>
 
       <ConverterCard
         coin={coinData}
-        className="w-full row-start-4 md:col-start-1 lg:row-start-3"
+        className="w-full row-start-4 md:col-start-1 lg:row-start-3 mb-4"
       />
       <TokenInfoCard
         coin={coinData}
-        className="w-full row-start-3 lg:row-span-3"
+        className="w-full row-start-3 lg:row-span-3 mb-4"
       />
     </section>
   );
