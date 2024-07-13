@@ -1,14 +1,15 @@
 // components
 import CryptoListTable from "./CryptoListTable";
 // react
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 // misc
 import { Input } from "@/components/ui/input";
 import { useUserStore } from "@/stores/useUserStore";
 import { useCoinStore } from "@/stores/useCoinStore";
+import { useCoinSearch } from "@/hooks/useCoinSearch";
 
 export default function ExplorePanel() {
-  const [searchActive, setSearchActive] = useState<boolean>(false);
+  // const [searchActive, setSearchActive] = useState<boolean>(false);
   const [query, setQuery] = useState<string>("");
   const [page, setPage] = useState<number>(1);
 
@@ -19,17 +20,21 @@ export default function ExplorePanel() {
     (state) => state.fetchCoinsByPagePending
   );
 
+  const { searchResults, isSearchLoading } = useCoinSearch(query);
+
   // filtered list of coins based on the search query
-  const filteredCryptoCoins = useMemo(() => {
-    return cryptoList.filter((coin) =>
-      coin.name.toLowerCase().includes(query.toLowerCase())
-    );
-  }, [query, cryptoList]);
+  // const filteredCryptoCoins = useMemo(() => {
+  //   return cryptoList.filter((coin) =>
+  //     coin.name.toLowerCase().includes(query.toLowerCase())
+  //   );
+  // }, [query, cryptoList]);
 
   // fetch new coins when the page changes (i.e user reaches bottom of the page)
   useEffect(() => {
-    fetchCoinsByPage(page);
-  }, [page, fetchCoinsByPage, accessToken]);
+    if (!query) {
+      fetchCoinsByPage(page);
+    }
+  }, [page, fetchCoinsByPage, accessToken, query]);
 
   const handleInfiniteScroll = useCallback(() => {
     const scrollHeight = document.documentElement.scrollHeight; // total document height (including the part not visible on the screen)
@@ -51,6 +56,8 @@ export default function ExplorePanel() {
     // cleanup the event listener
     return () => window.removeEventListener("scroll", handleInfiniteScroll);
   }, [handleInfiniteScroll]);
+
+  const displayList = query ? searchResults : cryptoList;
 
   return (
     <section className="my-4">
@@ -80,15 +87,14 @@ export default function ExplorePanel() {
           type="text"
           value={query}
           isFocusVisible={false}
-          onChange={(e) => {
-            setQuery(e.target.value);
-            setSearchActive(e.target.value.trim().length > 0);
-          }}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setQuery(e.target.value)
+          }
         />
       </div>
       <CryptoListTable
-        cryptoList={searchActive ? filteredCryptoCoins : cryptoList}
-        loading={fetchCoinsByPagePending}
+        cryptoList={displayList}
+        loading={query ? isSearchLoading : fetchCoinsByPagePending}
       />
     </section>
   );
