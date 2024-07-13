@@ -78,12 +78,12 @@ export default function PortfolioCard() {
           <Skeleton className="h-[150px] w-full rounded-xl mb-2" />
         ) : (
           <>
-            <div className="flex justify-between items-center mb-6">
-              <h4 className="text-lg font-medium leading-none">Portfolio</h4>
+            <div className="flex justify-between items-center mb-4">
+              <h4 className="text-2xl font-medium leading-none">Portfolio</h4>
               <Dialog open={dialogOpen} onOpenChange={handleDialogToggle}>
                 <DialogTrigger>
                   <svg
-                    className="w-6 h-6"
+                    className="w-8 h-8"
                     role="button"
                     viewBox="0 0 24 24"
                     fill="none"
