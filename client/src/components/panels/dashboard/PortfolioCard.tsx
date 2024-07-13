@@ -78,7 +78,7 @@ export default function PortfolioCard() {
           <Skeleton className="h-[150px] w-full rounded-xl mb-2" />
         ) : (
           <>
-            <div className="flex justify-between mb-6">
+            <div className="flex justify-between items-center mb-6">
               <h4 className="text-lg font-medium leading-none">Portfolio</h4>
               <Dialog open={dialogOpen} onOpenChange={handleDialogToggle}>
                 <DialogTrigger>
