@@ -85,10 +85,13 @@ export default function LoginPage() {
           <div className="mb-4">
             <label htmlFor="username">Username:</label>
             <Input
+              className="mt-2"
+              name="username"
               id="username"
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              autoComplete="username"
             />
           </div>
 
@@ -99,7 +102,7 @@ export default function LoginPage() {
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full"
+                className="w-full mt-2"
               />
             </div>
           </div>
