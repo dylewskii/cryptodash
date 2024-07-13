@@ -293,3 +293,37 @@ export const sendAddCoinPostReq = async (
     throw new Error(`Send add coin request failed :${err}`);
   }
 };
+
+/** -----------------------------------------------------------------------------------------------
+ * Converts provided coin parameter into a DetailedCoin type.
+ *
+ * @param coin data of the coin to convert (UndetailedCoin fetched from API)
+ * @returns object in the format of DetailedCoin
+ */
+export const adaptToPortfolioCoinType = (coin: UndetailedCoin) => {
+  return {
+    id: coin.id,
+    name: coin.name,
+    amount: "0",
+    totalValue: 0,
+    info: {
+      symbol: coin.symbol,
+      image: coin.image,
+      currentPrice: coin.currentPrice,
+      marketCap: coin.marketCap,
+      ath: coin.ath,
+      webSlug: coin.webSlug,
+      description: coin.description,
+      links: coin.links,
+      genesis_date: coin.genesis_date,
+      market_cap_rank: coin.market_cap_rank,
+      fully_diluted_valuation: coin.fully_diluted_valuation,
+      price_change_percentage_24h: coin.price_change_percentage_24h,
+      price_change_percentage_7d: coin.price_change_percentage_7d,
+      total_supply: coin.total_supply,
+      max_supply: coin.max_supply,
+      circulating_supply: coin.circulating_supply,
+      sparkline: coin.sparkline,
+    },
+  };
+};
