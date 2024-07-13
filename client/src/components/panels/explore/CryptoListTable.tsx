@@ -10,6 +10,7 @@ import {
 import { Skeleton } from "../../ui/skeleton";
 // utils
 import { formatCurrency, roundToTwoDecimalPlaces } from "@/lib";
+import { useNavigate } from "react-router-dom";
 
 export interface CoinObject {
   ath: number;
@@ -49,6 +50,11 @@ export default function CryptoListTable({
   cryptoList,
   loading,
 }: CryptoListTableProps) {
+  const navigate = useNavigate();
+  const handleRowClick = (coinId: string) => {
+    navigate(`/app/coin/${coinId}`);
+  };
+
   return (
     <Table className="mt-4">
       <TableHeader>
@@ -63,7 +69,11 @@ export default function CryptoListTable({
       </TableHeader>
       <TableBody>
         {cryptoList.map((coinObject: CoinObject, i) => (
-          <TableRow key={`${coinObject.name}${i}`}>
+          <TableRow
+            key={`${coinObject.name}${i}`}
+            className="cursor-pointer"
+            onClick={() => handleRowClick(coinObject.id)}
+          >
             <TableCell>
               <div className="font-medium flex items-center">
                 {coinObject.market_cap_rank}
