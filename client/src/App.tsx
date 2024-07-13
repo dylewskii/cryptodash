@@ -115,7 +115,7 @@ const router = createBrowserRouter([
       { path: "assets", element: <AssetsPanel /> },
       { path: "explore", element: <ExplorePanel /> },
       { path: "insights", element: <InsightsPanel /> },
-      { path: "coin/:coinName", element: <CoinPanel /> },
+      { path: "coin/:coinId", element: <CoinPanel /> },
     ],
   },
 ]);
