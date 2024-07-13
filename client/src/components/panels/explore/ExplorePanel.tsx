@@ -73,6 +73,8 @@ export default function ExplorePanel() {
         </div>
 
         <Input
+          id="coinSearch"
+          name="coinSearch"
           className="border-none"
           placeholder="Search the cryptocurrency market"
           type="text"
