@@ -154,16 +154,16 @@ export default function PortfolioCard() {
                 return (
                   <Skeleton
                     key={`${coin.id}${i}`}
-                    className="h-[50px] w-full rounded-xl mb-2"
+                    className="h-[50px] w-full rounded-xl mb-2 dark:bg-zinc-400"
                   />
                 );
               }
 
               return (
                 <Link
-                  to={`/app/coin/${coin.name.toLowerCase()}`}
+                  to={`/app/coin/${coin.id.toLowerCase()}`}
                   state={{ coin }}
-                  key={coin.name}
+                  key={coin.id}
                 >
                   <PortfolioEntryLine coin={coin} />
                 </Link>
@@ -178,7 +178,9 @@ export default function PortfolioCard() {
 
 function PortfolioEntryLine({ coin }: PortfolioEntryLineProps) {
   if (!coin || !coin.info || !coin.info.image) {
-    return <Skeleton className="h-[50px] w-full rounded-xl mt-6" />;
+    return (
+      <Skeleton className="h-[50px] w-full rounded-xl mt-6 dark:bg-zinc-400" />
+    );
   }
 
   return (
