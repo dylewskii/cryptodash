@@ -4,7 +4,7 @@ import { Skeleton } from "../../ui/skeleton";
 import { BlurredSkeleton } from "@/components/ui/blurred-skeleton";
 // utils
 import { formatCurrency } from "@/lib";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface TotalBalanceProps {
   className?: string;
@@ -13,9 +13,7 @@ interface TotalBalanceProps {
 export default function TotalBalance({ className }: TotalBalanceProps) {
   const portfolio = useUserStore((state) => state.portfolio);
   const portfolioLoading = useUserStore((state) => state.portfolioLoading);
-  const [balanceHidden, setBalanceHidden] = useState<boolean>(false);
-
-  const handleHideBalance = () => setBalanceHidden(!balanceHidden);
+  const [isBalanceHidden, setIsBalanceHidden] = useState<boolean>();
 
   const totalValueArray = portfolio.detailed.map(
     (coinObject) => coinObject.totalValue
@@ -26,6 +24,32 @@ export default function TotalBalance({ className }: TotalBalanceProps) {
     0
   );
 
+  const handleHideBalance = () => {
+    setIsBalanceHidden(!isBalanceHidden);
+
+    localStorage.setItem(
+      "cryptodashe-isBalanceHidden",
+      JSON.stringify(!isBalanceHidden)
+    );
+  };
+
+  useEffect(() => {
+    const preference = localStorage.getItem("cryptodashe-isBalanceHidden");
+
+    if (!preference) {
+      setIsBalanceHidden(false);
+      localStorage.setItem(
+        "cryptodashe-isBalanceHidden",
+        JSON.stringify(isBalanceHidden)
+      );
+      return;
+    }
+
+    const balanceHiddenPreference = JSON.parse(preference);
+
+    setIsBalanceHidden(balanceHiddenPreference);
+  }, [isBalanceHidden]);
+
   return (
     <div className={`flex flex-col ${className}`}>
       <p className="tracking-wider">Total Balance</p>
@@ -33,7 +57,7 @@ export default function TotalBalance({ className }: TotalBalanceProps) {
         <Skeleton className="h-[50px] w-[210px] pt-2 dark:bg-zinc-400" />
       ) : (
         <div className="flex gap-3">
-          {balanceHidden ? (
+          {isBalanceHidden ? (
             <BlurredSkeleton className="w-[50%] h-12 mt-2 bg-[#262626]" />
           ) : (
             <p className="text-5xl mt-2">
@@ -42,7 +66,7 @@ export default function TotalBalance({ className }: TotalBalanceProps) {
           )}
 
           <p className="flex items-center">
-            {balanceHidden ? (
+            {isBalanceHidden ? (
               <svg
                 onClick={handleHideBalance}
                 className="w-6 h-6 mt-2"
