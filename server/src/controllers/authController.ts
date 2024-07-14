@@ -124,12 +124,14 @@ export const loginUser = async (req: Request, res: Response) => {
 // GET /logout
 export const logoutUser = (req: Request, res: Response) => {
   // check if token cookie exists - i.e user logged in
-  if (!req.cookies["token"]) {
+  if (!req.cookies["refreshToken"]) {
     return res.status(403).json({ msg: "User not logged in." });
   }
 
-  // invalidate cookie - set expiration to past date
-  res.cookie("token", "", { httpOnly: true, expires: new Date(0) });
+  // invalidate access & refresh tokens - set expiration to past date
+  res.cookie("accessToken", "", { httpOnly: true, expires: new Date(0) });
+  res.cookie("refreshToken", "", { httpOnly: true, expires: new Date(0) });
+
   res.status(200).json({ msg: "Logged out successfully" });
 };
 
