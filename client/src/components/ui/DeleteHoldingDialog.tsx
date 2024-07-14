@@ -69,7 +69,7 @@ export default function DeleteHoldingDialog({
 
   return (
     <Dialog open={dialogOpen} onOpenChange={handleDialogToggle}>
-      <DialogTrigger className="min-w-[100px] bg-[#ef4343] hover:bg-[#932424] text-white inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
+      <DialogTrigger className="min-w-[100px] text-white inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 bg-red-500 hover:bg-red-700">
         <svg
           className="h-4 w-4 mr-1"
           viewBox="0 0 24 24"
