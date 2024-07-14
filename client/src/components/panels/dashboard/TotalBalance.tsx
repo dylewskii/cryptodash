@@ -30,7 +30,7 @@ export default function TotalBalance({ className }: TotalBalanceProps) {
     <div className={`flex flex-col ${className}`}>
       <p className="tracking-wider">Total Balance</p>
       {portfolioLoading ? (
-        <Skeleton className="h-[50px] w-[210px] pt-2" />
+        <Skeleton className="h-[50px] w-[210px] pt-2 dark:bg-zinc-400" />
       ) : (
         <div className="flex gap-3">
           {balanceHidden ? (

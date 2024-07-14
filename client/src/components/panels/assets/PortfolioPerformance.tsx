@@ -518,7 +518,7 @@ export default function PortfolioPerformance() {
           {chartData ? (
             <BasicChart data={chartData} />
           ) : (
-            <Skeleton className="w-full h-[250px] rounded" />
+            <Skeleton className="w-full h-[250px] rounded dark:bg-zinc-400" />
           )}
         </CardContent>
       </Card>

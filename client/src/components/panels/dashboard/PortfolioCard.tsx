@@ -75,7 +75,7 @@ export default function PortfolioCard() {
     <ScrollArea className="rounded-md border dark:bg-[#272727]">
       <div className="p-4">
         {portfolioLoading ? (
-          <Skeleton className="h-[150px] w-full rounded-xl mb-2" />
+          <Skeleton className="h-[150px] w-full rounded-xl mb-2 dark:bg-zinc-400" />
         ) : (
           <>
             <div className="flex justify-between items-center mb-4">
