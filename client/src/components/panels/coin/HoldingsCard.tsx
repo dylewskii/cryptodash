@@ -56,31 +56,31 @@ export default function HoldingsCard({ coin, className }: HoldingsCardProps) {
   const isLongBalance = coin.amount.length > 9;
 
   return (
-    <Card className={`${className} flex-col justify-center`}>
+    <Card className={`${className} flex flex-col justify-between pt-6 pb-6`}>
       <CardContent className="flex flex-col p-0 pt-10 pb-4 px-10">
         <CardDescription className="text-lg">Total Balance</CardDescription>
         <CardTitle className="flex pb-4">
           <span
             className={`${
-              isLongBalance ? "text-2xl" : "text-3xl"
-            } pr-2 md:text-5xl lg:text-4xl`}
+              isLongBalance ? "text-2xl" : "text-4xl"
+            } pr-2 md:text-4xl lg:text-5xl`}
           >
             {coin.amount}
           </span>
           <span
             className={`${
-              isLongBalance ? "text-2xl" : "text-3xl"
-            } md:text-5xl lg:text-4xl`}
+              isLongBalance ? "text-2xl" : "text-4xl"
+            } md:text-4xl lg:text-5xl`}
           >
             {coin.info.symbol.toUpperCase()}
           </span>
         </CardTitle>
 
-        <div className="flex">
+        <div className="flex flex-col">
           <p className="text-zinc-500 text-xl font-semibold pr-2 md:text-3xl lg:text-2xl">
             USD
           </p>
-          <p className="text-lg font-semibold md:text-3xl lg:text-2xl">
+          <p className="text-lg font-semibold md:text-2xl lg:text-3xl">
             {formatCurrency(coin.totalValue)}
           </p>
         </div>
