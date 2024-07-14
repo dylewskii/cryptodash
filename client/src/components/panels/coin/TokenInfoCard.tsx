@@ -5,16 +5,12 @@ import {
   CardHeader,
   CardTitle,
 } from "../../ui/card";
-import { formatCurrency, stripHtml } from "@/lib";
+import { formatCurrency } from "@/lib";
 import { DetailedCoin } from "@/types";
 
 interface TokenInfoCardProps {
   coin: DetailedCoin | null;
   className?: string;
-}
-
-interface CoinDescriptionProps {
-  description: string;
 }
 
 export default function TokenInfoCard({ coin, className }: TokenInfoCardProps) {
@@ -105,17 +101,7 @@ export default function TokenInfoCard({ coin, className }: TokenInfoCardProps) {
             {coin.info.genesis_date ? coin.info.genesis_date : "N/A"}
           </p>
         </div>
-        {!coin.info.description ? null : (
-          <CoinDescription description={coin.info.description} />
-        )}
       </CardContent>
     </Card>
-  );
-}
-
-function CoinDescription({ description }: CoinDescriptionProps) {
-  const cleanDescription = stripHtml(description);
-  return (
-    <div className="border-t-2 border-black pt-6 pb-4">{cleanDescription}</div>
   );
 }
