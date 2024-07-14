@@ -108,14 +108,11 @@ export default function CoinPanel() {
   }
 
   return (
-    <section className="grid mb-6 grid-cols-1 lg:grid-cols-2">
+    <section className="grid gap-x-3 mb-6 grid-cols-1 lg:grid-cols-2">
       <div className="row-start-1">
         <CoinPriceCard coin={coinData} className="w-full mb-4" />
 
-        <HoldingsCard
-          coin={coinData}
-          className="w-full row-start-2 lg:row-start-2 mb-4"
-        />
+        <HoldingsCard coin={coinData} className="w-full mb-4" />
       </div>
 
       <ConverterCard
