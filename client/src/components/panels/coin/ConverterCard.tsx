@@ -203,7 +203,7 @@ export default function ConverterCard({
           />
           {/* CRYPTO AMOUNT */}
           <Input
-            className="my-4 text-center text-orange-600"
+            className="my-4 text-center"
             id="cryptoAmount"
             name="cryptoAmount"
             type="number"
@@ -243,7 +243,7 @@ export default function ConverterCard({
           <Input
             name="fiatAmount"
             id="fiatAmount"
-            className="my-4 text-center text-orange-600"
+            className="my-4 text-center"
             type="number"
             value={fiatAmount}
             onChange={(e) => {
