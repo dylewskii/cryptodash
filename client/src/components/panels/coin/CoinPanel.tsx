@@ -14,6 +14,7 @@ import { adaptToPortfolioCoinType, fetchPortfolioCoinData } from "@/lib";
 // types
 import { CoinDB, DetailedCoin } from "@/types";
 import socket from "@/socket/socket";
+import CoinDescriptionCard from "./CoinDescriptionCard";
 
 interface PortfolioUpdateEvent {
   userId: string;
@@ -108,21 +109,33 @@ export default function CoinPanel() {
   }
 
   return (
-    <section className="grid gap-x-3 mb-6 grid-cols-1 lg:grid-cols-2">
-      <div className="row-start-1">
-        <CoinPriceCard coin={coinData} className="w-full mb-4" />
+    <section className="grid gap-y-3 gap-x-3 mb-6 md:grid-cols-2 ">
+      <CoinPriceCard
+        coin={coinData}
+        className="w-full h-fit md:col-start-1 md:row-start-1 md:col-span-2"
+      />
 
-        <HoldingsCard coin={coinData} className="w-full mb-4" />
-      </div>
+      <HoldingsCard
+        coin={coinData}
+        className="w-full md:col-start-1 md:row-start-2"
+      />
 
       <ConverterCard
         coin={coinData}
-        className="w-full row-start-4 md:col-start-1 lg:row-start-3 mb-4"
+        className="w-full md:col-start-2 md:row-start-2"
       />
+
       <TokenInfoCard
         coin={coinData}
-        className="w-full row-start-3 lg:row-span-3 mb-4"
+        className="w-full md:col-start-1 md:row-start-3 md:col-span-2"
       />
+
+      {coinData.info.description && (
+        <CoinDescriptionCard
+          description={coinData.info.description}
+          className="w-full md:col-start-1 md:row-start-4 md:col-span-3"
+        />
+      )}
     </section>
   );
 }
