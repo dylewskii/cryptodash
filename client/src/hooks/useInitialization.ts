@@ -27,10 +27,9 @@ export const useInitialization = () => {
 
     initializeData();
 
-    socket.on("portfolioUpdated", ({ userId, portfolio }) => {
+    socket.on("portfolioUpdated", ({ userId }) => {
       if (user.userId === userId) {
         fetchAndSetPortfolioData();
-        console.log("Portfolio updated:", portfolio);
       }
     });
 
