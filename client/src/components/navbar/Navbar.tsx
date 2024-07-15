@@ -52,7 +52,9 @@ export default function Navbar() {
   return (
     <header className="flex justify-between items-center my-4 mx-8">
       <div>
-        <p className="text-2xl font-bold uppercase tracking-wide">CryptoDash</p>
+        <p className="text-2xl font-bold uppercase tracking-wide">
+          CryptoDashe
+        </p>
         <p className="text-xs text-orange-600 p-1">
           {user.username && `@${user.username}`}
         </p>
