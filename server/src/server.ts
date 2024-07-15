@@ -13,6 +13,8 @@ import uploadRouter from "./routes/upload";
 
 dotenv.config();
 
+const ORIGIN_URL = process.env.ORIGIN_URL || "http://localhost:5173";
+
 // express app & http server
 const app: Express = express();
 const server = createServer(app);
@@ -20,7 +22,7 @@ const server = createServer(app);
 // socket.io w/ http server
 const io = new SocketIOServer(server, {
   cors: {
-    origin: ["http://localhost:5173"],
+    origin: [ORIGIN_URL],
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -37,7 +39,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: [ORIGIN_URL],
     credentials: true, // allow cookies & auth headers with CORS
   })
 );
