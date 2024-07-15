@@ -2,11 +2,11 @@
   "name": "server",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/server.js",
+  "main": "dist/server.ts",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/server.js",
-    "dev": "nodemon dist/server.js"
+    "start": "node dist/server.ts",
+    "dev": "nodemon dist/server.ts"
   },
   "keywords": [],
   "author": "",
