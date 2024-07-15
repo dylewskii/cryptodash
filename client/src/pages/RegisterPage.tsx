@@ -8,6 +8,8 @@ import PasswordInput from "@/components/misc/PasswordInput";
 import { Label } from "@/components/ui/label";
 // stores
 import { useUserStore } from "@/stores/useUserStore";
+// env
+import { API_BASE_URL } from "@/config";
 
 export default function RegisterPage() {
   const navigate = useNavigate();
@@ -62,7 +64,7 @@ export default function RegisterPage() {
     setIsSubmitting(true);
     try {
       // registration logic
-      const url = "http://localhost:8000/auth/register";
+      const url = `${API_BASE_URL}/auth/register`;
       const response = await fetch(url, {
         method: "POST",
         headers: {

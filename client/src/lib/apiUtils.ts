@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { API_BASE_URL } from "@/config";
 import { UserType, defaultUser } from "@/types";
 
 /**
@@ -8,7 +9,7 @@ import { UserType, defaultUser } from "@/types";
  */
 export const refreshAccessToken = async (): Promise<string | null> => {
   try {
-    const response = await fetch("http://localhost:8000/auth/refresh-token", {
+    const response = await fetch(`${API_BASE_URL}/auth/refresh-token`, {
       method: "POST",
       credentials: "include",
     });
@@ -76,7 +77,7 @@ const getUserFromData = (data: any): UserType => ({
  * @throws {Error} Throws an error if the token verification fails
  */
 const verifyToken = async (token: string): Promise<UserType> => {
-  const url = `http://localhost:8000/auth/check-auth`;
+  const url = `${API_BASE_URL}/auth/check-auth`;
   const data = await fetchWithAuth(url, token);
   return getUserFromData(data);
 };

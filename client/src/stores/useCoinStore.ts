@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { MarketDataCoin } from "@/types";
 import { useUserStore } from "./useUserStore";
+import { API_BASE_URL } from "@/config";
 
 interface CoinStore {
   cryptoList: MarketDataCoin[];
@@ -25,7 +26,7 @@ export const useCoinStore = create<CoinStore>((set) => ({
     set({ fetchCoinsByPagePending: true });
 
     try {
-      const url = `http://localhost:8000/data/all-coins-with-market-data?page=${page}`;
+      const url = `${API_BASE_URL}/data/all-coins-with-market-data?page=${page}`;
       const options: RequestInit = {
         method: "GET",
         credentials: "include",
@@ -42,11 +43,6 @@ export const useCoinStore = create<CoinStore>((set) => ({
       }
 
       const { data } = await response.json();
-
-      // const coins = data.map((coin: MarketDataCoin) => ({
-      //   ...coin,
-      //   sparkline_in_7d: coin.sparkline_in_7d.price,
-      // }));
 
       const coinsFromPage = data;
 

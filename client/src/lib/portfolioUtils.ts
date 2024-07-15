@@ -1,4 +1,5 @@
 // ------------------------------- INTERFACE / TYPES -------------------------------
+import { API_BASE_URL } from "@/config";
 import { DetailedCoin, UndetailedCoin, CoinDB, PortfolioType } from "@/types";
 
 interface CoinAdditionData {
@@ -30,7 +31,7 @@ export const fetchPortfolio = async (
   accessToken: string
 ): Promise<CoinDB[]> => {
   try {
-    const url = `http://localhost:8000/portfolio/all-coins`;
+    const url = `${API_BASE_URL}/portfolio/all-coins`;
     const res = await fetch(url, {
       credentials: "include",
       headers: {
@@ -66,7 +67,7 @@ export const fetchPortfolioCoinData = async (
   const fetchCoinData = async (
     coin: string
   ): Promise<UndetailedCoin | null> => {
-    const url = `http://localhost:8000/data/portfolio-coin-data?coin=${coin}`;
+    const url = `${API_BASE_URL}/data/portfolio-coin-data?coin=${coin}`;
 
     const options: RequestInit = {
       credentials: "include",
@@ -203,7 +204,7 @@ export const fetchAndCombinePortfolioData = async (
  * portfolio values.
  */
 export const fetchPortfolioValues = async (accessToken: string) => {
-  const url = `http://localhost:8000/portfolio/portfolio-values`;
+  const url = `${API_BASE_URL}/portfolio/portfolio-values`;
   const options: RequestInit = {
     method: "GET",
     credentials: "include",
@@ -254,7 +255,7 @@ export const sendAddCoinPostReq = async (
   coinData: CoinAdditionData,
   accessToken: string
 ): Promise<CoinAdditionResponse> => {
-  const url = `http://localhost:8000/portfolio/add`;
+  const url = `${API_BASE_URL}/portfolio/add`;
   const options: RequestInit = {
     method: "POST",
     credentials: "include",

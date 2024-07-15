@@ -22,6 +22,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useDialog } from "@/hooks/useDialog";
 // types
 import { DetailedCoin } from "@/types";
+import { API_BASE_URL } from "@/config";
 
 interface AmendHoldingDialogProps {
   coin: DetailedCoin;
@@ -55,7 +56,7 @@ export default function EditHoldingDialog({ coin }: AmendHoldingDialogProps) {
     try {
       const coinToEdit = coin.id;
       const response = await handleRequest(
-        `http://localhost:8000/portfolio/edit`,
+        `${API_BASE_URL}/portfolio/edit`,
         "PATCH",
         {
           coinId: coinToEdit,

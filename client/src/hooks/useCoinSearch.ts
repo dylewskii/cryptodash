@@ -4,6 +4,7 @@ import { useCoinStore } from "@/stores/useCoinStore";
 import { useUserStore } from "@/stores/useUserStore";
 // utils
 import { useDebounce } from "use-debounce";
+import { API_BASE_URL } from "@/config";
 
 export interface AddedCoin {
   id: string;
@@ -55,7 +56,7 @@ export const useCoinSearch = (searchTerm: string) => {
         return;
       }
 
-      const url = `http://localhost:8000/data/search?searchTerm=${debouncedSearchTerm}`;
+      const url = `${API_BASE_URL}/data/search?searchTerm=${debouncedSearchTerm}`;
       const options: RequestInit = {
         method: "GET",
         headers: {

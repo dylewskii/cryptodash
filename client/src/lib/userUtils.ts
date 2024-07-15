@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "@/config";
 import { refreshAccessToken } from "./apiUtils";
 
 export const fetchAndSetProfilePicUrl = async (
@@ -22,16 +23,13 @@ export const fetchProfilePicUrl = async (
       throw new Error("Failed to refresh access token");
     }
 
-    const response = await fetch(
-      `http://localhost:8000/upload/profile-picture-url`,
-      {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
+    const response = await fetch(`${API_BASE_URL}/upload/profile-picture-url`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
 
     if (response.status === 401) {
       // access token might be expired, try to refresh it
@@ -42,7 +40,7 @@ export const fetchProfilePicUrl = async (
 
       // retry request with new access token
       const retryResponse = await fetch(
-        `http://localhost:8000/upload/profile-picture-url`,
+        `${API_BASE_URL}/upload/profile-picture-url`,
         {
           method: "GET",
           credentials: "include",

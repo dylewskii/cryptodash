@@ -4,6 +4,7 @@ import { Input } from "../ui/input";
 import useResetPassword from "@/hooks/useResetPassword";
 import { Label } from "../ui/label";
 import { Loader2 } from "lucide-react";
+import { API_BASE_URL } from "@/config";
 
 interface PasswordResetProps {
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -61,7 +62,7 @@ const PasswordReset: React.FC<PasswordResetProps> = ({
 
     try {
       const response = await fetch(
-        "http://localhost:8000/auth/request-password-reset",
+        `${API_BASE_URL}/auth/request-password-reset`,
         options
       );
       const data = await response.json();

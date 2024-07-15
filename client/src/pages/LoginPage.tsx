@@ -9,6 +9,8 @@ import { Loader2 } from "lucide-react";
 import PasswordInput from "@/components/misc/PasswordInput";
 // stores
 import { useUserStore } from "@/stores/useUserStore";
+// env
+import { API_BASE_URL } from "@/config";
 
 export default function LoginPage() {
   const setAccessToken = useUserStore((state) => state.setAccessToken);
@@ -34,8 +36,8 @@ export default function LoginPage() {
 
     setIsSubmitting(true);
     try {
-      const url = "http://localhost:8000/auth/login";
-      const response = await fetch(url, {
+      const URL = `${API_BASE_URL}/auth/login`;
+      const response = await fetch(URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

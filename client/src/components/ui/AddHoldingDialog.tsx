@@ -22,6 +22,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useDialog } from "@/hooks/useDialog";
 // types
 import { DetailedCoin } from "@/types";
+import { API_BASE_URL } from "@/config";
 
 interface AddHoldingDialogProps {
   coin: DetailedCoin;
@@ -54,7 +55,7 @@ export default function AddHoldingDialog({ coin }: AddHoldingDialogProps) {
     }
     try {
       const response = await handleRequest(
-        `http://localhost:8000/portfolio/add`,
+        `${API_BASE_URL}/portfolio/add`,
         "POST",
         {
           id: coin.id,

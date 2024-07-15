@@ -25,6 +25,7 @@ import { DetailedCoin } from "@/types";
 import { AddedCoin } from "@/hooks/useCoinSearch";
 // stores
 import { useUserStore } from "@/stores/useUserStore";
+import { API_BASE_URL } from "@/config";
 
 interface PortfolioEntryLineProps {
   coin: DetailedCoin;
@@ -58,7 +59,7 @@ export default function PortfolioCard() {
     }
 
     await handleRequest(
-      "http://localhost:8000/portfolio/add",
+      `${API_BASE_URL}/portfolio/add`,
       "POST",
       { id: addedCoin.id, amount: addedAmount },
       `${capitalizeFirstLetter(addedCoin.name)} has been added successfully`,

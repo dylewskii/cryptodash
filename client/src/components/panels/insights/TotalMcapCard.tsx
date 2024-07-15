@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/tooltip";
 // utils
 import { formatCurrency } from "@/lib";
+import { API_BASE_URL } from "@/config";
 
 interface TotalMcapCardProps {
   className?: string;
@@ -50,7 +51,7 @@ export default function TotalMcapCard({ className = "" }: TotalMcapCardProps) {
       }
     }
 
-    const url = `http://localhost:8000/data/total-market-cap`;
+    const url = `${API_BASE_URL}/data/total-market-cap`;
     const options: RequestInit = {
       credentials: "include",
       headers: {

@@ -1,8 +1,12 @@
+// react
 import { SyntheticEvent, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+// ui
 import PasswordInput from "@/components/misc/PasswordInput";
 import { Button } from "../components/ui/button";
 import { Label } from "@/components/ui/label";
+// env
+import { API_BASE_URL } from "@/config";
 
 const useQuery = () => {
   return new URLSearchParams(useLocation().search);
@@ -50,7 +54,7 @@ export default function ResetPasswordPage() {
     };
 
     try {
-      const url = "http://localhost:8000/auth/reset-password";
+      const url = `${API_BASE_URL}/auth/reset-password`;
       const response = await fetch(url, options);
       const data = await response.json();
 

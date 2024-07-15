@@ -20,6 +20,7 @@ import { capitalizeFirstLetter } from "@/lib";
 import { useDialog } from "@/hooks/useDialog";
 // types
 import { DetailedCoin } from "@/types";
+import { API_BASE_URL } from "@/config";
 
 interface DeleteHoldingDialogProps {
   coin: DetailedCoin;
@@ -43,7 +44,7 @@ export default function DeleteHoldingDialog({
     try {
       const coinToDelete = coin.id;
       const response = await handleRequest(
-        `http://localhost:8000/portfolio/delete`,
+        `${API_BASE_URL}/portfolio/delete`,
         "DELETE",
         { coinId: coinToDelete },
         `${capitalizeFirstLetter(coinToDelete)} holding has been deleted.`,

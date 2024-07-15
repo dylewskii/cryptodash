@@ -6,6 +6,7 @@ import { Label } from "../../ui/label";
 import { Input } from "../../ui/input";
 import { Loader2 } from "lucide-react";
 import { useUserStore } from "@/stores/useUserStore";
+import { API_BASE_URL } from "@/config";
 
 export default function ProfilePanel() {
   const accessToken = useUserStore((state) => state.accessToken);
@@ -33,7 +34,7 @@ export default function ProfilePanel() {
       const formData = new FormData();
       formData.append("avatar", selectedFile);
 
-      const url = `http://localhost:8000/upload/profile-picture`;
+      const url = `${API_BASE_URL}/upload/profile-picture`;
       const options: RequestInit = {
         method: "POST",
         credentials: "include",

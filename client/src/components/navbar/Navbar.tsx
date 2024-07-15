@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useNavigate } from "react-router-dom";
 import { useUserStore } from "@/stores/useUserStore";
+import { API_BASE_URL } from "@/config";
 
 export default function Navbar() {
   const user = useUserStore((state) => state.user);
@@ -21,7 +22,7 @@ export default function Navbar() {
   const logoutUser = async () => {
     try {
       // invalidate cookie server-side
-      const response = await fetch("http://localhost:8000/auth/logout", {
+      const response = await fetch(`${API_BASE_URL}/auth/logout`, {
         credentials: "include",
         headers: {
           Authorization: `Bearer ${accessToken}`,
