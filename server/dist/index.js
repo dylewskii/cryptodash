@@ -49,7 +49,7 @@ app.use("/upload", upload_1.default);
 // socket.io
 app.set("socketio", io);
 // start server
-const PORT = process.env.PORT || 8000;
-server.listen(PORT, () => {
+const PORT = parseInt(process.env.PORT) || 8000;
+server.listen(PORT, "0.0.0.0", () => {
     console.log(`Express listening on port: ${PORT}`);
 });
