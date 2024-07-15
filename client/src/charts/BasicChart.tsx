@@ -1,5 +1,11 @@
 import { ThemeProviderContext } from "@/context/ThemeContext";
-import { createChart, ColorType } from "lightweight-charts";
+import {
+  createChart,
+  ColorType,
+  ISeriesApi,
+  Time,
+  AreaData,
+} from "lightweight-charts";
 import React, { useContext, useEffect, useRef } from "react";
 
 interface ChartProps {
@@ -29,7 +35,6 @@ function BasicChart(props: ChartProps): React.ReactElement {
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    // check if undefined
     if (!chartContainerRef.current) return;
 
     const handleResize = () => {
@@ -59,14 +64,14 @@ function BasicChart(props: ChartProps): React.ReactElement {
     });
     chart.timeScale().fitContent();
 
-    const newSeries = chart.addAreaSeries({
+    const newSeries: ISeriesApi<"Area"> = chart.addAreaSeries({
       lineColor,
       topColor: areaTopColor,
       bottomColor: areaBottomColor,
     });
 
-    const mappedData = data.map((item) => ({
-      time: new Date(item.timestamp).getTime() / 1000, // convert to UNIX timestamp in secs
+    const mappedData: AreaData<Time>[] = data.map((item) => ({
+      time: (new Date(item.timestamp).getTime() / 1000) as Time, // convert to UNIX timestamp in secs
       value: item.value,
     }));
 
