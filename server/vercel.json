@@ -1,0 +1,27 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "src/server.ts",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/src/server.ts"
+    }
+  ],
+  "env": {
+    "MONGO_URI": "@MONGO_URI",
+    "JWT_ACCESS_SECRET": "@JWT_ACCESS_SECRET",
+    "JWT_REFRESH_SECRET": "@JWT_REFRESH_SECRET",
+    "COINGECKO_API_KEY": "@COINGECKO_API_KEY",
+    "EMAIL_USER": "@EMAIL_USER",
+    "EMAIL_PASS": "@EMAIL_PASS",
+    "BUCKET_NAME": "@BUCKET_NAME",
+    "BUCKET_REGION": "@BUCKET_REGION",
+    "AWS_ACCESS_KEY_ID": "@AWS_ACCESS_KEY_ID",
+    "AWS_SECRET_ACCESS_KEY": "@AWS_SECRET_ACCESS_KEY"
+  }
+}
