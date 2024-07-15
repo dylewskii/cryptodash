@@ -1,5 +1,6 @@
 import { checkAuth } from "@/lib";
 import { useUserStore } from "@/stores/useUserStore";
+import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 
@@ -25,8 +26,11 @@ export const ProtectedRoutes = ({
   }, [accessToken, setAccessToken, setUser]);
 
   if (isChecking) {
-    // TODO: replace with loading spinner
-    return <div className="mx-auto my-auto">Loading...</div>;
+    return (
+      <div className="mx-auto my-auto">
+        <Loader2 className="animate-spin"></Loader2>
+      </div>
+    );
   }
 
   return user.isAuthenticated ? (
