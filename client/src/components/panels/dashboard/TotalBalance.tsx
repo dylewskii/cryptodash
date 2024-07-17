@@ -4,7 +4,7 @@ import { Skeleton } from "../../ui/skeleton";
 import { BlurredSkeleton } from "@/components/ui/blurred-skeleton";
 // utils
 import { formatCurrency } from "@/lib";
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
 
 interface TotalBalanceProps {
   className?: string;
@@ -13,7 +13,8 @@ interface TotalBalanceProps {
 export default function TotalBalance({ className }: TotalBalanceProps) {
   const portfolio = useUserStore((state) => state.portfolio);
   const portfolioLoading = useUserStore((state) => state.portfolioLoading);
-  const [isBalanceHidden, setIsBalanceHidden] = useState<boolean>();
+  // const [isBalanceHidden, setIsBalanceHidden] = useState<boolean>();
+  const isBalanceHidden = false;
 
   const totalValueArray = portfolio.detailed.map(
     (coinObject) => coinObject.totalValue
@@ -25,30 +26,34 @@ export default function TotalBalance({ className }: TotalBalanceProps) {
   );
 
   const handleHideBalance = () => {
-    setIsBalanceHidden(!isBalanceHidden);
-
-    localStorage.setItem(
-      "cryptodashe-isBalanceHidden",
-      JSON.stringify(!isBalanceHidden)
-    );
+    console.log("hiding balance");
   };
 
-  useEffect(() => {
-    const preference = localStorage.getItem("cryptodashe-isBalanceHidden");
+  // const handleHideBalance = () => {
+  //   setIsBalanceHidden(!isBalanceHidden);
 
-    if (!preference) {
-      setIsBalanceHidden(false);
-      localStorage.setItem(
-        "cryptodashe-isBalanceHidden",
-        JSON.stringify(isBalanceHidden)
-      );
-      return;
-    }
+  //   localStorage.setItem(
+  //     "cryptodashe-isBalanceHidden",
+  //     JSON.stringify(!isBalanceHidden)
+  //   );
+  // };
 
-    const balanceHiddenPreference = JSON.parse(preference);
+  // useEffect(() => {
+  //   const preference = localStorage.getItem("cryptodashe-isBalanceHidden");
 
-    setIsBalanceHidden(balanceHiddenPreference);
-  }, [isBalanceHidden]);
+  //   if (!preference) {
+  //     setIsBalanceHidden(false);
+  //     localStorage.setItem(
+  //       "cryptodashe-isBalanceHidden",
+  //       JSON.stringify(isBalanceHidden)
+  //     );
+  //     return;
+  //   }
+
+  //   const balanceHiddenPreference = JSON.parse(preference);
+
+  //   setIsBalanceHidden(balanceHiddenPreference);
+  // }, [isBalanceHidden]);
 
   return (
     <div className={`flex flex-col ${className}`}>
