@@ -27,6 +27,7 @@ export default function LoginPage() {
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
     if (!username || !password) {
+      console.log("Login attempt failed: Empty username or password");
       setLoginStatus({
         failed: true,
         msg: "Username and password are both required.",
@@ -37,6 +38,8 @@ export default function LoginPage() {
     setIsSubmitting(true);
     try {
       const URL = `${API_BASE_URL}/auth/login`;
+      console.log("Attempting login to:", URL);
+
       const response = await fetch(URL, {
         method: "POST",
         headers: {
@@ -49,15 +52,31 @@ export default function LoginPage() {
         }),
       });
 
-      const data = await response.json();
+      console.log("Response status:", response.status);
+      console.log("Response headers:", Object.fromEntries(response.headers));
+
+      const responseText = await response.text();
+      console.log("Raw response:", responseText);
+
+      let data;
+      try {
+        data = JSON.parse(responseText);
+        console.log("Parsed response data:", data);
+      } catch (parseError) {
+        console.error("Error parsing response:", parseError);
+        throw new Error("Invalid JSON response");
+      }
 
       if (!response.ok) {
+        console.error("Login failed:", data);
         setLoginStatus({
           failed: true,
           msg: data.msg || "Login Failed. Please Try Again.",
         });
         return;
       }
+
+      console.log("Login successful, user data:", data.user);
 
       setUser({
         userId: data.user.id,
@@ -70,9 +89,10 @@ export default function LoginPage() {
 
       navigate("/app/home");
     } catch (error) {
+      console.error("Login error:", error);
       setLoginStatus({
         failed: true,
-        msg: "Failed to Login",
+        msg: error instanceof Error ? error.message : "Failed to Login",
       });
     } finally {
       setIsSubmitting(false);
