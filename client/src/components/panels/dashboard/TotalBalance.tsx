@@ -4,7 +4,7 @@ import { Skeleton } from "../../ui/skeleton";
 import { BlurredSkeleton } from "@/components/ui/blurred-skeleton";
 // utils
 import { formatCurrency } from "@/lib";
-// import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 interface TotalBalanceProps {
   className?: string;
@@ -13,8 +13,7 @@ interface TotalBalanceProps {
 export default function TotalBalance({ className }: TotalBalanceProps) {
   const portfolio = useUserStore((state) => state.portfolio);
   const portfolioLoading = useUserStore((state) => state.portfolioLoading);
-  // const [isBalanceHidden, setIsBalanceHidden] = useState<boolean>();
-  const isBalanceHidden = false;
+  const [isBalanceHidden, setIsBalanceHidden] = useState<boolean>(false);
 
   const totalValueArray = portfolio.detailed.map(
     (coinObject) => coinObject.totalValue
@@ -26,34 +25,43 @@ export default function TotalBalance({ className }: TotalBalanceProps) {
   );
 
   const handleHideBalance = () => {
-    console.log("hiding balance");
+    const newBalanceHidden = !isBalanceHidden;
+    setIsBalanceHidden(newBalanceHidden);
+
+    try {
+      localStorage.setItem(
+        "cryptodashe-isBalanceHidden",
+        JSON.stringify(newBalanceHidden)
+      );
+    } catch (error) {
+      console.error("Error saving balance preference:", error);
+    }
   };
 
-  // const handleHideBalance = () => {
-  //   setIsBalanceHidden(!isBalanceHidden);
+  useEffect(() => {
+    const loadBalancePreference = () => {
+      try {
+        const preference = localStorage.getItem("cryptodashe-isBalanceHidden");
 
-  //   localStorage.setItem(
-  //     "cryptodashe-isBalanceHidden",
-  //     JSON.stringify(!isBalanceHidden)
-  //   );
-  // };
+        if (preference === null) {
+          setIsBalanceHidden(false);
+          localStorage.setItem(
+            "cryptodashe-isBalanceHidden",
+            JSON.stringify(false)
+          );
+        } else {
+          const balanceHiddenPreference = JSON.parse(preference);
+          // double negation to convert to boolean equivalent
+          setIsBalanceHidden(!!balanceHiddenPreference);
+        }
+      } catch (error) {
+        console.error("Error loading balance preference:", error);
+        setIsBalanceHidden(false);
+      }
+    };
 
-  // useEffect(() => {
-  //   const preference = localStorage.getItem("cryptodashe-isBalanceHidden");
-
-  //   if (!preference) {
-  //     setIsBalanceHidden(false);
-  //     localStorage.setItem(
-  //       "cryptodashe-isBalanceHidden",
-  //       JSON.stringify(isBalanceHidden)
-  //     );
-  //     return;
-  //   }
-
-  //   const balanceHiddenPreference = JSON.parse(preference);
-
-  //   setIsBalanceHidden(balanceHiddenPreference);
-  // }, [isBalanceHidden]);
+    loadBalancePreference();
+  }, []);
 
   return (
     <div className={`flex flex-col ${className}`}>
