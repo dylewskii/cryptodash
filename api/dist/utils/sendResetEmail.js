@@ -11,8 +11,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendResetEmail = void 0;
 const mailer_1 = require("./mailer");
+const ORIGIN_URL = process.env.ORIGIN_URL || "http://localhost:5173";
 const sendResetEmail = (email, token) => __awaiter(void 0, void 0, void 0, function* () {
-    const resetLink = `http://localhost:5173/reset-password?token=${token}`;
+    const resetLink = `${ORIGIN_URL}/reset-password?token=${token}`;
     const mailOptions = {
         from: process.env.EMAIL_USER,
         to: email,
