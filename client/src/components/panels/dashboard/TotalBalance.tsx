@@ -44,7 +44,7 @@ export default function TotalBalance({ className }: TotalBalanceProps) {
       try {
         const preference = localStorage.getItem("cryptodashe-isBalanceHidden");
 
-        if (!preference) {
+        if (preference === null || preference === undefined) {
           setIsBalanceHidden(false);
           localStorage.setItem(
             "cryptodashe-isBalanceHidden",
