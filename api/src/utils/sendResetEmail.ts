@@ -1,7 +1,9 @@
 import { transporter } from "./mailer";
 
+const ORIGIN_URL = process.env.ORIGIN_URL || "http://localhost:5173";
+
 export const sendResetEmail = async (email: string, token: string) => {
-  const resetLink = `http://localhost:5173/reset-password?token=${token}`;
+  const resetLink = `${ORIGIN_URL}/reset-password?token=${token}`;
 
   const mailOptions = {
     from: process.env.EMAIL_USER,
