@@ -1,8 +1,8 @@
-# cryptodashe
+# CryptoDashe
 
-## Live Demo
+## 🖥️ Live Demo
 
-https://dashecrypte.netlify.app/
+👉 https://dashecrypte.netlify.app/
 
 ## About
 
