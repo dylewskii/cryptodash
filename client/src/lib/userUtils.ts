@@ -20,9 +20,10 @@ export const fetchProfilePicUrl = async (
   try {
     let accessToken = await refreshAccessToken();
     if (!accessToken) {
-      throw new Error("Failed to refresh access token");
+      throw new Error("Initial token refresh failed");
     }
 
+    console.log("Fetching profile picture URL with token");
     const response = await fetch(`${API_BASE_URL}/upload/profile-picture-url`, {
       method: "GET",
       credentials: "include",
@@ -32,6 +33,7 @@ export const fetchProfilePicUrl = async (
     });
 
     if (response.status === 401) {
+      console.log("Received 401, attempting to refresh token again");
       // access token might be expired, try to refresh it
       accessToken = await refreshAccessToken();
       if (!accessToken) {
@@ -68,7 +70,9 @@ export const fetchProfilePicUrl = async (
     if (!data.success) {
       return null;
     }
-    return data.presignedUrl;
+
+    console.log("Profile picture URL fetch successful:", data.success);
+    return data.success ? data.presignedUrl : null;
   } catch (err) {
     console.error("Could not fetch profile picture URL", err);
     return null;
