@@ -64,6 +64,24 @@ Navigate to the /api directory and run:
 
 - npm run dev
 
+## App Overview
+
+### Homepage
+
+![cryptodashe homepage](./public/desktop-final-1.png)
+
+### Coin Holding
+
+![cryptodashe coin holding panel](./public/desktop-final-2.png)
+
+### Explore
+
+![cryptodashe explore page](./public/desktop-final-3.png)
+
+### Insights
+
+![cryptodashe insights page](./public/desktop-final-4.png)
+
 ## Credits
 
 - All coin data is retrieved from the CoinGecko API:
