@@ -38,21 +38,21 @@ Built using the MERN stack.
 
 #### Frontend (.env file in /client directory)
 
-- VITE_API_BASE_URL =<URL of Backend API>
+- VITE_API_BASE_URL = URL of Backend API
 
 #### Backend (.env file in /server directory)
 
-- MONGO_URI=<MongoDB URI Connection String>
-- JWT_ACCESS_SECRET=<Your Access Token Secret>
-- JWT_REFRESH_SECRET=<Your Refresh Token Secret>
-- COINGECKO_API_KEY=<Your CoinGecko API Key>
-- EMAIL_USER=<Email Address for Notifications>
-- EMAIL_PASS=<Email App-Specific Password>
-- BUCKET_NAME=<S3 Bucket Name>
-- BUCKET_REGION=<S3 Bucket Region>
-- AWS_ACCESS_KEY_ID=<AWS Access Key ID>
-- AWS_SECRET_ACCESS_KEY=<AWS Secret Access Key>
-- ORIGIN_URL=<URL of Frontend>
+- MONGO_URI= MongoDB URI Connection String
+- JWT_ACCESS_SECRET= Your Access Token Secret
+- JWT_REFRESH_SECRET= Your Refresh Token Secret
+- COINGECKO_API_KEY= Your CoinGecko API Key
+- EMAIL_USER= Email Address for Notifications
+- EMAIL_PASS= Email App-Specific Password
+- BUCKET_NAME= S3 Bucket Name
+- BUCKET_REGION= S3 Bucket Region
+- AWS_ACCESS_KEY_ID= AWS Access Key ID
+- AWS_SECRET_ACCESS_KEY= AWS Secret Access Key
+- ORIGIN_URL= URL of Frontend
 
 4. Start the development server
 
