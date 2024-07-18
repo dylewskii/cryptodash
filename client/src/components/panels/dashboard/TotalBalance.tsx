@@ -38,24 +38,34 @@ export default function TotalBalance({ className }: TotalBalanceProps) {
     }
   };
 
+  // on mount, load the balance preference
   useEffect(() => {
     const loadBalancePreference = () => {
       try {
         const preference = localStorage.getItem("cryptodashe-isBalanceHidden");
 
-        if (preference === null) {
+        if (!preference) {
           setIsBalanceHidden(false);
           localStorage.setItem(
             "cryptodashe-isBalanceHidden",
             JSON.stringify(false)
           );
-        } else {
+          return;
+        }
+
+        if (typeof preference === "string") {
           const balanceHiddenPreference = JSON.parse(preference);
           // double negation to convert to boolean equivalent
           setIsBalanceHidden(!!balanceHiddenPreference);
+        } else {
+          console.warn(
+            "Unexpected total balance preference type:",
+            typeof preference
+          );
+          setIsBalanceHidden(false);
         }
-      } catch (error) {
-        console.error("Error loading balance preference:", error);
+      } catch (err) {
+        console.error("Error loading total balance preference:", err);
         setIsBalanceHidden(false);
       }
     };
