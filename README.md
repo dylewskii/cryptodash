@@ -17,6 +17,7 @@ Built using the MERN stack.
 - **Interactive Charts**: Powered by TradingView to help you view your portfolio performance
 - **Global Market Information**: Integrated Fear and Greed Index + Global Crypto Market Cap Tracker for a general market insight
 - **User-friendly Interface**: Intuitive design for seamless navigation and use
+- **Light & Dark Mode**: You decide the look and feel of your Dashboard
 
 ## Installation Instructions
 
