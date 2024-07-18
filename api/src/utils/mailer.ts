@@ -4,6 +4,12 @@ dotenv.config();
 
 const { EMAIL_USER, EMAIL_PASS } = process.env;
 
+if (!EMAIL_USER || !EMAIL_PASS) {
+  throw new Error(
+    "Email User/Email Pass have not been defined in the environment variables"
+  );
+}
+
 export const transporter = nodemailer.createTransport({
   service: "Gmail",
   auth: {
