@@ -65,8 +65,8 @@ export const registerUser = async (req: Request, res: Response) => {
     // set token in a HTTP-only cookie
     res.cookie("token", token, {
       httpOnly: true,
-      maxAge: 3600000,
-      sameSite: "strict",
+      maxAge: 3600000, // 1hr
+      sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
     });
 
@@ -106,7 +106,7 @@ export const loginUser = async (req: Request, res: Response) => {
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
@@ -248,7 +248,7 @@ export const refreshToken = async (req: Request, res: Response) => {
     res.cookie("refreshToken", newRefreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
