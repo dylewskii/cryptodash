@@ -9,21 +9,14 @@ import { UserType, defaultUser } from "@/types";
  */
 export const refreshAccessToken = async (): Promise<string | null> => {
   try {
-    console.log(
-      "Attempting to refresh token at:",
-      `${API_BASE_URL}/auth/refresh-token`
-    );
     const response = await fetch(`${API_BASE_URL}/auth/refresh-token`, {
       method: "POST",
       credentials: "include",
     });
 
-    console.log("Refresh token response status:", response.status);
-
     if (!response.ok) {
       if (response.status === 401) {
         // user not authenticated - expected when logged out
-        console.log("User not authenticated (401)");
         return null;
       }
       throw new Error(`HTTP error status: ${response.status}`);
@@ -31,10 +24,8 @@ export const refreshAccessToken = async (): Promise<string | null> => {
 
     const data = await response.json();
 
-    console.log("Refresh token successful, new token received");
     return data.accessToken;
   } catch (error) {
-    console.error("Error refreshing token:", error);
     return null;
   }
 };
