@@ -64,8 +64,8 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         // set token in a HTTP-only cookie
         res.cookie("token", token, {
             httpOnly: true,
-            maxAge: 3600000,
-            sameSite: "strict",
+            maxAge: 3600000, // 1hr
+            sameSite: "lax",
             secure: process.env.NODE_ENV === "production",
         });
         res.json({
@@ -102,7 +102,7 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
+            sameSite: "lax",
             maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
         });
         res.json({
@@ -221,7 +221,7 @@ const refreshToken = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         res.cookie("refreshToken", newRefreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
+            sameSite: "lax",
             maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
         });
         res.json({ success: true, accessToken });
